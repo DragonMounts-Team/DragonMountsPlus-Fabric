@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:item/handheld",
+  "textures": {
+    "layer0": "dragonmounts.plus:item/sculk_dragon_scale_axe"
+  }
+}

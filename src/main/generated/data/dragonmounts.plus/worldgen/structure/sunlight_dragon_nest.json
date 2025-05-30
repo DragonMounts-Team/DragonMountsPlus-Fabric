@@ -1,0 +1,14 @@
+{
+  "type": "dragonmounts.plus:dragon_nests",
+  "biomes": "#dragonmounts.plus:has_structure/sunlight_dragon_nest",
+  "configs": [
+    {
+      "placement": "partly_buried",
+      "templates": [
+        "dragonmounts.plus:sunlight"
+      ]
+    }
+  ],
+  "spawn_overrides": {},
+  "step": "surface_structures"
+}

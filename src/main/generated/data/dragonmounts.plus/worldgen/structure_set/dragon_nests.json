@@ -1,0 +1,58 @@
+{
+  "placement": {
+    "type": "minecraft:random_spread",
+    "salt": 60052411,
+    "separation": 15,
+    "spacing": 40
+  },
+  "structures": [
+    {
+      "structure": "dragonmounts.plus:aether_dragon_nest",
+      "weight": 1
+    },
+    {
+      "structure": "dragonmounts.plus:enchanted_dragon_nest",
+      "weight": 1
+    },
+    {
+      "structure": "dragonmounts.plus:fire_dragon_nest",
+      "weight": 1
+    },
+    {
+      "structure": "dragonmounts.plus:forest_dragon_nest",
+      "weight": 1
+    },
+    {
+      "structure": "dragonmounts.plus:ice_dragon_nest",
+      "weight": 1
+    },
+    {
+      "structure": "dragonmounts.plus:moonlight_dragon_nest",
+      "weight": 1
+    },
+    {
+      "structure": "dragonmounts.plus:nether_dragon_nest",
+      "weight": 1
+    },
+    {
+      "structure": "dragonmounts.plus:skeleton_dragon_nest",
+      "weight": 1
+    },
+    {
+      "structure": "dragonmounts.plus:sunlight_dragon_nest",
+      "weight": 1
+    },
+    {
+      "structure": "dragonmounts.plus:terra_dragon_nest",
+      "weight": 1
+    },
+    {
+      "structure": "dragonmounts.plus:water_dragon_nest",
+      "weight": 1
+    },
+    {
+      "structure": "dragonmounts.plus:zombie_dragon_nest",
+      "weight": 1
+    }
+  ]
+}

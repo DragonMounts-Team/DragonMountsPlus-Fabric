@@ -1,0 +1,6 @@
+{
+  "values": [
+    "minecraft:swamp",
+    "#minecraft:is_ocean"
+  ]
+}

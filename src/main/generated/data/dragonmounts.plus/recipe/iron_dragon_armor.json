@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "#": "#c:ingots/iron",
+    "X": "#c:storage_blocks/iron"
+  },
+  "pattern": [
+    "X #",
+    " XX",
+    "## "
+  ],
+  "result": {
+    "count": 1,
+    "id": "dragonmounts.plus:iron_dragon_armor"
+  }
+}

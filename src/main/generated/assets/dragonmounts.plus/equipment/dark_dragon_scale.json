@@ -1,0 +1,14 @@
+{
+  "layers": {
+    "humanoid": [
+      {
+        "texture": "dragonmounts.plus:dark_dragon_scale"
+      }
+    ],
+    "humanoid_leggings": [
+      {
+        "texture": "dragonmounts.plus:dark_dragon_scale"
+      }
+    ]
+  }
+}

@@ -1,0 +1,163 @@
+package net.dragonmounts.plus.common.client.gui;
+
+import net.dragonmounts.plus.common.client.ClientDragonEntity;
+import net.dragonmounts.plus.common.inventory.DragonInventoryHandler;
+import net.dragonmounts.plus.common.inventory.SlotListener;
+import net.dragonmounts.plus.common.inventory.WhistleSlot;
+import net.dragonmounts.plus.common.network.c2s.RenameWhistlePayload;
+import net.dragonmounts.plus.compat.platform.ClientNetworkHandler;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.EditBox;
+import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
+import net.minecraft.client.gui.screens.inventory.InventoryScreen;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.item.ItemStack;
+
+import java.util.function.Function;
+
+import static net.dragonmounts.plus.common.DragonMountsShared.makeId;
+import static net.dragonmounts.plus.common.inventory.WhistleSlot.getItemName;
+
+/**
+ * @see net.minecraft.client.gui.screens.inventory.HorseInventoryScreen
+ */
+public class DragonInventoryScreen extends AbstractContainerScreen<DragonInventoryHandler> implements SlotListener<WhistleSlot> {
+    private static final ResourceLocation TEXT_FIELD_SPRITE = ResourceLocation.withDefaultNamespace("container/anvil/text_field");
+    private static final ResourceLocation INVENTORY = makeId("textures/gui/dragon_inventory.png");
+    private static final ResourceLocation PANEL = makeId("textures/gui/dragon_panel.png");
+    private static final ResourceLocation ARMOR_SPRITE = makeId("dragon_panel/armor");
+    private static final ResourceLocation HEALTH_SPRITE = makeId("dragon_panel/health");
+    private static final ResourceLocation FOOD_SPRITE = makeId("dragon_panel/food");
+    private static final Component MESSAGE = Component.translatable("container.dragonmounts.plus.dragon_inventory");
+    private EditBox name;
+    private String health;
+    private String armor;
+
+    public DragonInventoryScreen(DragonInventoryHandler handler, Inventory inventory, Component title) {
+        super(handler, inventory, title);
+        this.imageHeight = 224;
+        this.imageWidth = 324;
+        this.inventoryLabelX = this.titleLabelX = 156;
+        this.inventoryLabelY = 131;// 224 - 94 + 1
+    }
+
+    @Override
+    protected void init() {
+        super.init();
+        var whistle = this.menu.whistle;
+        var name = this.name = new EditBox(this.font, this.leftPos + 32, this.topPos + 12, 104, 12, MESSAGE);
+        name.setCanLoseFocus(false);
+        name.setTextColor(-1);
+        name.setTextColorUneditable(-1);
+        name.setBordered(false);
+        name.setMaxLength(50);
+        name.setResponder(this::onNameChanged);
+        name.setValue("");
+        this.addWidget(name);
+        name.setEditable(whistle.hasItem());
+        whistle.listener = this;
+        this.containerTick();
+    }
+
+    @Override
+    protected void containerTick() {
+        super.containerTick();
+        var dragon = this.menu.dragon;
+        this.health = String.format("%.2f/%.2f", dragon.getHealth(), dragon.getMaxHealth());
+        this.armor = String.format("%.2f", dragon.getAttributeValue(Attributes.ARMOR));
+    }
+
+    @Override
+    protected void setInitialFocus() {
+        this.setInitialFocus(this.name);
+    }
+
+    @Override
+    public void resize(Minecraft minecraft, int width, int height) {
+        String string = this.name.getValue();
+        this.init(minecraft, width, height);
+        this.name.setValue(string);
+    }
+
+    @Override
+    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+        if (keyCode == 256) {
+            assert this.minecraft != null && this.minecraft.player != null;
+            this.minecraft.player.closeContainer();
+        }
+        return this.name.keyPressed(keyCode, scanCode, modifiers) || this.name.canConsumeInput() || super.keyPressed(keyCode, scanCode, modifiers);
+    }
+
+    private void onNameChanged(String name) {
+        var slot = this.menu.whistle;
+        var stack = slot.getItem();
+        if (stack.isEmpty()) return;
+        if (!stack.has(DataComponents.CUSTOM_NAME) && name.equals(stack.getHoverName().getString())) {
+            name = "";
+        }
+        if (slot.applyName(name)) {
+            ClientNetworkHandler.send(new RenameWhistlePayload(name));
+        }
+    }
+
+    @Override
+    public void beforePlaceItem(WhistleSlot slot, ItemStack stack) {
+        this.setFocused(this.name);
+        if (stack.isEmpty()) {
+            this.name.setEditable(false);
+            this.name.setValue(slot.desiredName = "");
+        } else {
+            this.name.setEditable(true);
+            var name = getItemName(stack);
+            if (!name.equals(getItemName(slot.getItem()))) {
+                this.name.setValue(slot.desiredName = name);
+            }
+        }
+    }
+
+    @Override
+    public void afterTakeItem(WhistleSlot slot, ItemStack stack) {
+        this.name.setValue("");
+        this.name.setEditable(false);
+    }
+
+    public void render(GuiGraphics graphics, int x, int y, float ticks) {
+        super.render(graphics, x, y, ticks);
+        this.name.render(graphics, x, y, ticks);
+        this.renderTooltip(graphics, x, y);
+    }
+
+    @Override
+    protected void renderLabels(GuiGraphics graphics, int mouseX, int mouseY) {
+        super.renderLabels(graphics, mouseX, mouseY);
+        var font = this.font;
+        graphics.drawString(font, this.armor, 20, 33, 0xE99E0C, false);
+        graphics.drawString(font, this.health, 20, 44, 0xE99E0C, false);
+    }
+
+    protected void renderBg(GuiGraphics graphics, float ticks, int x, int y) {
+        int left = this.leftPos, top = this.topPos;
+        Function<ResourceLocation, RenderType> renderer = RenderType::guiTextured;
+        graphics.blit(renderer, INVENTORY, left + 148, top, 0, 0, 176, this.imageHeight, 256, 256);
+        var dragon = (ClientDragonEntity) this.menu.dragon;
+        if (dragon.hasChest()) {
+            graphics.blit(renderer, INVENTORY, left + 148, top + 73, 0, 140, 170, 55, 256, 256);
+        }
+        graphics.blit(renderer, PANEL, left, top, 0, 0, 147, this.imageHeight, 256, 256);
+        if (this.menu.whistle.hasItem()) {
+            graphics.blitSprite(renderer, TEXT_FIELD_SPRITE, left + 29, top + 8, 110, 16);
+        }
+        left += 10;
+        graphics.blitSprite(renderer, ARMOR_SPRITE, left, top + 32, 9, 9);
+        graphics.blitSprite(renderer, HEALTH_SPRITE, left, top + 43, 9, 9);
+        dragon.animator.renderCrystalBeams = false;
+        InventoryScreen.renderEntityInInventoryFollowsMouse(graphics, left + 164, top + 18, left + 270, top + 70, 10, 0.25F, x, y, dragon);
+        dragon.animator.renderCrystalBeams = true;
+    }
+}

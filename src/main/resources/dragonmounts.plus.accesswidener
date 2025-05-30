@@ -1,0 +1,17 @@
+accessWidener v2 named
+accessible class net/minecraft/client/OptionInstance$SliderableValueSet
+accessible class net/minecraft/client/renderer/RenderType$CompositeState
+accessible class net/minecraft/world/scores/PlayerScores
+accessible field net/minecraft/world/entity/LivingEntity jumping Z
+accessible field net/minecraft/world/effect/MobEffectInstance duration I
+accessible field net/minecraft/world/effect/MobEffectInstance hiddenEffect Lnet/minecraft/world/effect/MobEffectInstance;
+accessible field net/minecraft/world/level/pathfinder/WalkNodeEvaluator collisionCache Lit/unimi/dsi/fastutil/objects/Object2BooleanMap;
+accessible field net/minecraft/world/level/pathfinder/WalkNodeEvaluator pathTypesByPosCacheByMob Lit/unimi/dsi/fastutil/longs/Long2ObjectMap;
+accessible field net/minecraft/world/level/pathfinder/WalkNodeEvaluator reusableNeighbors [Lnet/minecraft/world/level/pathfinder/Node;
+accessible method net/minecraft/client/model/geom/builders/PartDefinition <init> (Ljava/util/List;Lnet/minecraft/client/model/geom/PartPose;)V
+accessible method net/minecraft/world/scores/PlayerScores listRawScores ()Ljava/util/Map;
+accessible method net/minecraft/world/phys/AABB getDirection (DDDDDDLnet/minecraft/world/phys/Vec3;[DLnet/minecraft/core/Direction;DDD)Lnet/minecraft/core/Direction;
+accessible method net/minecraft/world/level/BaseSpawner getOrCreateNextSpawnData (Lnet/minecraft/world/level/Level;Lnet/minecraft/util/RandomSource;Lnet/minecraft/core/BlockPos;)Lnet/minecraft/world/level/SpawnData;
+accessible method net/minecraft/world/level/pathfinder/Path setDebug ([Lnet/minecraft/world/level/pathfinder/Node;[Lnet/minecraft/world/level/pathfinder/Node;Ljava/util/Set;)V
+accessible method net/minecraft/world/level/pathfinder/WalkNodeEvaluator doesBlockHavePartialCollision (Lnet/minecraft/world/level/pathfinder/PathType;)Z
+accessible method net/minecraft/world/level/block/entity/trialspawner/TrialSpawnerData getOrCreateNextSpawnData (Lnet/minecraft/world/level/block/entity/trialspawner/TrialSpawner;Lnet/minecraft/util/RandomSource;)Lnet/minecraft/world/level/SpawnData;

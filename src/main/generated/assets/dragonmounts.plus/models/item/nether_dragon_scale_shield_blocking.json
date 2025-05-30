@@ -1,0 +1,6 @@
+{
+  "parent": "dragonmounts.plus:item/template_shield_blocking",
+  "textures": {
+    "layer0": "dragonmounts.plus:item/nether_dragon_scale_shield"
+  }
+}

@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "dragonmounts.plus:item/aether_dragon_scales"
+  }
+}

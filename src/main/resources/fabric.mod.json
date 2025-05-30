@@ -1,0 +1,32 @@
+{
+  "schemaVersion": 1,
+  "id": "dragonmounts-plus",
+  "version": "${version}",
+  "name": "Dragon Mounts 2",
+  "description": "",
+  "authors": [],
+  "contact": {},
+  "license": "All-Rights-Reserved",
+  "accessWidener": "dragonmounts.plus.accesswidener",
+  "icon": "assets/dragonmounts.plus/icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "client": [
+      "net.dragonmounts.plus.client.DragonMountsClient"
+    ],
+    "main": [
+      "net.dragonmounts.plus.DragonMounts"
+    ],
+    "fabric-datagen": [
+      "net.dragonmounts.plus.data.DMDataGenerator"
+    ]
+  },
+  "mixins": [
+    "dragonmounts.plus.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=${loader_version}",
+    "fabric": "*",
+    "minecraft": "${minecraft_version}"
+  }
+}

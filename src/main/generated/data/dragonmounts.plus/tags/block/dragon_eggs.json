@@ -1,0 +1,22 @@
+{
+  "values": [
+    "minecraft:dragon_egg",
+    "dragonmounts.plus:aether_dragon_egg",
+    "dragonmounts.plus:dark_dragon_egg",
+    "dragonmounts.plus:enchanted_dragon_egg",
+    "dragonmounts.plus:ender_dragon_egg",
+    "dragonmounts.plus:fire_dragon_egg",
+    "dragonmounts.plus:forest_dragon_egg",
+    "dragonmounts.plus:ice_dragon_egg",
+    "dragonmounts.plus:moonlight_dragon_egg",
+    "dragonmounts.plus:nether_dragon_egg",
+    "dragonmounts.plus:sculk_dragon_egg",
+    "dragonmounts.plus:skeleton_dragon_egg",
+    "dragonmounts.plus:storm_dragon_egg",
+    "dragonmounts.plus:sunlight_dragon_egg",
+    "dragonmounts.plus:terra_dragon_egg",
+    "dragonmounts.plus:water_dragon_egg",
+    "dragonmounts.plus:wither_dragon_egg",
+    "dragonmounts.plus:zombie_dragon_egg"
+  ]
+}

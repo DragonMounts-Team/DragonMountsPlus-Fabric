@@ -1,0 +1,14 @@
+{
+  "layers": {
+    "humanoid": [
+      {
+        "texture": "dragonmounts.plus:aether_dragon_scale"
+      }
+    ],
+    "humanoid_leggings": [
+      {
+        "texture": "dragonmounts.plus:aether_dragon_scale"
+      }
+    ]
+  }
+}

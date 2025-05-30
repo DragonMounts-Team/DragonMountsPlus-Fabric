@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "#": "#c:strings",
+    "X": "#c:ender_pearls",
+    "Y": "#c:cobblestones"
+  },
+  "pattern": [
+    " Y ",
+    "#X#",
+    " # "
+  ],
+  "result": {
+    "count": 1,
+    "id": "dragonmounts.plus:amulet"
+  }
+}

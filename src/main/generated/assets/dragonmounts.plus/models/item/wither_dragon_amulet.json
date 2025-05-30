@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "dragonmounts.plus:item/wither_dragon_amulet"
+  }
+}

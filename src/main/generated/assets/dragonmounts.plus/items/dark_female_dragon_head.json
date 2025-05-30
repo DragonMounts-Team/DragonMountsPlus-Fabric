@@ -1,0 +1,10 @@
+{
+  "model": {
+    "type": "minecraft:special",
+    "base": "minecraft:item/dragon_head",
+    "model": {
+      "type": "dragonmounts.plus:dragon_head",
+      "variant": "dragonmounts.plus:dark_female"
+    }
+  }
+}

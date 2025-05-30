@@ -1,0 +1,23 @@
+{
+  "type": "dragonmounts.plus:dragon_nests",
+  "biomes": "#dragonmounts.plus:has_structure/aether_dragon_nest",
+  "configs": [
+    {
+      "placement": "in_clouds",
+      "templates": [
+        "dragonmounts.plus:aether"
+      ]
+    },
+    {
+      "island": {
+        "Name": "minecraft:dirt"
+      },
+      "placement": "in_clouds",
+      "templates": [
+        "dragonmounts.plus:aether2"
+      ]
+    }
+  ],
+  "spawn_overrides": {},
+  "step": "surface_structures"
+}

@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:item/handheld",
+  "textures": {
+    "layer0": "dragonmounts.plus:item/sunlight_dragon_scale_pickaxe"
+  }
+}

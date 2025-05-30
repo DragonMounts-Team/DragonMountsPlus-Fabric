@@ -1,0 +1,10 @@
+{
+  "model": {
+    "type": "minecraft:special",
+    "base": "dragonmounts.plus:item/dragon_core",
+    "model": {
+      "type": "dragonmounts.plus:dragon_core",
+      "facing": "south"
+    }
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "X": "dragonmounts.plus:sculk_dragon_scales"
+  },
+  "pattern": [
+    "X X",
+    "X X"
+  ],
+  "result": {
+    "count": 1,
+    "id": "dragonmounts.plus:sculk_dragon_scale_boots"
+  }
+}

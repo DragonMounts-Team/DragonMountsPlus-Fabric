@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:item/bow",
+  "textures": {
+    "layer0": "dragonmounts.plus:item/storm_dragon_scale_bow"
+  }
+}

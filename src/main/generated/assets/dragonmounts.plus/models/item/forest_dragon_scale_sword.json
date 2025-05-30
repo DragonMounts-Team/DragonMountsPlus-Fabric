@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:item/handheld",
+  "textures": {
+    "layer0": "dragonmounts.plus:item/forest_dragon_scale_sword"
+  }
+}

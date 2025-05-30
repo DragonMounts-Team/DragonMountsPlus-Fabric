@@ -1,0 +1,17 @@
+{
+  "type": "dragonmounts.plus:dragon_nests",
+  "biomes": "#dragonmounts.plus:has_structure/enchanted_dragon_nest",
+  "configs": [
+    {
+      "island": {
+        "Name": "minecraft:end_stone"
+      },
+      "placement": "on_land_surface",
+      "templates": [
+        "dragonmounts.plus:enchanted"
+      ]
+    }
+  ],
+  "spawn_overrides": {},
+  "step": "surface_structures"
+}

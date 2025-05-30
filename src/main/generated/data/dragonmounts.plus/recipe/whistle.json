@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "#": "#c:ender_pearls",
+    "P": "#c:rods/wooden",
+    "X": "#c:strings"
+  },
+  "pattern": [
+    "P#",
+    "#X"
+  ],
+  "result": {
+    "count": 1,
+    "id": "dragonmounts.plus:whistle"
+  }
+}

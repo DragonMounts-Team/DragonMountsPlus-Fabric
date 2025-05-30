@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:item/handheld",
+  "textures": {
+    "layer0": "dragonmounts.plus:item/aether_dragon_scale_hoe"
+  }
+}

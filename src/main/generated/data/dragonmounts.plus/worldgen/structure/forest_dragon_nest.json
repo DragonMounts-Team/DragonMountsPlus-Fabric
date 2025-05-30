@@ -1,0 +1,22 @@
+{
+  "type": "dragonmounts.plus:dragon_nests",
+  "biomes": "#dragonmounts.plus:has_structure/forest_dragon_nest",
+  "configs": [
+    {
+      "placement": "on_land_surface",
+      "templates": [
+        "dragonmounts.plus:forest1",
+        "dragonmounts.plus:forest2"
+      ]
+    },
+    {
+      "placement": "partly_buried",
+      "templates": [
+        "dragonmounts.plus:forest1",
+        "dragonmounts.plus:forest2"
+      ]
+    }
+  ],
+  "spawn_overrides": {},
+  "step": "surface_structures"
+}
