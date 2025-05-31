@@ -59,7 +59,7 @@ public class DragonSpawnEggItem extends SpawnEggItem implements EntityContainer<
     }
 
     public DragonSpawnEggItem(DragonType type, Properties props) {
-        this(DMEntities.TAMEABLE_DRAGON, type, props);
+        this(DMEntities.TAMEABLE_DRAGON.get(), type, props);
     }
 
     protected void putDragonData(SpawnData data, EntityType<?> type, RandomSource random) {
@@ -85,7 +85,7 @@ public class DragonSpawnEggItem extends SpawnEggItem implements EntityContainer<
         switch (level.getBlockEntity(pos)) {
             case TrialSpawnerBlockEntity spawner:
                 type = this.getType(level.registryAccess(), stack);
-                if (DMEntities.TAMEABLE_DRAGON == type) {
+                if (DMEntities.TAMEABLE_DRAGON.is(type)) {
                     var impl = spawner.getTrialSpawner();
                     this.putDragonData(impl.getData().getOrCreateNextSpawnData(impl, random), type, random);
                 } else {
@@ -94,7 +94,7 @@ public class DragonSpawnEggItem extends SpawnEggItem implements EntityContainer<
                 break;
             case SpawnerBlockEntity spawner:
                 type = this.getType(level.registryAccess(), stack);
-                if (DMEntities.TAMEABLE_DRAGON == type) {
+                if (DMEntities.TAMEABLE_DRAGON.is(type)) {
                     this.putDragonData(spawner.getSpawner().getOrCreateNextSpawnData(level, random, pos), type, random);
                 } else {
                     spawner.setEntityId(type, random);

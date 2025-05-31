@@ -2,7 +2,6 @@ package net.dragonmounts.plus.common.command;
 
 import com.mojang.authlib.GameProfile;
 import com.mojang.brigadier.CommandDispatcher;
-import com.mojang.brigadier.builder.ArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.dragonmounts.plus.common.DragonMountsShared;
@@ -26,7 +25,7 @@ public class DMCommand {
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher, CommandBuildContext context, Commands.CommandSelection ignored) {
         Predicate<CommandSourceStack> hasPermissionLevel2 = source -> source.hasPermission(2);
         dispatcher.register(Commands.literal(DragonMountsShared.MOD_ID)
-                .then(DMCommand.registerConfigCommand(source -> source.hasPermission(3)))
+                .then(ServerConfig.buildCommand(source -> source.hasPermission(3)))
                 .then(CooldownCommand.register(context, hasPermissionLevel2))
                 .then(FreeCommand.register(hasPermissionLevel2))
                 .then(SaveCommand.register(context, hasPermissionLevel2))
@@ -53,9 +52,5 @@ public class DMCommand {
         if (profiles.isEmpty()) throw EntityArgument.NO_PLAYERS_FOUND.create();
         if (profiles.size() > 1) throw EntityArgument.ERROR_NOT_SINGLE_PLAYER.create();
         return profiles.iterator().next();
-    }
-
-    public static ArgumentBuilder<CommandSourceStack, ?> registerConfigCommand(Predicate<CommandSourceStack> permission) {
-        return Commands.literal("config").requires(permission).then(ServerConfig.INSTANCE.debug.generateCommand());
     }
 }

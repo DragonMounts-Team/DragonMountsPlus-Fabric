@@ -13,6 +13,7 @@ import net.dragonmounts.plus.common.init.DMItems;
 import net.dragonmounts.plus.common.init.DMSounds;
 import net.dragonmounts.plus.common.init.DragonVariants;
 import net.dragonmounts.plus.common.inventory.DragonInventory;
+import net.dragonmounts.plus.common.inventory.DragonInventoryHandler;
 import net.dragonmounts.plus.common.item.DragonArmorItem;
 import net.dragonmounts.plus.common.item.DragonScalesItem;
 import net.dragonmounts.plus.common.item.DragonSpawnEggItem;
@@ -23,12 +24,14 @@ import net.dragonmounts.plus.compat.platform.MenuProvider;
 import net.dragonmounts.plus.compat.registry.DragonType;
 import net.dragonmounts.plus.compat.registry.DragonVariant;
 import net.minecraft.core.BlockPos;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
@@ -46,7 +49,9 @@ import net.minecraft.world.entity.animal.horse.Horse;
 import net.minecraft.world.entity.animal.horse.Mule;
 import net.minecraft.world.entity.boss.enderdragon.EndCrystal;
 import net.minecraft.world.entity.decoration.ArmorStand;
+import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
@@ -349,7 +354,7 @@ public abstract class TameableDragonEntity extends TamableAnimal implements
 
     @Override
     public ItemStack getPickResult() {
-        return new ItemStack(this.getDragonType().getInstance(DragonSpawnEggItem.class, DMItems.ENDER_DRAGON_SPAWN_EGG));
+        return new ItemStack(this.getDragonType().getInstance(DragonSpawnEggItem.class, DMItems.ENDER_DRAGON_SPAWN_EGG.get()));
     }
 
     public boolean isRiddenByPlayer() {
@@ -639,4 +644,19 @@ public abstract class TameableDragonEntity extends TamableAnimal implements
 
     @Override
     public void handleStopJump() {}
+
+    @Override
+    public TameableDragonEntity getScreenOpeningData(ServerPlayer player) {
+        return this;
+    }
+
+    @Override
+    public DragonInventoryHandler createMenu(int id, Inventory inventory, Player player) {
+        return new DragonInventoryHandler(id, inventory, this);
+    }
+
+    @Override
+    public void writeClientSideData(AbstractContainerMenu menu, RegistryFriendlyByteBuf buffer) {
+        buffer.writeVarInt(this.getId());
+    }
 }

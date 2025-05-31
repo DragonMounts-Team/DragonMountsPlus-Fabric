@@ -46,9 +46,9 @@ public record ScoreboardInfo(@Nullable String team, @NotNull List<Entry> scores)
 
     public void apply(ScoreboardAccessor accessor, ScoreHolder holder) {
         if (this.team != null) {
-            accessor.dragonmounts$addPlayerToTeam(holder.getScoreboardName(), this.team);
+            accessor.dragonmounts$plus$addPlayerToTeam(holder.getScoreboardName(), this.team);
         }
-        accessor.dragonmounts$loadEntries(holder, this.scores);
+        accessor.dragonmounts$plus$loadEntries(holder, this.scores);
     }
 
     public record Entry(

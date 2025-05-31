@@ -1,9 +1,9 @@
 package net.dragonmounts.plus.common.init;
 
+import com.mojang.blaze3d.platform.InputConstants;
 import net.dragonmounts.plus.config.ClientConfig;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.ToggleKeyMapping;
-import org.lwjgl.glfw.GLFW;
 
 import java.util.function.Consumer;
 
@@ -11,13 +11,13 @@ public class DMKeyMappings {
     public static final String KEY_CATEGORY = "key.categories.dragonmounts.plus";
     public static final ToggleKeyMapping DESCEND = new ToggleKeyMapping(
             "key.dragonmounts.plus.descend",
-            GLFW.GLFW_KEY_Z,
+            InputConstants.KEY_Z,
             KEY_CATEGORY,
             ClientConfig.INSTANCE.toggle_descending::get
     );
     public static final ToggleKeyMapping BREATHE = new ToggleKeyMapping(
             "key.dragonmounts.plus.breathe",
-            GLFW.GLFW_KEY_R,
+            InputConstants.KEY_R,
             KEY_CATEGORY,
             ClientConfig.INSTANCE.toggle_breathing::get
     );

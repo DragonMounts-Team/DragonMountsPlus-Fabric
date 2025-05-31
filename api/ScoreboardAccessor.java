@@ -6,11 +6,11 @@ import net.minecraft.world.scores.ScoreHolder;
 import java.util.List;
 
 public interface ScoreboardAccessor {
-    ScoreboardInfo dragonmounts$getInfo(ScoreHolder holder);
+    ScoreboardInfo dragonmounts$plus$getInfo(ScoreHolder holder);
 
-    void dragonmounts$preventRemoval(ScoreHolder holder);
+    void dragonmounts$plus$preventRemoval(ScoreHolder holder);
 
-    void dragonmounts$addPlayerToTeam(String name, String team);
+    void dragonmounts$plus$addPlayerToTeam(String name, String team);
 
-    void dragonmounts$loadEntries(ScoreHolder holder, List<ScoreboardInfo.Entry> entries);
+    void dragonmounts$plus$loadEntries(ScoreHolder holder, List<ScoreboardInfo.Entry> entries);
 }

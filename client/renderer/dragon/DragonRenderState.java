@@ -43,7 +43,7 @@ public class DragonRenderState extends LivingEntityRenderState implements Dragon
     public final Segment[] tailSegments = ArrayUtil.fillArray(new Segment[TAIL_SEGMENTS], Segment::new);
 
     @Override
-    public @Nullable VariantAppearance dragonmounts$getAppearance() {
+    public @Nullable VariantAppearance dragonmounts$plus$getAppearance() {
         return this.variant.appearance;
     }
 }

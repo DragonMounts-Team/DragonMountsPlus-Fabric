@@ -6,6 +6,8 @@ import net.dragonmounts.plus.common.api.DragonTypified;
 import net.dragonmounts.plus.common.block.entity.DragonHeadBlockEntity;
 import net.dragonmounts.plus.common.init.DMBlockEntities;
 import net.dragonmounts.plus.common.item.DragonHeadItem;
+import net.dragonmounts.plus.compat.registry.DeferredBlock;
+import net.dragonmounts.plus.compat.registry.DeferredItem;
 import net.dragonmounts.plus.compat.registry.DragonType;
 import net.dragonmounts.plus.compat.registry.DragonVariant;
 import net.minecraft.core.BlockPos;
@@ -93,19 +95,19 @@ public abstract class DragonHeadBlock extends BaseEntityBlock implements DragonT
     @Nullable
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
         if (level.isClientSide && state.getBlock() instanceof DragonHeadBlock) {
-            return createTickerHelper(type, DMBlockEntities.DRAGON_HEAD, DragonHeadBlockEntity::animation);
+            return createTickerHelper(type, DMBlockEntities.DRAGON_HEAD.get(), DragonHeadBlockEntity::animation);
         }
         return null;
     }
 
     public record Holder(
-            DragonHeadStandingBlock standing,
-            DragonHeadWallBlock wall,
-            DragonHeadItem item
+            DeferredBlock<DragonHeadStandingBlock> standing,
+            DeferredBlock<DragonHeadWallBlock> wall,
+            DeferredItem<DragonHeadItem> item
     ) implements ItemLike {
         @Override
         public @NotNull Item asItem() {
-            return this.item;
+            return this.item.get();
         }
     }
 }

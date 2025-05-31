@@ -56,7 +56,7 @@ public class StageCommand {
             tag.remove(DragonType.DATA_PARAMETER_KEY);
             egg.load(tag);
             egg.setDragonType(dragon.getDragonType(), false);
-            ((ScoreboardAccessor) level.getScoreboard()).dragonmounts$preventRemoval(dragon);
+            ((ScoreboardAccessor) level.getScoreboard()).dragonmounts$plus$preventRemoval(dragon);
             dragon.discard();
             level.addFreshEntity(egg);
         } else if (target instanceof HatchableDragonEggEntity) {
@@ -86,7 +86,7 @@ public class StageCommand {
             dragon.setLifeStage(stage, true, true);
         } else if (target instanceof HatchableDragonEggEntity egg) {
             var level = source.getLevel();
-            ((ScoreboardAccessor) level.getScoreboard()).dragonmounts$preventRemoval(egg);
+            ((ScoreboardAccessor) level.getScoreboard()).dragonmounts$plus$preventRemoval(egg);
             ServerDragonEntity dragon = HatchableDragonEggEntity.hatch(level, egg, stage);
             egg.discard();
             level.addFreshEntity(dragon);

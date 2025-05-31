@@ -6,13 +6,9 @@ import net.dragonmounts.plus.common.block.DragonScaleBlock;
 import net.dragonmounts.plus.common.block.HatchableDragonEggBlock;
 import net.dragonmounts.plus.common.block.entity.DragonCoreBlockEntity;
 import net.dragonmounts.plus.compat.platform.FlammableBlock;
+import net.dragonmounts.plus.compat.registry.DeferredBlock;
 import net.dragonmounts.plus.compat.registry.DragonType;
-import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.sounds.SoundEvents;
-import net.minecraft.world.item.BlockItem;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.Rarity;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
@@ -22,117 +18,18 @@ import net.minecraft.world.level.material.PushReaction;
 
 import java.util.function.ToIntFunction;
 
-import static net.dragonmounts.plus.common.DragonMountsShared.makeId;
-import static net.dragonmounts.plus.common.init.DMItemGroups.BLOCK_TAB;
 import static net.dragonmounts.plus.common.init.DMItemGroups.DRAGON_EGGS;
-import static net.dragonmounts.plus.compat.registry.RegistryHandler.registerBlock;
-import static net.dragonmounts.plus.compat.registry.RegistryHandler.registerItem;
+import static net.dragonmounts.plus.compat.registry.DeferredBlock.registerBlock;
 
 public class DMBlocks {
     private static final ToIntFunction<BlockState> DRAGON_EGG_LUMINANCE = state -> 1;
-    public static final ImmutableList<HatchableDragonEggBlock> BUILTIN_DRAGON_EGGS;
-    public static final ImmutableList<DragonScaleBlock> BUILTIN_DRAGON_SCALE_BLOCKS;
-    public static final FlammableBlock DRAGON_NEST;
-    public static final DragonCoreBlock DRAGON_CORE;
-    public static final HatchableDragonEggBlock AETHER_DRAGON_EGG;
-    public static final HatchableDragonEggBlock DARK_DRAGON_EGG;
-    public static final HatchableDragonEggBlock ENCHANTED_DRAGON_EGG;
-    public static final HatchableDragonEggBlock ENDER_DRAGON_EGG;
-    public static final HatchableDragonEggBlock FIRE_DRAGON_EGG;
-    public static final HatchableDragonEggBlock FOREST_DRAGON_EGG;
-    public static final HatchableDragonEggBlock ICE_DRAGON_EGG;
-    public static final HatchableDragonEggBlock MOONLIGHT_DRAGON_EGG;
-    public static final HatchableDragonEggBlock NETHER_DRAGON_EGG;
-    public static final HatchableDragonEggBlock SCULK_DRAGON_EGG;
-    public static final HatchableDragonEggBlock SKELETON_DRAGON_EGG;
-    public static final HatchableDragonEggBlock STORM_DRAGON_EGG;
-    public static final HatchableDragonEggBlock SUNLIGHT_DRAGON_EGG;
-    public static final HatchableDragonEggBlock TERRA_DRAGON_EGG;
-    public static final HatchableDragonEggBlock WATER_DRAGON_EGG;
-    public static final HatchableDragonEggBlock WITHER_DRAGON_EGG;
-    public static final HatchableDragonEggBlock ZOMBIE_DRAGON_EGG;
-    public static final DragonScaleBlock AETHER_DRAGON_SCALE_BLOCK;
-    public static final DragonScaleBlock DARK_DRAGON_SCALE_BLOCK;
-    public static final DragonScaleBlock ENCHANTED_DRAGON_SCALE_BLOCK;
-    public static final DragonScaleBlock ENDER_DRAGON_SCALE_BLOCK;
-    public static final DragonScaleBlock FIRE_DRAGON_SCALE_BLOCK;
-    public static final DragonScaleBlock FOREST_DRAGON_SCALE_BLOCK;
-    public static final DragonScaleBlock ICE_DRAGON_SCALE_BLOCK;
-    public static final DragonScaleBlock MOONLIGHT_DRAGON_SCALE_BLOCK;
-    public static final DragonScaleBlock NETHER_DRAGON_SCALE_BLOCK;
-    public static final DragonScaleBlock SCULK_DRAGON_SCALE_BLOCK;
-    public static final DragonScaleBlock STORM_DRAGON_SCALE_BLOCK;
-    public static final DragonScaleBlock SUNLIGHT_DRAGON_SCALE_BLOCK;
-    public static final DragonScaleBlock TERRA_DRAGON_SCALE_BLOCK;
-    public static final DragonScaleBlock WATER_DRAGON_SCALE_BLOCK;
-    public static final DragonScaleBlock ZOMBIE_DRAGON_SCALE_BLOCK;
-
-    static HatchableDragonEggBlock makeDragonEgg(
-            String name,
-            DragonType type,
-            Item.Properties props
-    ) {
-        var identifier = makeId(name);
-        var itemKey = ResourceKey.create(Registries.ITEM, identifier);
-        var blockKey = ResourceKey.create(Registries.BLOCK, identifier);
-        var block = new HatchableDragonEggBlock(type, BlockBehaviour.Properties.of()
-                .setId(blockKey)
-                .mapColor(type.scaleColor)
-                .strength(0.0F, 9.0F)
-                .lightLevel(DRAGON_EGG_LUMINANCE)
-                .noOcclusion()
-        );
-        type.bindInstance(HatchableDragonEggBlock.class, block);
-        registerItem(itemKey, new BlockItem(block, props.setId(itemKey).component(DMDataComponents.DRAGON_TYPE, type).overrideDescription(HatchableDragonEggBlock.TRANSLATION_KEY)));
-        return registerBlock(blockKey, block);
-    }
-
-    static DragonScaleBlock makeDragonScaleBlock(
-            String name,
-            DragonType type,
-            Item.Properties props
-    ) {
-        var identifier = makeId(name);
-        var itemKey = ResourceKey.create(Registries.ITEM, identifier);
-        var blockKey = ResourceKey.create(Registries.BLOCK, identifier);
-        var block = new DragonScaleBlock(type, BlockBehaviour.Properties.of()
-                .setId(blockKey)
-                .mapColor(type.scaleColor)
-                .sound(SoundType.METAL)
-                .strength(4.0F, 20.0F)
-                .lightLevel(DRAGON_EGG_LUMINANCE)
-                .noOcclusion()
-        );
-        type.bindInstance(DragonScaleBlock.class, block);
-        BLOCK_TAB.register(itemKey, new BlockItem(block, props.setId(itemKey).component(DMDataComponents.DRAGON_TYPE, type).overrideDescription(DragonScaleBlock.TRANSLATION_KEY)));
-        return registerBlock(blockKey, block);
-    }
-
-    static {
-        var identifier = makeId("dragon_nest");
-        var itemKey = ResourceKey.create(Registries.ITEM, identifier);
-        var blockKey = ResourceKey.create(Registries.BLOCK, identifier);
-        var block = new FlammableBlock(30, 80, BlockBehaviour.Properties.of()
-                .setId(blockKey)
-                .mapColor(MapColor.PODZOL)
-                .instrument(NoteBlockInstrument.BASS)
-                .strength(1.0F)
-                .sound(SoundType.WOOD)
-                .ignitedByLava()
-        );
-        DRAGON_NEST = registerBlock(blockKey, block);
-        BLOCK_TAB.register(itemKey, new BlockItem(block, new Item.Properties().setId(itemKey).useBlockDescriptionPrefix()));
-    }
-
-    static {
-        BlockBehaviour.StatePredicate predicate = ($, level, pos) -> level.getBlockEntity(pos) instanceof DragonCoreBlockEntity core && core.isClosed();
-        var identifier = makeId("dragon_core");
-        var itemKey = ResourceKey.create(Registries.ITEM, identifier);
-        var blockKey = ResourceKey.create(Registries.BLOCK, identifier);
-        var block = new DragonCoreBlock(BlockBehaviour.Properties.of()
-                .setId(blockKey)
+    public static final ImmutableList<DeferredBlock<HatchableDragonEggBlock>> BUILTIN_DRAGON_EGGS;
+    public static final ImmutableList<DeferredBlock<DragonScaleBlock>> BUILTIN_DRAGON_SCALE_BLOCKS;
+    public static final DeferredBlock<DragonCoreBlock> DRAGON_CORE = registerBlock("dragon_core", props -> {
+        BlockBehaviour.StatePredicate predicate = ($, level, pos) ->
+                level.getBlockEntity(pos) instanceof DragonCoreBlockEntity core && core.isClosed();
+        return new DragonCoreBlock(props.strength(2000, 600)
                 .mapColor(MapColor.COLOR_BLACK)
-                .strength(2000, 600)
                 .instrument(NoteBlockInstrument.BASEDRUM)
                 .sound(new SoundType(
                         1.0F,
@@ -151,49 +48,111 @@ public class DMBlocks {
                 .isViewBlocking(predicate)
                 .pushReaction(PushReaction.BLOCK)
         );
-        registerItem(itemKey, new BlockItem(block, new Item.Properties().setId(itemKey).useBlockDescriptionPrefix().rarity(Rarity.RARE)));
-        DRAGON_CORE = registerBlock(blockKey, block);
+    });
+    public static final DeferredBlock<FlammableBlock> DRAGON_NEST = registerBlock("dragon_nest", props ->
+            new FlammableBlock(30, 80, props.strength(1.0F)
+                    .mapColor(MapColor.PODZOL)
+                    .instrument(NoteBlockInstrument.BASS)
+                    .sound(SoundType.WOOD)
+                    .ignitedByLava())
+    );
+    public static final DeferredBlock<HatchableDragonEggBlock> AETHER_DRAGON_EGG;
+    public static final DeferredBlock<HatchableDragonEggBlock> DARK_DRAGON_EGG;
+    public static final DeferredBlock<HatchableDragonEggBlock> ENCHANTED_DRAGON_EGG;
+    public static final DeferredBlock<HatchableDragonEggBlock> ENDER_DRAGON_EGG;
+    public static final DeferredBlock<HatchableDragonEggBlock> FIRE_DRAGON_EGG;
+    public static final DeferredBlock<HatchableDragonEggBlock> FOREST_DRAGON_EGG;
+    public static final DeferredBlock<HatchableDragonEggBlock> ICE_DRAGON_EGG;
+    public static final DeferredBlock<HatchableDragonEggBlock> MOONLIGHT_DRAGON_EGG;
+    public static final DeferredBlock<HatchableDragonEggBlock> NETHER_DRAGON_EGG;
+    public static final DeferredBlock<HatchableDragonEggBlock> SCULK_DRAGON_EGG;
+    public static final DeferredBlock<HatchableDragonEggBlock> SKELETON_DRAGON_EGG;
+    public static final DeferredBlock<HatchableDragonEggBlock> STORM_DRAGON_EGG;
+    public static final DeferredBlock<HatchableDragonEggBlock> SUNLIGHT_DRAGON_EGG;
+    public static final DeferredBlock<HatchableDragonEggBlock> TERRA_DRAGON_EGG;
+    public static final DeferredBlock<HatchableDragonEggBlock> WATER_DRAGON_EGG;
+    public static final DeferredBlock<HatchableDragonEggBlock> WITHER_DRAGON_EGG;
+    public static final DeferredBlock<HatchableDragonEggBlock> ZOMBIE_DRAGON_EGG;
+    public static final DeferredBlock<DragonScaleBlock> AETHER_DRAGON_SCALE_BLOCK;
+    public static final DeferredBlock<DragonScaleBlock> DARK_DRAGON_SCALE_BLOCK;
+    public static final DeferredBlock<DragonScaleBlock> ENCHANTED_DRAGON_SCALE_BLOCK;
+    public static final DeferredBlock<DragonScaleBlock> ENDER_DRAGON_SCALE_BLOCK;
+    public static final DeferredBlock<DragonScaleBlock> FIRE_DRAGON_SCALE_BLOCK;
+    public static final DeferredBlock<DragonScaleBlock> FOREST_DRAGON_SCALE_BLOCK;
+    public static final DeferredBlock<DragonScaleBlock> ICE_DRAGON_SCALE_BLOCK;
+    public static final DeferredBlock<DragonScaleBlock> MOONLIGHT_DRAGON_SCALE_BLOCK;
+    public static final DeferredBlock<DragonScaleBlock> NETHER_DRAGON_SCALE_BLOCK;
+    public static final DeferredBlock<DragonScaleBlock> SCULK_DRAGON_SCALE_BLOCK;
+    public static final DeferredBlock<DragonScaleBlock> STORM_DRAGON_SCALE_BLOCK;
+    public static final DeferredBlock<DragonScaleBlock> SUNLIGHT_DRAGON_SCALE_BLOCK;
+    public static final DeferredBlock<DragonScaleBlock> TERRA_DRAGON_SCALE_BLOCK;
+    public static final DeferredBlock<DragonScaleBlock> WATER_DRAGON_SCALE_BLOCK;
+    public static final DeferredBlock<DragonScaleBlock> ZOMBIE_DRAGON_SCALE_BLOCK;
+
+    public static BlockBehaviour.Properties configureDragonHead(BlockBehaviour.Properties props) {
+        return props.strength(1.0F).instrument(NoteBlockInstrument.DRAGON).pushReaction(PushReaction.DESTROY);
+    }
+
+    static HatchableDragonEggBlock makeDragonEgg(DragonType type, BlockBehaviour.Properties props) {
+        var block = new HatchableDragonEggBlock(type, props.strength(0.0F, 9.0F)
+                .mapColor(type.scaleColor)
+                .lightLevel(DRAGON_EGG_LUMINANCE)
+                .noOcclusion()
+        );
+        type.bindInstance(HatchableDragonEggBlock.class, block);
+        return block;
+    }
+
+    static DragonScaleBlock makeDragonScaleBlock(DragonType type, BlockBehaviour.Properties props) {
+        var block = new DragonScaleBlock(type, props.strength(4.0F, 20.0F)
+                .mapColor(type.scaleColor)
+                .sound(SoundType.METAL)
+                .lightLevel(DRAGON_EGG_LUMINANCE)
+                .noOcclusion()
+        );
+        type.bindInstance(DragonScaleBlock.class, block);
+        return block;
     }
 
     static {
-        var eggs = ImmutableList.<HatchableDragonEggBlock>builderWithExpectedSize(17);
-        eggs.add(AETHER_DRAGON_EGG = makeDragonEgg("aether_dragon_egg", DragonTypes.AETHER, new Item.Properties().rarity(Rarity.UNCOMMON)));
-        eggs.add(DARK_DRAGON_EGG = makeDragonEgg("dark_dragon_egg", DragonTypes.DARK, new Item.Properties().rarity(Rarity.UNCOMMON)));
-        eggs.add(ENCHANTED_DRAGON_EGG = makeDragonEgg("enchanted_dragon_egg", DragonTypes.ENCHANTED, new Item.Properties().rarity(Rarity.UNCOMMON)));
-        eggs.add(ENDER_DRAGON_EGG = makeDragonEgg("ender_dragon_egg", DragonTypes.ENDER, new Item.Properties().rarity(Rarity.EPIC)));
-        eggs.add(FIRE_DRAGON_EGG = makeDragonEgg("fire_dragon_egg", DragonTypes.FIRE, new Item.Properties().rarity(Rarity.UNCOMMON)));
-        eggs.add(FOREST_DRAGON_EGG = makeDragonEgg("forest_dragon_egg", DragonTypes.FOREST, new Item.Properties().rarity(Rarity.UNCOMMON)));
-        eggs.add(ICE_DRAGON_EGG = makeDragonEgg("ice_dragon_egg", DragonTypes.ICE, new Item.Properties().rarity(Rarity.UNCOMMON)));
-        eggs.add(MOONLIGHT_DRAGON_EGG = makeDragonEgg("moonlight_dragon_egg", DragonTypes.MOONLIGHT, new Item.Properties().rarity(Rarity.UNCOMMON)));
-        eggs.add(NETHER_DRAGON_EGG = makeDragonEgg("nether_dragon_egg", DragonTypes.NETHER, new Item.Properties().rarity(Rarity.UNCOMMON)));
-        eggs.add(SCULK_DRAGON_EGG = makeDragonEgg("sculk_dragon_egg", DragonTypes.SCULK, new Item.Properties().rarity(Rarity.RARE)));
-        eggs.add(SKELETON_DRAGON_EGG = makeDragonEgg("skeleton_dragon_egg", DragonTypes.SKELETON, new Item.Properties().rarity(Rarity.UNCOMMON)));
-        eggs.add(STORM_DRAGON_EGG = makeDragonEgg("storm_dragon_egg", DragonTypes.STORM, new Item.Properties().rarity(Rarity.UNCOMMON)));
-        eggs.add(SUNLIGHT_DRAGON_EGG = makeDragonEgg("sunlight_dragon_egg", DragonTypes.SUNLIGHT, new Item.Properties().rarity(Rarity.UNCOMMON)));
-        eggs.add(TERRA_DRAGON_EGG = makeDragonEgg("terra_dragon_egg", DragonTypes.TERRA, new Item.Properties().rarity(Rarity.UNCOMMON)));
-        eggs.add(WATER_DRAGON_EGG = makeDragonEgg("water_dragon_egg", DragonTypes.WATER, new Item.Properties().rarity(Rarity.UNCOMMON)));
-        eggs.add(WITHER_DRAGON_EGG = makeDragonEgg("wither_dragon_egg", DragonTypes.WITHER, new Item.Properties().rarity(Rarity.UNCOMMON)));
-        eggs.add(ZOMBIE_DRAGON_EGG = makeDragonEgg("zombie_dragon_egg", DragonTypes.ZOMBIE, new Item.Properties().rarity(Rarity.UNCOMMON)));
+        var eggs = ImmutableList.<DeferredBlock<HatchableDragonEggBlock>>builderWithExpectedSize(17);
+        eggs.add(AETHER_DRAGON_EGG = registerBlock("aether_dragon_egg", props -> makeDragonEgg(DragonTypes.AETHER, props)));
+        eggs.add(DARK_DRAGON_EGG = registerBlock("dark_dragon_egg", props -> makeDragonEgg(DragonTypes.DARK, props)));
+        eggs.add(ENCHANTED_DRAGON_EGG = registerBlock("enchanted_dragon_egg", props -> makeDragonEgg(DragonTypes.ENCHANTED, props)));
+        eggs.add(ENDER_DRAGON_EGG = registerBlock("ender_dragon_egg", props -> makeDragonEgg(DragonTypes.ENDER, props)));
+        eggs.add(FIRE_DRAGON_EGG = registerBlock("fire_dragon_egg", props -> makeDragonEgg(DragonTypes.FIRE, props)));
+        eggs.add(FOREST_DRAGON_EGG = registerBlock("forest_dragon_egg", props -> makeDragonEgg(DragonTypes.FOREST, props)));
+        eggs.add(ICE_DRAGON_EGG = registerBlock("ice_dragon_egg", props -> makeDragonEgg(DragonTypes.ICE, props)));
+        eggs.add(MOONLIGHT_DRAGON_EGG = registerBlock("moonlight_dragon_egg", props -> makeDragonEgg(DragonTypes.MOONLIGHT, props)));
+        eggs.add(NETHER_DRAGON_EGG = registerBlock("nether_dragon_egg", props -> makeDragonEgg(DragonTypes.NETHER, props)));
+        eggs.add(SCULK_DRAGON_EGG = registerBlock("sculk_dragon_egg", props -> makeDragonEgg(DragonTypes.SCULK, props)));
+        eggs.add(SKELETON_DRAGON_EGG = registerBlock("skeleton_dragon_egg", props -> makeDragonEgg(DragonTypes.SKELETON, props)));
+        eggs.add(STORM_DRAGON_EGG = registerBlock("storm_dragon_egg", props -> makeDragonEgg(DragonTypes.STORM, props)));
+        eggs.add(SUNLIGHT_DRAGON_EGG = registerBlock("sunlight_dragon_egg", props -> makeDragonEgg(DragonTypes.SUNLIGHT, props)));
+        eggs.add(TERRA_DRAGON_EGG = registerBlock("terra_dragon_egg", props -> makeDragonEgg(DragonTypes.TERRA, props)));
+        eggs.add(WATER_DRAGON_EGG = registerBlock("water_dragon_egg", props -> makeDragonEgg(DragonTypes.WATER, props)));
+        eggs.add(WITHER_DRAGON_EGG = registerBlock("wither_dragon_egg", props -> makeDragonEgg(DragonTypes.WITHER, props)));
+        eggs.add(ZOMBIE_DRAGON_EGG = registerBlock("zombie_dragon_egg", props -> makeDragonEgg(DragonTypes.ZOMBIE, props)));
         DRAGON_EGGS.addAll(BUILTIN_DRAGON_EGGS = eggs.build());
     }
 
     static {
-        var blocks = ImmutableList.<DragonScaleBlock>builderWithExpectedSize(15);
-        blocks.add(AETHER_DRAGON_SCALE_BLOCK = makeDragonScaleBlock("aether_dragon_scale_block", DragonTypes.AETHER, new Item.Properties()));
-        blocks.add(DARK_DRAGON_SCALE_BLOCK = makeDragonScaleBlock("dark_dragon_scale_block", DragonTypes.DARK, new Item.Properties()));
-        blocks.add(ENCHANTED_DRAGON_SCALE_BLOCK = makeDragonScaleBlock("enchanted_dragon_scale_block", DragonTypes.ENCHANTED, new Item.Properties()));
-        blocks.add(ENDER_DRAGON_SCALE_BLOCK = makeDragonScaleBlock("ender_dragon_scale_block", DragonTypes.ENDER, new Item.Properties()));
-        blocks.add(FIRE_DRAGON_SCALE_BLOCK = makeDragonScaleBlock("fire_dragon_scale_block", DragonTypes.FIRE, new Item.Properties()));
-        blocks.add(FOREST_DRAGON_SCALE_BLOCK = makeDragonScaleBlock("forest_dragon_scale_block", DragonTypes.FOREST, new Item.Properties()));
-        blocks.add(ICE_DRAGON_SCALE_BLOCK = makeDragonScaleBlock("ice_dragon_scale_block", DragonTypes.ICE, new Item.Properties()));
-        blocks.add(MOONLIGHT_DRAGON_SCALE_BLOCK = makeDragonScaleBlock("moonlight_dragon_scale_block", DragonTypes.MOONLIGHT, new Item.Properties()));
-        blocks.add(NETHER_DRAGON_SCALE_BLOCK = makeDragonScaleBlock("nether_dragon_scale_block", DragonTypes.NETHER, new Item.Properties()));
-        blocks.add(SCULK_DRAGON_SCALE_BLOCK = makeDragonScaleBlock("sculk_dragon_scale_block", DragonTypes.SCULK, new Item.Properties()));
-        blocks.add(STORM_DRAGON_SCALE_BLOCK = makeDragonScaleBlock("storm_dragon_scale_block", DragonTypes.STORM, new Item.Properties()));
-        blocks.add(SUNLIGHT_DRAGON_SCALE_BLOCK = makeDragonScaleBlock("sunlight_dragon_scale_block", DragonTypes.SUNLIGHT, new Item.Properties()));
-        blocks.add(TERRA_DRAGON_SCALE_BLOCK = makeDragonScaleBlock("terra_dragon_scale_block", DragonTypes.TERRA, new Item.Properties()));
-        blocks.add(WATER_DRAGON_SCALE_BLOCK = makeDragonScaleBlock("water_dragon_scale_block", DragonTypes.WATER, new Item.Properties()));
-        blocks.add(ZOMBIE_DRAGON_SCALE_BLOCK = makeDragonScaleBlock("zombie_dragon_scale_block", DragonTypes.ZOMBIE, new Item.Properties()));
+        var blocks = ImmutableList.<DeferredBlock<DragonScaleBlock>>builderWithExpectedSize(15);
+        blocks.add(AETHER_DRAGON_SCALE_BLOCK = registerBlock("aether_dragon_scale_block", props -> makeDragonScaleBlock(DragonTypes.AETHER, props)));
+        blocks.add(DARK_DRAGON_SCALE_BLOCK = registerBlock("dark_dragon_scale_block", props -> makeDragonScaleBlock(DragonTypes.DARK, props)));
+        blocks.add(ENCHANTED_DRAGON_SCALE_BLOCK = registerBlock("enchanted_dragon_scale_block", props -> makeDragonScaleBlock(DragonTypes.ENCHANTED, props)));
+        blocks.add(ENDER_DRAGON_SCALE_BLOCK = registerBlock("ender_dragon_scale_block", props -> makeDragonScaleBlock(DragonTypes.ENDER, props)));
+        blocks.add(FIRE_DRAGON_SCALE_BLOCK = registerBlock("fire_dragon_scale_block", props -> makeDragonScaleBlock(DragonTypes.FIRE, props)));
+        blocks.add(FOREST_DRAGON_SCALE_BLOCK = registerBlock("forest_dragon_scale_block", props -> makeDragonScaleBlock(DragonTypes.FOREST, props)));
+        blocks.add(ICE_DRAGON_SCALE_BLOCK = registerBlock("ice_dragon_scale_block", props -> makeDragonScaleBlock(DragonTypes.ICE, props)));
+        blocks.add(MOONLIGHT_DRAGON_SCALE_BLOCK = registerBlock("moonlight_dragon_scale_block", props -> makeDragonScaleBlock(DragonTypes.MOONLIGHT, props)));
+        blocks.add(NETHER_DRAGON_SCALE_BLOCK = registerBlock("nether_dragon_scale_block", props -> makeDragonScaleBlock(DragonTypes.NETHER, props)));
+        blocks.add(SCULK_DRAGON_SCALE_BLOCK = registerBlock("sculk_dragon_scale_block", props -> makeDragonScaleBlock(DragonTypes.SCULK, props)));
+        blocks.add(STORM_DRAGON_SCALE_BLOCK = registerBlock("storm_dragon_scale_block", props -> makeDragonScaleBlock(DragonTypes.STORM, props)));
+        blocks.add(SUNLIGHT_DRAGON_SCALE_BLOCK = registerBlock("sunlight_dragon_scale_block", props -> makeDragonScaleBlock(DragonTypes.SUNLIGHT, props)));
+        blocks.add(TERRA_DRAGON_SCALE_BLOCK = registerBlock("terra_dragon_scale_block", props -> makeDragonScaleBlock(DragonTypes.TERRA, props)));
+        blocks.add(WATER_DRAGON_SCALE_BLOCK = registerBlock("water_dragon_scale_block", props -> makeDragonScaleBlock(DragonTypes.WATER, props)));
+        blocks.add(ZOMBIE_DRAGON_SCALE_BLOCK = registerBlock("zombie_dragon_scale_block", props -> makeDragonScaleBlock(DragonTypes.ZOMBIE, props)));
         BUILTIN_DRAGON_SCALE_BLOCKS = blocks.build();
     }
 

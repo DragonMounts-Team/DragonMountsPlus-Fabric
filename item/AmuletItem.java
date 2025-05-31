@@ -82,7 +82,7 @@ public class AmuletItem<T extends Entity> extends Item implements EntityContaine
         if (type.canSerialize()) {
             var stack = new ItemStack(this);
             stack.set(DataComponents.ENTITY_DATA, EntityContainer.simplifyData(saveWithId(entity, new CompoundTag())));
-            stack.set(DMDataComponents.SCORES, ((ScoreboardAccessor) entity.level().getScoreboard()).dragonmounts$getInfo(entity));
+            stack.set(DMDataComponents.SCORES, ((ScoreboardAccessor) entity.level().getScoreboard()).dragonmounts$plus$getInfo(entity));
             stack.applyComponents(patch);
             return stack;
         }

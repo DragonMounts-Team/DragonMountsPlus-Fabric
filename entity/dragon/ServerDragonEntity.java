@@ -9,7 +9,6 @@ import net.dragonmounts.plus.common.entity.ai.navigation.DragonPathNavigation;
 import net.dragonmounts.plus.common.entity.breath.impl.ServerBreathHelper;
 import net.dragonmounts.plus.common.init.*;
 import net.dragonmounts.plus.common.inventory.DragonInventory;
-import net.dragonmounts.plus.common.inventory.DragonInventoryHandler;
 import net.dragonmounts.plus.common.item.DragonEssenceItem;
 import net.dragonmounts.plus.common.network.s2c.FeedDragonPayload;
 import net.dragonmounts.plus.common.network.s2c.SyncDragonAgePayload;
@@ -39,7 +38,6 @@ import net.minecraft.world.entity.ai.attributes.AttributeMap;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.navigation.PathNavigation;
 import net.minecraft.world.entity.item.ItemEntity;
-import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.GameRules;
@@ -65,7 +63,7 @@ public class ServerDragonEntity extends TameableDragonEntity {
     }
 
     public ServerDragonEntity(ServerLevel level, BiConsumer<ServerLevel, ServerDragonEntity> init) {
-        super(DMEntities.TAMEABLE_DRAGON, level);
+        super(DMEntities.TAMEABLE_DRAGON.get(), level);
         this.resetAttributes(level);
         init.accept(level, this);
         if (this.stage != null) return;
@@ -318,7 +316,7 @@ public class ServerDragonEntity extends TameableDragonEntity {
     public void die(DamageSource source) {
         super.die(source);
         if (this.isTame()) {
-            this.spawnEssence(this.getDragonType().getInstance(DragonEssenceItem.class, DMItems.ENDER_DRAGON_ESSENCE)
+            this.spawnEssence(this.getDragonType().getInstance(DragonEssenceItem.class, DMItems.ENDER_DRAGON_ESSENCE.get())
                     .saveEntity(this, DataComponentPatch.EMPTY)
             );
         }
@@ -396,16 +394,6 @@ public class ServerDragonEntity extends TameableDragonEntity {
     @Override
     public void openCustomInventoryScreen(Player player) {
         player.openMenu(this);
-    }
-
-    @Override
-    public TameableDragonEntity getScreenOpeningData(ServerPlayer player) {
-        return this;
-    }
-
-    @Override
-    public DragonInventoryHandler createMenu(int id, Inventory inventory, Player player) {
-        return new DragonInventoryHandler(id, inventory, this);
     }
 
     /// Never called from server side

@@ -51,7 +51,7 @@ public class SaveCommand {
                 return 1;
             }
         }
-        var stack = DMItems.AMULET.saveEntity(target, DataComponentPatch.EMPTY);
+        var stack = DMItems.AMULET.get().saveEntity(target, DataComponentPatch.EMPTY);
         if (stack.isEmpty()) {
             source.sendFailure(Component.translatable("commands.dragonmounts.plus.save.cannot_serialize", target.getDisplayName()));
             return 0;
@@ -140,6 +140,6 @@ public class SaveCommand {
                 item.setTarget(player.getUUID());
             }
         }
-        source.sendSuccess(() -> Component.translatable("commands.give.plus.success.single", count, name, player.getDisplayName()), true);
+        source.sendSuccess(() -> Component.translatable("commands.give.success.single", count, name, player.getDisplayName()), true);
     }
 }

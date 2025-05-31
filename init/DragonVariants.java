@@ -10,19 +10,13 @@ import net.dragonmounts.plus.common.item.DragonHeadItem;
 import net.dragonmounts.plus.compat.platform.PlatformCompat;
 import net.dragonmounts.plus.compat.registry.DragonType;
 import net.dragonmounts.plus.compat.registry.DragonVariant;
-import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.ResourceKey;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Rarity;
-import net.minecraft.world.level.block.state.BlockBehaviour;
-import net.minecraft.world.level.block.state.properties.NoteBlockInstrument;
-import net.minecraft.world.level.material.PushReaction;
 
 import java.util.function.Function;
 
 import static net.dragonmounts.plus.common.DragonMountsShared.makeId;
-import static net.dragonmounts.plus.common.DragonMountsShared.makeKey;
-import static net.dragonmounts.plus.compat.registry.RegistryHandler.registerBlock;
+import static net.dragonmounts.plus.common.init.DMBlocks.configureDragonHead;
+import static net.dragonmounts.plus.compat.registry.DeferredBlock.registerBlock;
 
 public class DragonVariants {
     public static final ImmutableList<DragonVariant> BUILTIN_VALUES;
@@ -67,33 +61,24 @@ public class DragonVariants {
     static DragonVariant make(Function<String, VariantAppearance> supplier, DragonType type, String name) {
         return new DragonVariant(type, makeId(name), supplier.apply(name), variant -> {
             var full = name + "_dragon_head_wall";
-            var base = makeId(full.substring(0, full.length() - 5));
-            var itemKey = ResourceKey.create(Registries.ITEM, base);
-            var wallKey = makeKey(Registries.BLOCK, full);
-            var standingKey = ResourceKey.create(Registries.BLOCK, base);
-            DragonHeadStandingBlock standing;
-            DragonHeadWallBlock wall;
+            var base = full.substring(0, full.length() - 5);
             return new DragonHeadBlock.Holder(
-                    registerBlock(standingKey, standing = new DragonHeadStandingBlock(
+                    registerBlock(base, props -> new DragonHeadStandingBlock(
                             variant,
-                            BlockBehaviour.Properties.of()
-                                    .setId(standingKey)
-                                    .strength(1.0F)
-                                    .instrument(NoteBlockInstrument.DRAGON)
-                                    .pushReaction(PushReaction.DESTROY)
+                            configureDragonHead(props)
                     )),
-                    registerBlock(wallKey, wall = new DragonHeadWallBlock(
+                    registerBlock(full, props -> {
+                        var standing = variant.head.standing().get();
+                        return new DragonHeadWallBlock(
+                                variant,
+                                configureDragonHead(props).overrideLootTable(standing.getLootTable()).overrideDescription(standing.getDescriptionId())
+                        );
+                    }),
+                    DMItemGroups.DRAGON_HEADS.register(base, props -> new DragonHeadItem(
                             variant,
-                            BlockBehaviour.Properties.ofFullCopy(standing).setId(wallKey)
-                    )),
-                    DMItemGroups.DRAGON_HEADS.register(itemKey, new DragonHeadItem(
-                            variant,
-                            standing,
-                            wall,
-                            new Item.Properties()
-                                    .setId(itemKey)
-                                    .rarity(Rarity.UNCOMMON)
-                                    .overrideDescription(DragonHeadBlock.TRANSLATION_KEY)
+                            variant.head.wall().get(),
+                            variant.head.standing().get(),
+                            props.rarity(Rarity.UNCOMMON).overrideDescription(DragonHeadBlock.TRANSLATION_KEY)
                     ))
             );
         });
@@ -143,6 +128,4 @@ public class DragonVariants {
         variants.add(ZOMBIE = make(supplier, DragonTypes.ZOMBIE, "zombie"));
         BUILTIN_VALUES = variants.build();
     }
-
-    public static void init() {}
 }
