@@ -8,10 +8,10 @@ import net.minecraft.resources.ResourceLocation;
 import static net.minecraft.resources.ResourceKey.createRegistryKey;
 
 public class DragonMountsShared {
-    public static final String MOD_ID = "dragonmounts.plus";
-    public static final String BLOCK_TRANSLATION_KEY_PREFIX = "block." + MOD_ID + '.';
-    public static final String ITEM_TRANSLATION_KEY_PREFIX = "item." + MOD_ID + '.';
-    private static final ResourceLocation ROOT = ResourceLocation.fromNamespaceAndPath(MOD_ID, "root");
+    public static final String NAMESPACE = "dragonmounts.plus";
+    public static final String BLOCK_TRANSLATION_KEY_PREFIX = "block." + NAMESPACE + '.';
+    public static final String ITEM_TRANSLATION_KEY_PREFIX = "item." + NAMESPACE + '.';
+    private static final ResourceLocation ROOT = ResourceLocation.fromNamespaceAndPath(NAMESPACE, "root");
     public static final ResourceKey<Registry<ArmorEffect>> ARMOR_EFFECT = createRegistryKey(makeId("armor_effect"));
     public static final ResourceKey<Registry<ArmorEffectSourceType<?>>> ARMOR_EFFECT_SOURCE = createRegistryKey(makeId("armor_effect_source"));
     public static final ResourceKey<Registry<DragonType>> DRAGON_TYPE = createRegistryKey(makeId("dragon_type"));

@@ -285,9 +285,9 @@ public abstract class TameableDragonEntity extends TamableAnimal implements
         }
     }
 
-    @Nullable
+    @Deprecated
     @Override
-    public TameableDragonEntity getBreedOffspring(ServerLevel level, AgeableMob parent) {
+    public @Nullable TameableDragonEntity getBreedOffspring(ServerLevel level, AgeableMob parent) {
         return null;
     }
 

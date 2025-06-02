@@ -4,10 +4,10 @@ import net.dragonmounts.plus.common.block.DragonCoreBlock;
 import net.dragonmounts.plus.common.block.DragonScaleBlock;
 import net.dragonmounts.plus.common.block.HatchableDragonEggBlock;
 import net.dragonmounts.plus.common.item.*;
-import net.dragonmounts.plus.common.util.DragonScaleArmorSuit;
 import net.dragonmounts.plus.compat.platform.FlammableBlock;
 import net.dragonmounts.plus.compat.registry.DeferredBlockItem;
 import net.dragonmounts.plus.compat.registry.DeferredItem;
+import net.dragonmounts.plus.compat.registry.DragonScaleArmorSuit;
 import net.dragonmounts.plus.compat.registry.DragonType;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.BlockItem;
@@ -20,6 +20,7 @@ import net.minecraft.world.level.block.DispenserBlock;
 
 import static net.dragonmounts.plus.common.init.DMItemGroups.*;
 import static net.dragonmounts.plus.compat.registry.DeferredItem.registerItem;
+import static net.dragonmounts.plus.compat.registry.DragonScaleArmorSuit.makeSuit;
 
 public class DMItems {
     public static final DeferredBlockItem<DragonCoreBlock, ?> DRAGON_CORE = DeferredBlockItem.registerItem(
@@ -258,125 +259,155 @@ public class DMItems {
     public static final DeferredItem<DragonScalePickaxeItem> DARK_DRAGON_SCALE_PICKAXE = TOOL_TAB.register("dark_dragon_scale_pickaxe", props -> makeDragonScalePickaxe(DragonTypes.DARK, props));
     public static final DeferredItem<DragonScaleHoeItem> DARK_DRAGON_SCALE_HOE = TOOL_TAB.register("dark_dragon_scale_hoe", props -> makeDragonScaleHoe(DragonTypes.DARK, props));
     //Dragon Scale Armors
-    public static final DragonScaleArmorSuit AETHER_DRAGON_SCALE_ARMORS = new DragonScaleArmorSuit(
+    public static final DragonScaleArmorSuit AETHER_DRAGON_SCALE_ARMORS = makeSuit(
             DragonTypes.AETHER,
             DMArmorEffects.AETHER,
-            TOOL_TAB.register("aether_dragon_scale_helmet", props -> makeDragonScaleHelmet(DMItems.AETHER_DRAGON_SCALE_ARMORS, props)),
-            TOOL_TAB.register("aether_dragon_scale_chestplate", props -> makeDragonScaleChestplate(DMItems.AETHER_DRAGON_SCALE_ARMORS, props)),
-            TOOL_TAB.register("aether_dragon_scale_leggings", props -> makeDragonScaleLeggings(DMItems.AETHER_DRAGON_SCALE_ARMORS, props)),
-            TOOL_TAB.register("aether_dragon_scale_boots", props -> makeDragonScaleBoots(DMItems.AETHER_DRAGON_SCALE_ARMORS, props))
+            TOOL_TAB,
+            "aether_dragon_scale_helmet",
+            "aether_dragon_scale_chestplate",
+            "aether_dragon_scale_leggings",
+            "aether_dragon_scale_boots",
+            DMItems::makeDragonScaleArmor
     );
-    public static final DragonScaleArmorSuit WATER_DRAGON_SCALE_ARMORS = new DragonScaleArmorSuit(
+    public static final DragonScaleArmorSuit WATER_DRAGON_SCALE_ARMORS = makeSuit(
             DragonTypes.WATER,
             DMArmorEffects.WATER,
-            TOOL_TAB.register("water_dragon_scale_helmet", props -> makeDragonScaleHelmet(DMItems.WATER_DRAGON_SCALE_ARMORS, props)),
-            TOOL_TAB.register("water_dragon_scale_chestplate", props -> makeDragonScaleChestplate(DMItems.WATER_DRAGON_SCALE_ARMORS, props)),
-            TOOL_TAB.register("water_dragon_scale_leggings", props -> makeDragonScaleLeggings(DMItems.WATER_DRAGON_SCALE_ARMORS, props)),
-            TOOL_TAB.register("water_dragon_scale_boots", props -> makeDragonScaleBoots(DMItems.WATER_DRAGON_SCALE_ARMORS, props))
+            TOOL_TAB,
+            "water_dragon_scale_helmet",
+            "water_dragon_scale_chestplate",
+            "water_dragon_scale_leggings",
+            "water_dragon_scale_boots",
+            DMItems::makeDragonScaleArmor
     );
-    public static final DragonScaleArmorSuit ICE_DRAGON_SCALE_ARMORS = new DragonScaleArmorSuit(
+    public static final DragonScaleArmorSuit ICE_DRAGON_SCALE_ARMORS = makeSuit(
             DragonTypes.ICE,
             DMArmorEffects.ICE,
-            TOOL_TAB.register("ice_dragon_scale_helmet", props -> makeDragonScaleHelmet(DMItems.ICE_DRAGON_SCALE_ARMORS, props)),
-            TOOL_TAB.register("ice_dragon_scale_chestplate", props -> makeDragonScaleChestplate(DMItems.ICE_DRAGON_SCALE_ARMORS, props)),
-            TOOL_TAB.register("ice_dragon_scale_leggings", props -> makeDragonScaleLeggings(DMItems.ICE_DRAGON_SCALE_ARMORS, props)),
-            TOOL_TAB.register("ice_dragon_scale_boots", props -> makeDragonScaleBoots(DMItems.ICE_DRAGON_SCALE_ARMORS, props))
+            TOOL_TAB,
+            "ice_dragon_scale_helmet",
+            "ice_dragon_scale_chestplate",
+            "ice_dragon_scale_leggings",
+            "ice_dragon_scale_boots",
+            DMItems::makeDragonScaleArmor
     );
-    public static final DragonScaleArmorSuit FIRE_DRAGON_SCALE_ARMORS = new DragonScaleArmorSuit(
+    public static final DragonScaleArmorSuit FIRE_DRAGON_SCALE_ARMORS = makeSuit(
             DragonTypes.FIRE,
             DMArmorEffects.FIRE,
-            TOOL_TAB.register("fire_dragon_scale_helmet", props -> makeDragonScaleHelmet(DMItems.FIRE_DRAGON_SCALE_ARMORS, props)),
-            TOOL_TAB.register("fire_dragon_scale_chestplate", props -> makeDragonScaleChestplate(DMItems.FIRE_DRAGON_SCALE_ARMORS, props)),
-            TOOL_TAB.register("fire_dragon_scale_leggings", props -> makeDragonScaleLeggings(DMItems.FIRE_DRAGON_SCALE_ARMORS, props)),
-            TOOL_TAB.register("fire_dragon_scale_boots", props -> makeDragonScaleBoots(DMItems.FIRE_DRAGON_SCALE_ARMORS, props))
+            TOOL_TAB,
+            "fire_dragon_scale_helmet",
+            "fire_dragon_scale_chestplate",
+            "fire_dragon_scale_leggings",
+            "fire_dragon_scale_boots",
+            DMItems::makeDragonScaleArmor
     );
-    public static final DragonScaleArmorSuit FOREST_DRAGON_SCALE_ARMORS = new DragonScaleArmorSuit(
+    public static final DragonScaleArmorSuit FOREST_DRAGON_SCALE_ARMORS = makeSuit(
             DragonTypes.FOREST,
             DMArmorEffects.FOREST,
-            TOOL_TAB.register("forest_dragon_scale_helmet", props -> makeDragonScaleHelmet(DMItems.FOREST_DRAGON_SCALE_ARMORS, props)),
-            TOOL_TAB.register("forest_dragon_scale_chestplate", props -> makeDragonScaleChestplate(DMItems.FOREST_DRAGON_SCALE_ARMORS, props)),
-            TOOL_TAB.register("forest_dragon_scale_leggings", props -> makeDragonScaleLeggings(DMItems.FOREST_DRAGON_SCALE_ARMORS, props)),
-            TOOL_TAB.register("forest_dragon_scale_boots", props -> makeDragonScaleBoots(DMItems.FOREST_DRAGON_SCALE_ARMORS, props))
+            TOOL_TAB,
+            "forest_dragon_scale_helmet",
+            "forest_dragon_scale_chestplate",
+            "forest_dragon_scale_leggings",
+            "forest_dragon_scale_boots",
+            DMItems::makeDragonScaleArmor
     );
-    public static final DragonScaleArmorSuit NETHER_DRAGON_SCALE_ARMORS = new DragonScaleArmorSuit(
+    public static final DragonScaleArmorSuit NETHER_DRAGON_SCALE_ARMORS = makeSuit(
             DragonTypes.NETHER,
             DMArmorEffects.NETHER,
-            TOOL_TAB.register("nether_dragon_scale_helmet", props -> makeDragonScaleHelmet(DMItems.NETHER_DRAGON_SCALE_ARMORS, props)),
-            TOOL_TAB.register("nether_dragon_scale_chestplate", props -> makeDragonScaleChestplate(DMItems.NETHER_DRAGON_SCALE_ARMORS, props)),
-            TOOL_TAB.register("nether_dragon_scale_leggings", props -> makeDragonScaleLeggings(DMItems.NETHER_DRAGON_SCALE_ARMORS, props)),
-            TOOL_TAB.register("nether_dragon_scale_boots", props -> makeDragonScaleBoots(DMItems.NETHER_DRAGON_SCALE_ARMORS, props))
+            TOOL_TAB,
+            "nether_dragon_scale_helmet",
+            "nether_dragon_scale_chestplate",
+            "nether_dragon_scale_leggings",
+            "nether_dragon_scale_boots",
+            DMItems::makeDragonScaleArmor
     );
-    public static final DragonScaleArmorSuit ENDER_DRAGON_SCALE_ARMORS = new DragonScaleArmorSuit(
+    public static final DragonScaleArmorSuit ENDER_DRAGON_SCALE_ARMORS = makeSuit(
             DragonTypes.ENDER,
             DMArmorEffects.ENDER,
-            TOOL_TAB.register("ender_dragon_scale_helmet", props -> makeDragonScaleHelmet(DMItems.ENDER_DRAGON_SCALE_ARMORS, props)),
-            TOOL_TAB.register("ender_dragon_scale_chestplate", props -> makeDragonScaleChestplate(DMItems.ENDER_DRAGON_SCALE_ARMORS, props)),
-            TOOL_TAB.register("ender_dragon_scale_leggings", props -> makeDragonScaleLeggings(DMItems.ENDER_DRAGON_SCALE_ARMORS, props)),
-            TOOL_TAB.register("ender_dragon_scale_boots", props -> makeDragonScaleBoots(DMItems.ENDER_DRAGON_SCALE_ARMORS, props))
+            TOOL_TAB,
+            "ender_dragon_scale_helmet",
+            "ender_dragon_scale_chestplate",
+            "ender_dragon_scale_leggings",
+            "ender_dragon_scale_boots",
+            DMItems::makeDragonScaleArmor
     );
-    public static final DragonScaleArmorSuit ENCHANTED_DRAGON_SCALE_ARMORS = new DragonScaleArmorSuit(
+    public static final DragonScaleArmorSuit ENCHANTED_DRAGON_SCALE_ARMORS = makeSuit(
             DragonTypes.ENCHANTED,
             DMArmorEffects.ENCHANTED,
-            TOOL_TAB.register("enchanted_dragon_scale_helmet", props -> makeDragonScaleHelmet(DMItems.ENCHANTED_DRAGON_SCALE_ARMORS, props)),
-            TOOL_TAB.register("enchanted_dragon_scale_chestplate", props -> makeDragonScaleChestplate(DMItems.ENCHANTED_DRAGON_SCALE_ARMORS, props)),
-            TOOL_TAB.register("enchanted_dragon_scale_leggings", props -> makeDragonScaleLeggings(DMItems.ENCHANTED_DRAGON_SCALE_ARMORS, props)),
-            TOOL_TAB.register("enchanted_dragon_scale_boots", props -> makeDragonScaleBoots(DMItems.ENCHANTED_DRAGON_SCALE_ARMORS, props))
+            TOOL_TAB,
+            "enchanted_dragon_scale_helmet",
+            "enchanted_dragon_scale_chestplate",
+            "enchanted_dragon_scale_leggings",
+            "enchanted_dragon_scale_boots",
+            DMItems::makeDragonScaleArmor
     );
-    public static final DragonScaleArmorSuit SUNLIGHT_DRAGON_SCALE_ARMORS = new DragonScaleArmorSuit(
+    public static final DragonScaleArmorSuit SUNLIGHT_DRAGON_SCALE_ARMORS = makeSuit(
             DragonTypes.SUNLIGHT,
             DMArmorEffects.SUNLIGHT,
-            TOOL_TAB.register("sunlight_dragon_scale_helmet", props -> makeDragonScaleHelmet(DMItems.SUNLIGHT_DRAGON_SCALE_ARMORS, props)),
-            TOOL_TAB.register("sunlight_dragon_scale_chestplate", props -> makeDragonScaleChestplate(DMItems.SUNLIGHT_DRAGON_SCALE_ARMORS, props)),
-            TOOL_TAB.register("sunlight_dragon_scale_leggings", props -> makeDragonScaleLeggings(DMItems.SUNLIGHT_DRAGON_SCALE_ARMORS, props)),
-            TOOL_TAB.register("sunlight_dragon_scale_boots", props -> makeDragonScaleBoots(DMItems.SUNLIGHT_DRAGON_SCALE_ARMORS, props))
+            TOOL_TAB,
+            "sunlight_dragon_scale_helmet",
+            "sunlight_dragon_scale_chestplate",
+            "sunlight_dragon_scale_leggings",
+            "sunlight_dragon_scale_boots",
+            DMItems::makeDragonScaleArmor
     );
-    public static final DragonScaleArmorSuit MOONLIGHT_DRAGON_SCALE_ARMORS = new DragonScaleArmorSuit(
+    public static final DragonScaleArmorSuit MOONLIGHT_DRAGON_SCALE_ARMORS = makeSuit(
             DragonTypes.MOONLIGHT,
             DMArmorEffects.MOONLIGHT,
-            TOOL_TAB.register("moonlight_dragon_scale_helmet", props -> makeDragonScaleHelmet(DMItems.MOONLIGHT_DRAGON_SCALE_ARMORS, props)),
-            TOOL_TAB.register("moonlight_dragon_scale_chestplate", props -> makeDragonScaleChestplate(DMItems.MOONLIGHT_DRAGON_SCALE_ARMORS, props)),
-            TOOL_TAB.register("moonlight_dragon_scale_leggings", props -> makeDragonScaleLeggings(DMItems.MOONLIGHT_DRAGON_SCALE_ARMORS, props)),
-            TOOL_TAB.register("moonlight_dragon_scale_boots", props -> makeDragonScaleBoots(DMItems.MOONLIGHT_DRAGON_SCALE_ARMORS, props))
+            TOOL_TAB,
+            "moonlight_dragon_scale_helmet",
+            "moonlight_dragon_scale_chestplate",
+            "moonlight_dragon_scale_leggings",
+            "moonlight_dragon_scale_boots",
+            DMItems::makeDragonScaleArmor
     );
-    public static final DragonScaleArmorSuit STORM_DRAGON_SCALE_ARMORS = new DragonScaleArmorSuit(
+    public static final DragonScaleArmorSuit STORM_DRAGON_SCALE_ARMORS = makeSuit(
             DragonTypes.STORM,
             DMArmorEffects.STORM,
-            TOOL_TAB.register("storm_dragon_scale_helmet", props -> makeDragonScaleHelmet(DMItems.STORM_DRAGON_SCALE_ARMORS, props)),
-            TOOL_TAB.register("storm_dragon_scale_chestplate", props -> makeDragonScaleChestplate(DMItems.STORM_DRAGON_SCALE_ARMORS, props)),
-            TOOL_TAB.register("storm_dragon_scale_leggings", props -> makeDragonScaleLeggings(DMItems.STORM_DRAGON_SCALE_ARMORS, props)),
-            TOOL_TAB.register("storm_dragon_scale_boots", props -> makeDragonScaleBoots(DMItems.STORM_DRAGON_SCALE_ARMORS, props))
+            TOOL_TAB,
+            "storm_dragon_scale_helmet",
+            "storm_dragon_scale_chestplate",
+            "storm_dragon_scale_leggings",
+            "storm_dragon_scale_boots",
+            DMItems::makeDragonScaleArmor
     );
-    public static final DragonScaleArmorSuit TERRA_DRAGON_SCALE_ARMORS = new DragonScaleArmorSuit(
+    public static final DragonScaleArmorSuit TERRA_DRAGON_SCALE_ARMORS = makeSuit(
             DragonTypes.TERRA,
             DMArmorEffects.TERRA,
-            TOOL_TAB.register("terra_dragon_scale_helmet", props -> makeDragonScaleHelmet(DMItems.TERRA_DRAGON_SCALE_ARMORS, props)),
-            TOOL_TAB.register("terra_dragon_scale_chestplate", props -> makeDragonScaleChestplate(DMItems.TERRA_DRAGON_SCALE_ARMORS, props)),
-            TOOL_TAB.register("terra_dragon_scale_leggings", props -> makeDragonScaleLeggings(DMItems.TERRA_DRAGON_SCALE_ARMORS, props)),
-            TOOL_TAB.register("terra_dragon_scale_boots", props -> makeDragonScaleBoots(DMItems.TERRA_DRAGON_SCALE_ARMORS, props))
+            TOOL_TAB,
+            "terra_dragon_scale_helmet",
+            "terra_dragon_scale_chestplate",
+            "terra_dragon_scale_leggings",
+            "terra_dragon_scale_boots",
+            DMItems::makeDragonScaleArmor
     );
-    public static final DragonScaleArmorSuit ZOMBIE_DRAGON_SCALE_ARMORS = new DragonScaleArmorSuit(
+    public static final DragonScaleArmorSuit ZOMBIE_DRAGON_SCALE_ARMORS = makeSuit(
             DragonTypes.ZOMBIE,
             DMArmorEffects.ZOMBIE,
-            TOOL_TAB.register("zombie_dragon_scale_helmet", props -> makeDragonScaleHelmet(DMItems.ZOMBIE_DRAGON_SCALE_ARMORS, props)),
-            TOOL_TAB.register("zombie_dragon_scale_chestplate", props -> makeDragonScaleChestplate(DMItems.ZOMBIE_DRAGON_SCALE_ARMORS, props)),
-            TOOL_TAB.register("zombie_dragon_scale_leggings", props -> makeDragonScaleLeggings(DMItems.ZOMBIE_DRAGON_SCALE_ARMORS, props)),
-            TOOL_TAB.register("zombie_dragon_scale_boots", props -> makeDragonScaleBoots(DMItems.ZOMBIE_DRAGON_SCALE_ARMORS, props))
+            TOOL_TAB,
+            "zombie_dragon_scale_helmet",
+            "zombie_dragon_scale_chestplate",
+            "zombie_dragon_scale_leggings",
+            "zombie_dragon_scale_boots",
+            DMItems::makeDragonScaleArmor
     );
-    public static final DragonScaleArmorSuit SCULK_DRAGON_SCALE_ARMORS = new DragonScaleArmorSuit(
+    public static final DragonScaleArmorSuit SCULK_DRAGON_SCALE_ARMORS = makeSuit(
             DragonTypes.SCULK,
             null,
-            TOOL_TAB.register("sculk_dragon_scale_helmet", props -> makeDragonScaleHelmet(DMItems.SCULK_DRAGON_SCALE_ARMORS, props.fireResistant())),
-            TOOL_TAB.register("sculk_dragon_scale_chestplate", props -> makeDragonScaleChestplate(DMItems.SCULK_DRAGON_SCALE_ARMORS, props.fireResistant())),
-            TOOL_TAB.register("sculk_dragon_scale_leggings", props -> makeDragonScaleLeggings(DMItems.SCULK_DRAGON_SCALE_ARMORS, props.fireResistant())),
-            TOOL_TAB.register("sculk_dragon_scale_boots", props -> makeDragonScaleBoots(DMItems.SCULK_DRAGON_SCALE_ARMORS, props.fireResistant()))
+            TOOL_TAB,
+            "sculk_dragon_scale_helmet",
+            "sculk_dragon_scale_chestplate",
+            "sculk_dragon_scale_leggings",
+            "sculk_dragon_scale_boots",
+            (suit, slot, props) -> makeDragonScaleArmor(suit, slot, props.fireResistant())
     );
-    public static final DragonScaleArmorSuit DARK_DRAGON_SCALE_ARMORS = new DragonScaleArmorSuit(
+    public static final DragonScaleArmorSuit DARK_DRAGON_SCALE_ARMORS = makeSuit(
             DragonTypes.DARK,
             null,
-            TOOL_TAB.register("dark_dragon_scale_helmet", props -> makeDragonScaleHelmet(DMItems.DARK_DRAGON_SCALE_ARMORS, props)),
-            TOOL_TAB.register("dark_dragon_scale_chestplate", props -> makeDragonScaleChestplate(DMItems.DARK_DRAGON_SCALE_ARMORS, props)),
-            TOOL_TAB.register("dark_dragon_scale_leggings", props -> makeDragonScaleLeggings(DMItems.DARK_DRAGON_SCALE_ARMORS, props)),
-            TOOL_TAB.register("dark_dragon_scale_boots", props -> makeDragonScaleBoots(DMItems.DARK_DRAGON_SCALE_ARMORS, props))
+            TOOL_TAB,
+            "dark_dragon_scale_helmet",
+            "dark_dragon_scale_chestplate",
+            "dark_dragon_scale_leggings",
+            "dark_dragon_scale_boots",
+            DMItems::makeDragonScaleArmor
     );
     //Dragon Spawn Eggs
     public static final DeferredItem<DragonSpawnEggItem> AETHER_DRAGON_SPAWN_EGG = DRAGON_SPAWN_EGGS.register("aether_dragon_spawn_egg", props ->
@@ -529,27 +560,17 @@ public class DMItems {
         return item;
     }
 
-    static DragonScaleArmorItem makeDragonScaleArmor(DragonScaleArmorSuit suit, Properties props, ArmorType slot, String desc) {
-        if (suit.effect() != null) {
+    static DragonScaleArmorItem makeDragonScaleArmor(DragonScaleArmorSuit suit, ArmorType slot, Properties props) {
+        if (suit.effect != null) {
             props.component(DMDataComponents.ARMOR_EFFECT_SOURCE, suit);
         }
-        return new DragonScaleArmorItem(suit.type(), suit.effect(), slot, props.overrideDescription(desc));
-    }
-
-    static DragonScaleArmorItem makeDragonScaleHelmet(DragonScaleArmorSuit suit, Properties props) {
-        return makeDragonScaleArmor(suit, props, ArmorType.BOOTS, DragonScaleArmorSuit.HELMET_TRANSLATION_KEY);
-    }
-
-    static DragonScaleArmorItem makeDragonScaleChestplate(DragonScaleArmorSuit suit, Properties props) {
-        return makeDragonScaleArmor(suit, props, ArmorType.CHESTPLATE, DragonScaleArmorSuit.CHESTPLATE_TRANSLATION_KEY);
-    }
-
-    static DragonScaleArmorItem makeDragonScaleLeggings(DragonScaleArmorSuit suit, Properties props) {
-        return makeDragonScaleArmor(suit, props, ArmorType.LEGGINGS, DragonScaleArmorSuit.LEGGINGS_TRANSLATION_KEY);
-    }
-
-    static DragonScaleArmorItem makeDragonScaleBoots(DragonScaleArmorSuit suit, Properties props) {
-        return makeDragonScaleArmor(suit, props, ArmorType.BOOTS, DragonScaleArmorSuit.BOOTS_TRANSLATION_KEY);
+        switch (slot) {
+            case HELMET -> props.overrideDescription(DragonScaleArmorSuit.HELMET_TRANSLATION_KEY);
+            case CHESTPLATE -> props.overrideDescription(DragonScaleArmorSuit.CHESTPLATE_TRANSLATION_KEY);
+            case LEGGINGS -> props.overrideDescription(DragonScaleArmorSuit.LEGGINGS_TRANSLATION_KEY);
+            case BOOTS -> props.overrideDescription(DragonScaleArmorSuit.BOOTS_TRANSLATION_KEY);
+        }
+        return new DragonScaleArmorItem(suit.type, suit.effect, slot, props);
     }
 
     static DragonScalesItem makeDragonScales(DragonType type, Properties props) {
@@ -594,28 +615,6 @@ public class DMItems {
 
     static BlockItem makeDragonScaleBlock(DragonScaleBlock block, Properties props) {
         return new BlockItem(block, props.component(DMDataComponents.DRAGON_TYPE, block.type).overrideDescription(DragonScaleBlock.TRANSLATION_KEY));
-    }
-
-    static void bindDragonScaleArmorSuit(DragonScaleArmorSuit suit) {
-        suit.type().bindInstance(DragonScaleArmorSuit.class, suit);
-    }
-
-    static {
-        bindDragonScaleArmorSuit(AETHER_DRAGON_SCALE_ARMORS);
-        bindDragonScaleArmorSuit(WATER_DRAGON_SCALE_ARMORS);
-        bindDragonScaleArmorSuit(ICE_DRAGON_SCALE_ARMORS);
-        bindDragonScaleArmorSuit(FIRE_DRAGON_SCALE_ARMORS);
-        bindDragonScaleArmorSuit(FOREST_DRAGON_SCALE_ARMORS);
-        bindDragonScaleArmorSuit(NETHER_DRAGON_SCALE_ARMORS);
-        bindDragonScaleArmorSuit(ENDER_DRAGON_SCALE_ARMORS);
-        bindDragonScaleArmorSuit(ENCHANTED_DRAGON_SCALE_ARMORS);
-        bindDragonScaleArmorSuit(SUNLIGHT_DRAGON_SCALE_ARMORS);
-        bindDragonScaleArmorSuit(MOONLIGHT_DRAGON_SCALE_ARMORS);
-        bindDragonScaleArmorSuit(STORM_DRAGON_SCALE_ARMORS);
-        bindDragonScaleArmorSuit(TERRA_DRAGON_SCALE_ARMORS);
-        bindDragonScaleArmorSuit(ZOMBIE_DRAGON_SCALE_ARMORS);
-        bindDragonScaleArmorSuit(SCULK_DRAGON_SCALE_ARMORS);
-        bindDragonScaleArmorSuit(DARK_DRAGON_SCALE_ARMORS);
     }
 
     public static void init() {}

@@ -24,7 +24,7 @@ import static net.minecraft.network.chat.HoverEvent.Action.SHOW_ENTITY;
 public class DMCommand {
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher, CommandBuildContext context, Commands.CommandSelection ignored) {
         Predicate<CommandSourceStack> hasPermissionLevel2 = source -> source.hasPermission(2);
-        dispatcher.register(Commands.literal(DragonMountsShared.MOD_ID)
+        dispatcher.register(Commands.literal(DragonMountsShared.NAMESPACE)
                 .then(ServerConfig.buildCommand(source -> source.hasPermission(3)))
                 .then(CooldownCommand.register(context, hasPermissionLevel2))
                 .then(FreeCommand.register(hasPermissionLevel2))

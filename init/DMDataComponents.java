@@ -40,4 +40,6 @@ public class DMDataComponents {
                     .persistent(WhistleSound.CODEC)
                     .networkSynchronized(WhistleSound.STREAM_CODEC)
     );
+
+    public static void init() {}
 }

@@ -17,12 +17,12 @@ public class DMBlockEntities {
     public static final DeferredBlockEntity<DragonHeadBlockEntity> DRAGON_HEAD;
 
     static {
-        DeferredBlock<?>[] blocks = new DeferredBlock<?>[DragonVariants.BUILTIN_VALUES.size() << 1];
+        var blocks = new DeferredBlock<?>[DragonVariants.BUILTIN_VALUES.size() << 1];
         int i = 0;
         for (var variant : DragonVariants.BUILTIN_VALUES) {
             var head = variant.head;
-            blocks[i++] = head.standing();
-            blocks[i++] = head.wall();
+            blocks[i++] = head.standing;
+            blocks[i++] = head.wall;
         }
         DRAGON_HEAD = registerBlockEntity("dragon_head", DragonHeadBlockEntity::new, blocks);
     }

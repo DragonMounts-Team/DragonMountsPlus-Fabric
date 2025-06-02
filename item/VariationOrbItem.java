@@ -57,15 +57,15 @@ public class VariationOrbItem extends Item {
         BlockState neo;
         if (block == Blocks.DRAGON_HEAD) {
             if (level.isClientSide) return InteractionResult.SUCCESS;
-            neo = draw(level.random, DragonVariants.ENDER_FEMALE).head.standing().defaultBlockState().setValue(ROTATION_16, old.getValue(ROTATION_16));
+            neo = draw(level.random, DragonVariants.ENDER_FEMALE).head.standing.defaultBlockState().setValue(ROTATION_16, old.getValue(ROTATION_16));
         } else if (block == Blocks.DRAGON_WALL_HEAD) {
             if (level.isClientSide) return InteractionResult.SUCCESS;
-            neo = draw(level.random, DragonVariants.ENDER_FEMALE).head.wall().defaultBlockState().setValue(HORIZONTAL_FACING, old.getValue(HORIZONTAL_FACING));
+            neo = draw(level.random, DragonVariants.ENDER_FEMALE).head.wall.defaultBlockState().setValue(HORIZONTAL_FACING, old.getValue(HORIZONTAL_FACING));
         } else if (block instanceof DragonHeadBlock head) {
             if (level.isClientSide) return InteractionResult.SUCCESS;
             neo = head.isOnWall
-                    ? draw(level.random, head.variant).head.wall().defaultBlockState().setValue(HORIZONTAL_FACING, old.getValue(HORIZONTAL_FACING))
-                    : draw(level.random, head.variant).head.standing().defaultBlockState().setValue(ROTATION_16, old.getValue(ROTATION_16));
+                    ? draw(level.random, head.variant).head.wall.defaultBlockState().setValue(HORIZONTAL_FACING, old.getValue(HORIZONTAL_FACING))
+                    : draw(level.random, head.variant).head.standing.defaultBlockState().setValue(ROTATION_16, old.getValue(ROTATION_16));
         } else return InteractionResult.PASS;
         level.playSound(player, pos, DMSounds.VARIATION_ORB_ACTIVATE, SoundSource.BLOCKS, 1.0F, 1.0F);
         level.setBlock(pos, neo, 0b1011);

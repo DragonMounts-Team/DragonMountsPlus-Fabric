@@ -3,10 +3,7 @@ package net.dragonmounts.plus.common.entity.dragon;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.mojang.datafixers.util.Pair;
-import net.dragonmounts.plus.common.entity.ai.behavior.ControlledByPlayer;
-import net.dragonmounts.plus.common.entity.ai.behavior.FollowOwner;
-import net.dragonmounts.plus.common.entity.ai.behavior.SitWhenOrderedTo;
-import net.dragonmounts.plus.common.entity.ai.behavior.TryFindGround;
+import net.dragonmounts.plus.common.entity.ai.behavior.*;
 import net.dragonmounts.plus.common.init.DMActivities;
 import net.dragonmounts.plus.common.init.DMEntities;
 import net.dragonmounts.plus.common.init.DMMemories;
@@ -29,6 +26,7 @@ import java.util.Optional;
 public class DragonAi {
     protected static final ImmutableList<? extends SensorType<? extends Sensor<? super ServerDragonEntity>>> SENSOR_TYPES = ImmutableList.of(
             SensorType.HURT_BY,
+            SensorType.NEAREST_LIVING_ENTITIES,
             SensorType.NEAREST_ADULT,
             SensorType.NEAREST_PLAYERS,
             DMSensors.DRAGON_TARGETS,
@@ -46,6 +44,7 @@ public class DragonAi {
             MemoryModuleType.IS_TEMPTED,
             MemoryModuleType.BREED_TARGET,
             MemoryModuleType.HURT_BY,
+            MemoryModuleType.IS_PANICKING,
             MemoryModuleType.NEAREST_VISIBLE_ADULT,
             MemoryModuleType.NEAREST_PLAYERS,
             MemoryModuleType.NEAREST_VISIBLE_PLAYER,
@@ -78,7 +77,7 @@ public class DragonAi {
     static void initIdleActivity(Brain<ServerDragonEntity> brain) {
         brain.addActivity(Activity.IDLE, 10, ImmutableList.of(
                 new Swim<>(0.8F),
-                new AnimalMakeLove(DMEntities.TAMEABLE_DRAGON.get()),
+                new AnimalMakeLoveEx(DMEntities.TAMEABLE_DRAGON.get(), 1.0F, 4, 6),
                 new FollowTemptation(entity -> 1.25F, entity -> 3.0),
                 new FollowOwner(1.0F, 14.0F, 10),
                 StartAttacking.create(DragonAi::findNearestValidAttackTarget),

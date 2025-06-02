@@ -156,7 +156,7 @@ public class HatchableDragonEggEntity extends LivingEntity implements DragonTypi
 
     protected void spawnScales(ServerLevel level, int amount) {
         if (amount > 0) {
-            DragonScalesItem scales = this.getDragonType().getInstance(DragonScalesItem.class, null);
+            var scales = this.getDragonType().getInstance(DragonScalesItem.class, null);
             if (scales != null && level.getGameRules().getBoolean(GameRules.RULE_DOMOBLOOT)) {
                 this.spawnAtLocation(level, new ItemStack(scales, amount), 1.25F);
             }

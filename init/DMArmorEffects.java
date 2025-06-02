@@ -245,7 +245,7 @@ public class DMArmorEffects {
     });
 
     public static final DescribedArmorEffect TERRA = registerArmorEffect(makeId("terra"), new DescribedArmorEffect() {
-        private static final Component TITLE = DragonTypes.ENCHANTED.getName();
+        private static final Component TITLE = DragonTypes.TERRA.getName();
         private static final List<Component> DESCRIPTION = Collections.singletonList(Component.translatable("tooltip.armor_effect.dragonmounts.plus.terra"));
 
         @Override

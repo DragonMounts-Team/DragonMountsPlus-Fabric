@@ -70,11 +70,11 @@ public class TypeCommand {
         public static final Setter SETTER_DRAGON_EEG = (block, level, pos, state, type) -> type.ifPresent(HatchableDragonEggBlock.class, HatchableDragonEggBlock::defaultBlockState, state);
         public static final Setter SETTER_DRAGON_HEAD = (block, level, pos, state, type) -> {
             var variant = type.variants.draw(level.random, block == Blocks.DRAGON_HEAD ? ENDER_FEMALE : block instanceof DragonHeadBlock head ? head.variant : null, false);
-            return variant == null ? state : variant.head.standing().defaultBlockState().setValue(ROTATION_16, state.getValue(ROTATION_16));
+            return variant == null ? state : variant.head.standing.defaultBlockState().setValue(ROTATION_16, state.getValue(ROTATION_16));
         };
         public static final Setter SETTER_DRAGON_HEAD_WALL = (block, level, pos, state, type) -> {
             var variant = type.variants.draw(level.random, block == Blocks.DRAGON_WALL_HEAD ? ENDER_FEMALE : block instanceof DragonHeadBlock head ? head.variant : null, false);
-            return variant == null ? state : variant.head.wall().defaultBlockState().setValue(HORIZONTAL_FACING, state.getValue(HORIZONTAL_FACING));
+            return variant == null ? state : variant.head.wall.defaultBlockState().setValue(HORIZONTAL_FACING, state.getValue(HORIZONTAL_FACING));
         };
 
         private final Reference2ObjectOpenHashMap<Class<? extends Block>, Getter> getters = new Reference2ObjectOpenHashMap<>();

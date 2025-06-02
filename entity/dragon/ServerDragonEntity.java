@@ -2,6 +2,7 @@ package net.dragonmounts.plus.common.entity.dragon;
 
 import com.mojang.serialization.Dynamic;
 import it.unimi.dsi.fastutil.doubles.DoubleIterators;
+import net.dragonmounts.plus.common.api.BredDragonsTrigger;
 import net.dragonmounts.plus.common.block.DragonCoreBlock;
 import net.dragonmounts.plus.common.component.DragonFood;
 import net.dragonmounts.plus.common.entity.ai.control.DragonHeadLocator;
@@ -18,6 +19,7 @@ import net.dragonmounts.plus.common.util.Segment;
 import net.dragonmounts.plus.compat.platform.ServerNetworkHandler;
 import net.dragonmounts.plus.compat.registry.DragonType;
 import net.dragonmounts.plus.compat.registry.DragonVariant;
+import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.core.component.DataComponentPatch;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
@@ -25,18 +27,18 @@ import net.minecraft.network.protocol.game.DebugPackets;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.stats.Stats;
 import net.minecraft.util.Unit;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffects;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.LightningBolt;
+import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.Brain;
 import net.minecraft.world.entity.ai.attributes.AttributeMap;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.navigation.PathNavigation;
+import net.minecraft.world.entity.animal.Animal;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -98,7 +100,9 @@ public class ServerDragonEntity extends TameableDragonEntity {
     public void addAdditionalSaveData(CompoundTag tag) {
         super.addAdditionalSaveData(tag);
         tag.putString(DragonVariant.DATA_PARAMETER_KEY, this.getVariant().identifier.toString());
-        tag.putString(DragonLifeStage.DATA_PARAMETER_KEY, this.stage.getSerializedName());
+        if (this.stage != null) {
+            tag.putString(DragonLifeStage.DATA_PARAMETER_KEY, this.stage.getSerializedName());
+        }
         tag.putBoolean(AGE_LOCKED_DATA_PARAMETER_KEY, this.isAgeLocked());
         tag.putInt(SHEARED_DATA_PARAMETER_KEY, this.isSheared() ? this.shearCooldown : 0);
         var items = this.inventory.saveItems(this.registryAccess());
@@ -374,6 +378,33 @@ public class ServerDragonEntity extends TameableDragonEntity {
         if (!flag && this.isRiddenByPlayer()) {
             this.getBrain().setMemory(DMMemories.IS_CONTROLLED, Unit.INSTANCE);
         }
+    }
+
+    /// @see #finalizeSpawnChildFromBreeding(ServerLevel, Animal, AgeableMob)
+    @Override
+    public void spawnChildFromBreeding(ServerLevel level, Animal other) {
+        if (!(other instanceof ServerDragonEntity mate)) return;
+        var egg = new HatchableDragonEggEntity(level);
+        egg.setDragonType(this.getDragonType(), true);
+        var pos = this.position();
+        egg.moveTo(pos.x, pos.y, pos.z, 0.0F, 0.0F);
+        var cause = this.getLoveCause();
+        if (cause == null) {
+            cause = mate.getLoveCause();
+        }
+        if (cause != null) {
+            cause.awardStat(Stats.ANIMALS_BRED);
+            ((BredDragonsTrigger) CriteriaTriggers.BRED_ANIMALS).dragonmounts$plus$trigger(cause, this, mate, egg);
+        }
+        this.setAge(6000);
+        mate.setAge(6000);
+        this.resetLove();
+        mate.resetLove();
+        level.broadcastEntityEvent(this, (byte) 18);
+        if (level.getGameRules().getBoolean(GameRules.RULE_DOMOBLOOT)) {
+            level.addFreshEntity(new ExperienceOrb(level, pos.x, pos.y, pos.z, this.getRandom().nextInt(12) + 4));
+        }
+        level.addFreshEntityWithPassengers(egg);
     }
 
     @Override

@@ -12,10 +12,10 @@ import net.minecraft.world.entity.player.Player;
 
 import static java.lang.System.arraycopy;
 import static java.util.Arrays.fill;
-import static net.dragonmounts.plus.common.DragonMountsShared.MOD_ID;
+import static net.dragonmounts.plus.common.DragonMountsShared.NAMESPACE;
 
 public final class ArmorEffectManagerImpl implements ArmorEffectManager {
-    public static final String DATA_PARAMETER_KEY = MOD_ID + ":armor_effect_manager";
+    public static final String DATA_PARAMETER_KEY = NAMESPACE + ":armor_effect_manager";
     private static ArmorEffectManagerImpl LOCAL_MANAGER = null;
     public static final int INITIAL_COOLDOWN_SIZE = 8;
     public static final int INITIAL_LEVEL_SIZE = 5;
