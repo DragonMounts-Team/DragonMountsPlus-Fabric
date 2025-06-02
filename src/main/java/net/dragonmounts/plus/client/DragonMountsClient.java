@@ -13,6 +13,7 @@ import net.dragonmounts.plus.common.init.*;
 import net.dragonmounts.plus.common.network.c2s.ControlDragonPayload;
 import net.dragonmounts.plus.common.util.ArrayUtil;
 import net.dragonmounts.plus.compat.platform.ClientNetworkHandler;
+import net.dragonmounts.plus.compat.platform.DMScreenHandlers;
 import net.dragonmounts.plus.compat.registry.DragonVariant;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.EnvType;
@@ -42,7 +43,6 @@ import net.minecraft.world.item.CreativeModeTabs;
 import org.jetbrains.annotations.Nullable;
 
 import static net.dragonmounts.plus.common.DragonMountsShared.makeId;
-import static net.dragonmounts.plus.common.util.EntityUtil.cast;
 
 @Environment(EnvType.CLIENT)
 public class DragonMountsClient implements
@@ -50,15 +50,19 @@ public class DragonMountsClient implements
         TooltipComponentCallback,
         ClientTickEvents.StartTick,
         SimpleSynchronousResourceReloadListener {
-    private static final ResourceLocation RESOURCE_RELOADER = makeId("resource_reloader");
+    public static final ResourceLocation MODEL_RELOADER = makeId("model_reloader");
 
     @Override
     public void onInitializeClient() {
         ClientNetworkHandler.initClient();
         DMKeyMappings.register(KeyBindingHelper::registerKeyBinding);
         TooltipComponentCallback.EVENT.register(this);
-        ItemGroupEvents.modifyEntriesEvent(CreativeModeTabs.SPAWN_EGGS).register(DMItemGroups.DRAGON_SPAWN_EGGS);
-        ItemGroupEvents.modifyEntriesEvent(CreativeModeTabs.FUNCTIONAL_BLOCKS).register(DMItemGroups.DRAGON_EGGS);
+        ItemGroupEvents.modifyEntriesEvent(CreativeModeTabs.SPAWN_EGGS).register(entries ->
+                DMItemGroups.DRAGON_SPAWN_EGGS.accept(entries.getContext(), entries)
+        );
+        ItemGroupEvents.modifyEntriesEvent(CreativeModeTabs.FUNCTIONAL_BLOCKS).register(entries ->
+                DMItemGroups.DRAGON_EGGS.accept(entries.getContext(), entries)
+        );
         MenuScreens.register(DMScreenHandlers.DRAGON_CORE, DragonCoreScreen::new);
         MenuScreens.register(DMScreenHandlers.DRAGON_INVENTORY, DragonInventoryScreen::new);
         for (var model : BuiltinFactory.values()) {
@@ -66,18 +70,18 @@ public class DragonMountsClient implements
         }
         SpecialModelRenderers.ID_MAPPER.put(makeId("dragon_core"), DragonCoreRenderer.Unbaked.CODEC);
         SpecialModelRenderers.ID_MAPPER.put(makeId("dragon_head"), DragonHeadRenderer.Unbaked.CODEC);
-        SpecialBlockRendererRegistry.register(DMBlocks.DRAGON_CORE, new DragonCoreRenderer.Unbaked(0.0F, Direction.SOUTH));
+        SpecialBlockRendererRegistry.register(DMBlocks.DRAGON_CORE.get(), new DragonCoreRenderer.Unbaked(0.0F, Direction.SOUTH));
         for (var variant : DragonVariants.BUILTIN_VALUES) {
             var head = variant.head;
             var renderer = new DragonHeadRenderer.Unbaked(variant, 0.0F);
-            SpecialBlockRendererRegistry.register(head.standing(), renderer);
-            SpecialBlockRendererRegistry.register(head.wall(), renderer);
+            SpecialBlockRendererRegistry.register(head.standing.get(), renderer);
+            SpecialBlockRendererRegistry.register(head.wall.get(), renderer);
         }
         ClientTickEvents.START_CLIENT_TICK.register(this);
-        BlockEntityRenderers.register(DMBlockEntities.DRAGON_CORE, DragonCoreRenderer::new);
-        BlockEntityRenderers.register(DMBlockEntities.DRAGON_HEAD, DragonHeadRenderer.INSTANCE);
-        EntityRendererRegistry.register(DMEntities.HATCHABLE_DRAGON_EGG, DragonEggRenderer::new);
-        EntityRendererRegistry.register(cast(DMEntities.TAMEABLE_DRAGON), TameableDragonRenderer::new);
+        BlockEntityRenderers.register(DMBlockEntities.DRAGON_CORE.get(), DragonCoreRenderer::new);
+        BlockEntityRenderers.register(DMBlockEntities.DRAGON_HEAD.get(), DragonHeadRenderer.INSTANCE);
+        EntityRendererRegistry.register(DMEntities.HATCHABLE_DRAGON_EGG.get(), DragonEggRenderer::new);
+        EntityRendererRegistry.register(DMEntities.TAMEABLE_DRAGON.cast(), TameableDragonRenderer::new);
         ResourceManagerHelper.get(PackType.CLIENT_RESOURCES).registerReloadListener(this);
         ParticleFactoryRegistry.getInstance().register(DMParticles.DRAGON_BREATH, BreathParticleProvider::new);
         ClientCommandRegistrationCallback.EVENT.register(DMClientCommand::register);
@@ -107,7 +111,7 @@ public class DragonMountsClient implements
 
     @Override
     public ResourceLocation getFabricId() {
-        return RESOURCE_RELOADER;
+        return MODEL_RELOADER;
     }
 
     @Override

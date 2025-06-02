@@ -18,7 +18,6 @@ import net.minecraft.world.level.material.PushReaction;
 
 import java.util.function.ToIntFunction;
 
-import static net.dragonmounts.plus.common.init.DMItemGroups.DRAGON_EGGS;
 import static net.dragonmounts.plus.compat.registry.DeferredBlock.registerBlock;
 
 public class DMBlocks {
@@ -133,7 +132,7 @@ public class DMBlocks {
         eggs.add(WATER_DRAGON_EGG = registerBlock("water_dragon_egg", props -> makeDragonEgg(DragonTypes.WATER, props)));
         eggs.add(WITHER_DRAGON_EGG = registerBlock("wither_dragon_egg", props -> makeDragonEgg(DragonTypes.WITHER, props)));
         eggs.add(ZOMBIE_DRAGON_EGG = registerBlock("zombie_dragon_egg", props -> makeDragonEgg(DragonTypes.ZOMBIE, props)));
-        DRAGON_EGGS.addAll(BUILTIN_DRAGON_EGGS = eggs.build());
+        BUILTIN_DRAGON_EGGS = eggs.build();
     }
 
     static {

@@ -28,5 +28,5 @@ public abstract class ConfigEntry<T> implements Consumer<T> {
 
     protected abstract int set(CommandContext<CommandSourceStack> context);
 
-    public abstract LiteralArgumentBuilder<CommandSourceStack> generateCommand();
+    public abstract LiteralArgumentBuilder<CommandSourceStack> buildCommand();
 }

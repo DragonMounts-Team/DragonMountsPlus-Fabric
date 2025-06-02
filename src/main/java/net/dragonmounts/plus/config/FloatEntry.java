@@ -82,7 +82,7 @@ public class FloatEntry extends ConfigEntry<Float> {
     }
 
     @Override
-    public final LiteralArgumentBuilder<CommandSourceStack> generateCommand() {
+    public final LiteralArgumentBuilder<CommandSourceStack> buildCommand() {
         return this.generateCommand(this.min, this.max);
     }
 

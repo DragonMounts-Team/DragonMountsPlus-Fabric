@@ -3,6 +3,8 @@ package net.dragonmounts.plus.mixin;
 import com.llamalad7.mixinextras.sugar.Local;
 import net.dragonmounts.plus.common.init.DMDataComponents;
 import net.dragonmounts.plus.common.item.EntityContainer;
+import net.dragonmounts.plus.compat.registry.ArmorEffectSourceType;
+import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
@@ -28,9 +30,12 @@ public abstract class ItemStackMixin {
     @Shadow
     public abstract Item getItem();
 
+    @Shadow
+    public abstract DataComponentMap getComponents();
+
     @Inject(method = "getTooltipLines", at = @At(
-            value = "FIELD",
-            target = "Lnet/minecraft/core/component/DataComponents;HIDE_ADDITIONAL_TOOLTIP:Lnet/minecraft/core/component/DataComponentType;"
+            value = "INVOKE",
+            target = "Lnet/minecraft/world/item/Item;appendHoverText(Lnet/minecraft/world/item/ItemStack;Lnet/minecraft/world/item/Item$TooltipContext;Ljava/util/List;Lnet/minecraft/world/item/TooltipFlag;)V"
     ))//Append tooltip at a position before "additional tooltip"
     public void appendDragonTypifiedText(
             Item.TooltipContext context,
@@ -40,6 +45,8 @@ public abstract class ItemStackMixin {
             @Local Consumer<Component> consumer
     ) {
         if (this.getItem() instanceof EntityContainer<?>) return;
+        var component = this.getComponents().get(DMDataComponents.ARMOR_EFFECT_SOURCE);
+        if (component != null && component.getType() == ArmorEffectSourceType.BUILTIN) return;
         this.addToTooltip(DMDataComponents.DRAGON_TYPE, context, consumer, flag);
     }
 

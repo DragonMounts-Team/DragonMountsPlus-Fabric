@@ -11,9 +11,13 @@ public class CooldownCategory {
     public static final MappedRegistry<CooldownCategory> REGISTRY = makeSimpleRegistry(COOLDOWN_CATEGORY);
 
     public final ResourceLocation identifier;
-    public final int id;
+    private final int id;
 
     public CooldownCategory(ResourceLocation identifier) {
         this.id = REGISTRY.getId(Registry.register(REGISTRY, this.identifier = identifier, this));
+    }
+
+    public final int getId() {
+        return this.id;
     }
 }

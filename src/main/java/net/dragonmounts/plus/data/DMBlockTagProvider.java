@@ -2,13 +2,16 @@ package net.dragonmounts.plus.data;
 
 import net.dragonmounts.plus.common.init.DMBlocks;
 import net.dragonmounts.plus.common.tag.DMBlockTags;
+import net.dragonmounts.plus.compat.registry.DeferredBlock;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagProvider;
 import net.fabricmc.fabric.api.tag.convention.v2.ConventionalBlockTags;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.tags.BlockTags;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 
+import java.util.Collection;
 import java.util.concurrent.CompletableFuture;
 
 public class DMBlockTagProvider extends FabricTagProvider.BlockTagProvider {
@@ -18,8 +21,8 @@ public class DMBlockTagProvider extends FabricTagProvider.BlockTagProvider {
 
     @Override
     protected void addTags(HolderLookup.Provider registries) {
-        this.getOrCreateTagBuilder(BlockTags.PIGLIN_REPELLENTS).add(DMBlocks.DRAGON_CORE);
-        this.getOrCreateTagBuilder(BlockTags.DRAGON_IMMUNE).add(DMBlocks.DRAGON_CORE);
+        this.getOrCreateTagBuilder(BlockTags.PIGLIN_REPELLENTS).add(DMBlocks.DRAGON_CORE.key);
+        this.getOrCreateTagBuilder(BlockTags.DRAGON_IMMUNE).add(DMBlocks.DRAGON_CORE.key);
         this.getOrCreateTagBuilder(DMBlockTags.AIRFLOW_DESTRUCTIBLE)
                 .forceAddTag(BlockTags.LEAVES)
                 .forceAddTag(BlockTags.FLOWERS)
@@ -73,7 +76,14 @@ public class DMBlockTagProvider extends FabricTagProvider.BlockTagProvider {
                         Blocks.SPONGE,
                         Blocks.WET_SPONGE
                 );
-        DMBlocks.BUILTIN_DRAGON_EGGS.forEach(this.getOrCreateTagBuilder(DMBlockTags.DRAGON_EGGS).add(Blocks.DRAGON_EGG)::add);
-        DMBlocks.BUILTIN_DRAGON_SCALE_BLOCKS.forEach(this.getOrCreateTagBuilder(DMBlockTags.DRAGON_SCALE_BLOCKS)::add);
+        addAll(this.getOrCreateTagBuilder(DMBlockTags.DRAGON_EGGS).add(Blocks.DRAGON_EGG), DMBlocks.BUILTIN_DRAGON_EGGS);
+        addAll(this.getOrCreateTagBuilder(DMBlockTags.DRAGON_SCALE_BLOCKS), DMBlocks.BUILTIN_DRAGON_SCALE_BLOCKS);
+        this.getOrCreateTagBuilder(BlockTags.FEATURES_CANNOT_REPLACE).addTag(DMBlockTags.DRAGON_EGGS);
+    }
+
+    static void addAll(TagAppender<Block> builder, Collection<? extends DeferredBlock<?>> blocks) {
+        for (var block : blocks) {
+            builder.add(block.key);
+        }
     }
 }

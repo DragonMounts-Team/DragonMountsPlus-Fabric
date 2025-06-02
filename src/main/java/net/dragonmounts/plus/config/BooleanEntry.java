@@ -61,7 +61,7 @@ public class BooleanEntry extends ConfigEntry<Boolean> {
     }
 
     @Override
-    public LiteralArgumentBuilder<CommandSourceStack> generateCommand() {
+    public LiteralArgumentBuilder<CommandSourceStack> buildCommand() {
         return Commands.literal(this.display).executes(this::get).then(Commands.argument("value", BoolArgumentType.bool()).executes(this::set));
     }
 

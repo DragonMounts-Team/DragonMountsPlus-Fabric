@@ -6,9 +6,7 @@ import net.dragonmounts.plus.common.init.DMBlocks;
 import net.dragonmounts.plus.common.init.DMItems;
 import net.dragonmounts.plus.common.init.DragonVariants;
 import net.dragonmounts.plus.common.item.*;
-import net.dragonmounts.plus.common.util.DragonScaleArmorSuit;
-import net.dragonmounts.plus.compat.registry.DragonType;
-import net.dragonmounts.plus.compat.registry.DragonVariant;
+import net.dragonmounts.plus.compat.registry.*;
 import net.fabricmc.fabric.api.client.datagen.v1.provider.FabricModelProvider;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.minecraft.client.color.item.Dye;
@@ -61,7 +59,7 @@ public class DMModelProvider extends FabricModelProvider {
         generateBlocksWithItem(gen, BlockModelGenerators::createTrivialCube, DMBlocks.BUILTIN_DRAGON_SCALE_BLOCKS);
         {
             var particle = TextureMapping.particle(makeId("block/dragon_core_break"));
-            var block = DMBlocks.DRAGON_CORE;
+            var block = DMBlocks.DRAGON_CORE.get();
             gen.blockStateOutput.accept(createSimpleBlock(block, ModelTemplates.PARTICLE_ONLY.create(block, particle, gen.modelOutput)));
             var item = block.asItem();
             gen.itemModelOutput.accept(item, ItemModelUtils.specialModel(
@@ -73,33 +71,33 @@ public class DMModelProvider extends FabricModelProvider {
 
     @Override
     public void generateItemModels(ItemModelGenerators gen) {
-        gen.generateItemWithTintedOverlay(DMItems.WHISTLE, "_string", new Dye(-1));
-        gen.generateFlatItem(DMItems.AMULET, ModelTemplates.FLAT_ITEM);
-        gen.generateFlatItem(DMItems.IRON_DRAGON_ARMOR, ModelTemplates.FLAT_ITEM);
-        gen.generateFlatItem(DMItems.GOLDEN_DRAGON_ARMOR, ModelTemplates.FLAT_ITEM);
-        gen.generateFlatItem(DMItems.EMERALD_DRAGON_ARMOR, ModelTemplates.FLAT_ITEM);
-        gen.generateFlatItem(DMItems.DIAMOND_DRAGON_ARMOR, ModelTemplates.FLAT_ITEM);
-        gen.generateFlatItem(DMItems.NETHERITE_DRAGON_ARMOR, ModelTemplates.FLAT_ITEM);
-        gen.generateFlatItem(DMItems.DIAMOND_SHEARS, ModelTemplates.FLAT_ITEM);
-        gen.generateFlatItem(DMItems.NETHERITE_SHEARS, ModelTemplates.FLAT_ITEM);
-        gen.generateFlatItem(DMItems.VARIATION_ORB, ModelTemplates.FLAT_ITEM);
-        gen.generateSpawnEgg(DMItems.AETHER_DRAGON_SPAWN_EGG, 0x06E9FA, 0x281EE7);
-        gen.generateSpawnEgg(DMItems.DARK_DRAGON_SPAWN_EGG, 0x222121, 0x971B1B);
-        gen.generateSpawnEgg(DMItems.ENCHANTED_DRAGON_SPAWN_EGG, 0xF30FFF, 0xD7D7D7);
-        gen.generateSpawnEgg(DMItems.ENDER_DRAGON_SPAWN_EGG, 0x1D1D24, 0x900996);
-        gen.generateSpawnEgg(DMItems.FIRE_DRAGON_SPAWN_EGG, 0x9F2909, 0xF7A502);
-        gen.generateSpawnEgg(DMItems.FOREST_DRAGON_SPAWN_EGG, 0x28AA29, 0x024F06);
-        gen.generateSpawnEgg(DMItems.ICE_DRAGON_SPAWN_EGG, 0xD7D7D7, 0xB3FFF8);
-        gen.generateSpawnEgg(DMItems.MOONLIGHT_DRAGON_SPAWN_EGG, 0x002A95, 0xDAF3AF);
-        gen.generateSpawnEgg(DMItems.NETHER_DRAGON_SPAWN_EGG, 0xF79C03, 0x9E4B2B);
-        gen.generateSpawnEgg(DMItems.SCULK_DRAGON_SPAWN_EGG, 0x0F4649, 0x39D6E0);
-        gen.generateSpawnEgg(DMItems.SKELETON_DRAGON_SPAWN_EGG, 0xD7D7D7, 0x727F82);
-        gen.generateSpawnEgg(DMItems.STORM_DRAGON_SPAWN_EGG, 0x023C54, 0x0DA2C7);
-        gen.generateSpawnEgg(DMItems.SUNLIGHT_DRAGON_SPAWN_EGG, 0xF07F07, 0xF2EA04);
-        gen.generateSpawnEgg(DMItems.TERRA_DRAGON_SPAWN_EGG, 0x543813, 0xB3782A);
-        gen.generateSpawnEgg(DMItems.WATER_DRAGON_SPAWN_EGG, 0x4F6AA6, 0x223464);
-        gen.generateSpawnEgg(DMItems.WITHER_DRAGON_SPAWN_EGG, 0x839292, 0x383F40);
-        gen.generateSpawnEgg(DMItems.ZOMBIE_DRAGON_SPAWN_EGG, 0x56562E, 0xA7BF2F);
+        gen.generateItemWithTintedOverlay(DMItems.WHISTLE.get(), "_string", new Dye(-1));
+        generateFlatItem(gen, DMItems.AMULET);
+        generateFlatItem(gen, DMItems.IRON_DRAGON_ARMOR);
+        generateFlatItem(gen, DMItems.GOLDEN_DRAGON_ARMOR);
+        generateFlatItem(gen, DMItems.EMERALD_DRAGON_ARMOR);
+        generateFlatItem(gen, DMItems.DIAMOND_DRAGON_ARMOR);
+        generateFlatItem(gen, DMItems.NETHERITE_DRAGON_ARMOR);
+        generateFlatItem(gen, DMItems.DIAMOND_SHEARS);
+        generateFlatItem(gen, DMItems.NETHERITE_SHEARS);
+        generateFlatItem(gen, DMItems.VARIATION_ORB);
+        generateSpawnEgg(gen, DMItems.AETHER_DRAGON_SPAWN_EGG, 0x06E9FA, 0x281EE7);
+        generateSpawnEgg(gen, DMItems.DARK_DRAGON_SPAWN_EGG, 0x222121, 0x971B1B);
+        generateSpawnEgg(gen, DMItems.ENCHANTED_DRAGON_SPAWN_EGG, 0xF30FFF, 0xD7D7D7);
+        generateSpawnEgg(gen, DMItems.ENDER_DRAGON_SPAWN_EGG, 0x1D1D24, 0x900996);
+        generateSpawnEgg(gen, DMItems.FIRE_DRAGON_SPAWN_EGG, 0x9F2909, 0xF7A502);
+        generateSpawnEgg(gen, DMItems.FOREST_DRAGON_SPAWN_EGG, 0x28AA29, 0x024F06);
+        generateSpawnEgg(gen, DMItems.ICE_DRAGON_SPAWN_EGG, 0xD7D7D7, 0xB3FFF8);
+        generateSpawnEgg(gen, DMItems.MOONLIGHT_DRAGON_SPAWN_EGG, 0x002A95, 0xDAF3AF);
+        generateSpawnEgg(gen, DMItems.NETHER_DRAGON_SPAWN_EGG, 0xF79C03, 0x9E4B2B);
+        generateSpawnEgg(gen, DMItems.SCULK_DRAGON_SPAWN_EGG, 0x0F4649, 0x39D6E0);
+        generateSpawnEgg(gen, DMItems.SKELETON_DRAGON_SPAWN_EGG, 0xD7D7D7, 0x727F82);
+        generateSpawnEgg(gen, DMItems.STORM_DRAGON_SPAWN_EGG, 0x023C54, 0x0DA2C7);
+        generateSpawnEgg(gen, DMItems.SUNLIGHT_DRAGON_SPAWN_EGG, 0xF07F07, 0xF2EA04);
+        generateSpawnEgg(gen, DMItems.TERRA_DRAGON_SPAWN_EGG, 0x543813, 0xB3782A);
+        generateSpawnEgg(gen, DMItems.WATER_DRAGON_SPAWN_EGG, 0x4F6AA6, 0x223464);
+        generateSpawnEgg(gen, DMItems.WITHER_DRAGON_SPAWN_EGG, 0x839292, 0x383F40);
+        generateSpawnEgg(gen, DMItems.ZOMBIE_DRAGON_SPAWN_EGG, 0x56562E, 0xA7BF2F);
         for (var type : DragonType.REGISTRY) {
             generateFlatItem(gen, type, DragonAmuletItem.class);
             generateFlatItem(gen, type, DragonEssenceItem.class);
@@ -113,6 +111,14 @@ public class DMModelProvider extends FabricModelProvider {
             generateHandheldItem(gen, type, DragonScaleShovelItem.class);
             generateHandheldItem(gen, type, DragonScaleSwordItem.class);
         }
+    }
+
+    public static void generateFlatItem(ItemModelGenerators gen, DeferredItem<?> item) {
+        gen.generateFlatItem(item.get(), ModelTemplates.FLAT_ITEM);
+    }
+
+    public static void generateSpawnEgg(ItemModelGenerators gen, DeferredItem<?> item, int primaryColor, int secondaryColor) {
+        gen.generateSpawnEgg(item.get(), primaryColor, secondaryColor);
     }
 
     /**
@@ -151,10 +157,10 @@ public class DMModelProvider extends FabricModelProvider {
         var suit = type.getInstance(DragonScaleArmorSuit.class, null);
         if (suit == null) return;
         var assets = suit.type.material.assetId();
-        gen.generateTrimmableItem(suit.helmet, assets, "helmet", false);
-        gen.generateTrimmableItem(suit.chestplate, assets, "chestplate", false);
-        gen.generateTrimmableItem(suit.leggings, assets, "leggings", false);
-        gen.generateTrimmableItem(suit.boots, assets, "boots", false);
+        gen.generateTrimmableItem(suit.getHelmet(), assets, "helmet", false);
+        gen.generateTrimmableItem(suit.getChestplate(), assets, "chestplate", false);
+        gen.generateTrimmableItem(suit.getLeggings(), assets, "leggings", false);
+        gen.generateTrimmableItem(suit.getBoots(), assets, "boots", false);
     }
 
     public static void generateDragonHeads(BlockModelGenerators gen, Collection<DragonVariant> variants) {
@@ -162,9 +168,9 @@ public class DMModelProvider extends FabricModelProvider {
         var item = gen.itemModelOutput;
         variants.forEach(variant -> {
             var head = variant.head;
-            state.accept(createSimpleBlock(head.standing(), VANILLA_SKULL));
-            state.accept(createSimpleBlock(head.wall(), VANILLA_SKULL));
-            item.accept(head.item(), specialModel(VANILLA_DRAGON_HEAD, new DragonHeadRenderer.Unbaked(variant, 0.0F)));
+            state.accept(createSimpleBlock(head.standing.get(), VANILLA_SKULL));
+            state.accept(createSimpleBlock(head.wall.get(), VANILLA_SKULL));
+            item.accept(head.item.get(), specialModel(VANILLA_DRAGON_HEAD, new DragonHeadRenderer.Unbaked(variant, 0.0F)));
         });
     }
 
@@ -180,8 +186,9 @@ public class DMModelProvider extends FabricModelProvider {
         gen.generateFlatItem(item, ModelTemplates.FLAT_HANDHELD_ITEM);
     }
 
-    public static <T extends Block> void generateBlocksWithItem(BlockModelGenerators gen, BiConsumer<BlockModelGenerators, T> consumer, Collection<T> blocks) {
-        for (var block : blocks) {
+    public static <T extends Block> void generateBlocksWithItem(BlockModelGenerators gen, BiConsumer<BlockModelGenerators, T> consumer, Collection<DeferredBlock<T>> holders) {
+        for (var holder : holders) {
+            var block = holder.get();
             consumer.accept(gen, block);
             gen.itemModelOutput.accept(block.asItem(), plainModel(getModelLocation(block)));
         }

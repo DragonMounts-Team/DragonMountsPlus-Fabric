@@ -25,7 +25,7 @@ public abstract class LivingEntityRendererMixin {
             float f,
             CallbackInfo info
     ) {
-        ((DragonHeadRenderState) state).dragonmounts$setAppearance(null);
+        ((DragonHeadRenderState) state).dragonmounts$plus$setAppearance(null);
     }
 
     @ModifyExpressionValue(
@@ -38,7 +38,7 @@ public abstract class LivingEntityRendererMixin {
             @Local ItemStack stack
     ) {
         if (!original && stack.getItem() instanceof DragonHeadItem head) {
-            ((DragonHeadRenderState) state).dragonmounts$setAppearance(head.variant.appearance);
+            ((DragonHeadRenderState) state).dragonmounts$plus$setAppearance(head.variant.appearance);
             return true;
         }
         return original;

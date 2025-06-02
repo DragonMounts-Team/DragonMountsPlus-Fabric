@@ -22,7 +22,7 @@ import java.util.Map;
 @Mixin(Scoreboard.class)
 public abstract class ScoreboardMixin implements ScoreboardAccessor {
     @Unique
-    private final ObjectArrayList<ScoreHolder> dragonmounts$reserved = new ObjectArrayList<>();
+    private final ObjectArrayList<ScoreHolder> dragonmounts$plus$reserved = new ObjectArrayList<>();
     @Shadow
     @Final
     private Map<String, PlayerScores> playerScores;
@@ -45,14 +45,14 @@ public abstract class ScoreboardMixin implements ScoreboardAccessor {
     protected abstract void onScoreChanged(ScoreHolder scoreHolder, Objective objective, Score score);
 
     @Override
-    public void dragonmounts$preventRemoval(ScoreHolder holder) {
-        if (!this.dragonmounts$reserved.contains(holder)) {
-            this.dragonmounts$reserved.add(holder);
+    public void dragonmounts$plus$preventRemoval(ScoreHolder holder) {
+        if (!this.dragonmounts$plus$reserved.contains(holder)) {
+            this.dragonmounts$plus$reserved.add(holder);
         }
     }
 
     @Override
-    public ScoreboardInfo dragonmounts$getInfo(ScoreHolder holder) {
+    public ScoreboardInfo dragonmounts$plus$getInfo(ScoreHolder holder) {
         var name = holder.getScoreboardName();
         var team = this.teamsByPlayer.get(name);
         var scores = this.playerScores.get(name);
@@ -63,14 +63,14 @@ public abstract class ScoreboardMixin implements ScoreboardAccessor {
     }
 
     @Override
-    public void dragonmounts$addPlayerToTeam(String name, String team) {
+    public void dragonmounts$plus$addPlayerToTeam(String name, String team) {
         var $team = this.teamsByPlayer.get(team);
         if ($team == null) return;
         this.addPlayerToTeam(name, $team);
     }
 
     @Override
-    public void dragonmounts$loadEntries(ScoreHolder holder, List<ScoreboardInfo.Entry> entries) {
+    public void dragonmounts$plus$loadEntries(ScoreHolder holder, List<ScoreboardInfo.Entry> entries) {
         if (entries.isEmpty()) return;
         var scores = this.getOrCreatePlayerInfo(holder.getScoreboardName());
         for (var entry : entries) {
@@ -82,9 +82,9 @@ public abstract class ScoreboardMixin implements ScoreboardAccessor {
 
     @Inject(method = "entityRemoved", at = @At("HEAD"), cancellable = true)
     public void reserveEntity(Entity entity, CallbackInfo info) {
-        int index = this.dragonmounts$reserved.indexOf(entity);
+        int index = this.dragonmounts$plus$reserved.indexOf(entity);
         if (index == -1) return;
-        this.dragonmounts$reserved.remove(index);
+        this.dragonmounts$plus$reserved.remove(index);
         info.cancel();
     }
 

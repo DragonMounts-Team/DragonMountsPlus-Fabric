@@ -1,12 +1,8 @@
 package net.dragonmounts.plus.mixin;
 
 import net.dragonmounts.plus.config.ServerConfig;
-import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
-import net.minecraft.network.protocol.common.ClientboundCustomPayloadPacket;
 import net.minecraft.network.protocol.common.custom.BrainDebugPayload;
-import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.network.protocol.game.DebugPackets;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.behavior.BehaviorControl;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
@@ -15,7 +11,6 @@ import net.minecraft.world.level.pathfinder.Node;
 import net.minecraft.world.level.pathfinder.Target;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
-import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -24,6 +19,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
+import static net.dragonmounts.plus.compat.platform.ServerNetworkHandler.sendTracking;
+
 @Mixin(DebugPackets.class)
 public class DebugPacketsMixin {
     @Shadow
@@ -31,19 +28,12 @@ public class DebugPacketsMixin {
         return Collections.emptyList();
     }
 
-    @Unique
-    private static void sendPacket(Entity entity, CustomPacketPayload payload) {
-        var packet = new ClientboundCustomPayloadPacket(payload);
-        for (var player : PlayerLookup.tracking(entity)) {
-            player.connection.send(packet);
-        }
-    }
-
+    @SuppressWarnings("deprecation")
     @Inject(method = "sendEntityBrain", at = @At("HEAD"))
     private static void sendEntityBrain(LivingEntity entity, CallbackInfo info) {
         if (ServerConfig.INSTANCE.debug.get()) {
             var brain = entity.getBrain();
-            sendPacket(entity, new BrainDebugPayload(new BrainDebugPayload.BrainDump(
+            sendTracking(entity, new BrainDebugPayload(new BrainDebugPayload.BrainDump(
                     entity.getUUID(),
                     entity.getId(),
                     entity.getScoreboardName(),

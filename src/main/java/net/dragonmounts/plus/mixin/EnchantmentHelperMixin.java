@@ -21,7 +21,7 @@ public abstract class EnchantmentHelperMixin {
             remap = false
     ))
     private static void xpBonus(ServerLevel a, Entity b, Entity c, int d, CallbackInfoReturnable<Integer> info, @Local LivingEntity killer, @Local MutableFloat exp) {
-        if (killer instanceof ArmorEffectManager.Provider provider && provider.dragonmounts$getManager().isActive(DMArmorEffects.ENCHANTED)) {
+        if (killer instanceof ArmorEffectManager.Provider provider && provider.dragonmounts$plus$getManager().isActive(DMArmorEffects.ENCHANTED)) {
             exp.add(Math.ceil(exp.floatValue() * 0.5F));
         }
     }

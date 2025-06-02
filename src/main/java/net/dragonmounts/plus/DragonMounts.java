@@ -8,6 +8,7 @@ import net.dragonmounts.plus.common.network.c2s.*;
 import net.dragonmounts.plus.common.network.s2c.*;
 import net.dragonmounts.plus.compat.platform.DMAttachments;
 import net.dragonmounts.plus.compat.platform.DMGameRules;
+import net.dragonmounts.plus.compat.platform.DMScreenHandlers;
 import net.dragonmounts.plus.compat.platform.ServerNetworkHandler;
 import net.dragonmounts.plus.compat.registry.DragonType;
 import net.dragonmounts.plus.compat.registry.DragonVariant;
@@ -17,10 +18,14 @@ import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
 import net.fabricmc.fabric.api.event.player.AttackEntityCallback;
+import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup;
 import net.fabricmc.fabric.api.networking.v1.PacketSender;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
+import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerGamePacketListenerImpl;
@@ -32,13 +37,21 @@ public class DragonMounts implements ModInitializer, ServerPlayConnectionEvents.
         DMGameRules.init();
         ClientConfig.init();
         ServerConfig.init();
+        DMDataComponents.init();
         DMEntities.init();
         DMItems.init();
         DMBlocks.init();
         DMBlockEntities.init();
         DMScreenHandlers.init();
-        DMItemGroups.init();
-        DragonVariants.init();
+        DMItemGroups.register((category, title, icon) -> Registry.register(
+                BuiltInRegistries.CREATIVE_MODE_TAB,
+                category.key,
+                FabricItemGroup.builder()
+                        .title(Component.translatable(title))
+                        .icon(icon)
+                        .displayItems(category)
+                        .build()
+        ));
         DMAttachments.init();
         DMSounds.init();
         DMActivities.init();
@@ -84,7 +97,7 @@ public class DragonMounts implements ModInitializer, ServerPlayConnectionEvents.
     @Override
     public void onPlayReady(ServerGamePacketListenerImpl handler, PacketSender sender, MinecraftServer server) {
         var player = handler.player;
-        ((ArmorEffectManager.Provider) player).dragonmounts$getManager().sendInitPacket();
+        ((ArmorEffectManager.Provider) player).dragonmounts$plus$getManager().sendInitPacket();
         DMGameRules.sendInitPacket(player);
     }
 }

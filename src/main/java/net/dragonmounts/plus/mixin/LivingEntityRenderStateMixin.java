@@ -10,16 +10,16 @@ import org.spongepowered.asm.mixin.Unique;
 @Mixin(LivingEntityRenderState.class)
 public abstract class LivingEntityRenderStateMixin implements DragonHeadRenderState {
     @Unique
-    private VariantAppearance headAppearance;
+    private VariantAppearance dragonmounts$plus$headAppearance;
 
     @Override
-    public void dragonmounts$setAppearance(VariantAppearance appearance) {
-        this.headAppearance = appearance;
+    public void dragonmounts$plus$setAppearance(VariantAppearance appearance) {
+        this.dragonmounts$plus$headAppearance = appearance;
     }
 
     @Override
-    public @Nullable VariantAppearance dragonmounts$getAppearance() {
-        return this.headAppearance;
+    public @Nullable VariantAppearance dragonmounts$plus$getAppearance() {
+        return this.dragonmounts$plus$headAppearance;
     }
 
     private LivingEntityRenderStateMixin() {}

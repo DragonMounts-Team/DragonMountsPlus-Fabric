@@ -19,7 +19,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import static net.dragonmounts.plus.common.client.renderer.block.DragonHeadRenderer.renderHead;
 
-
 @Mixin(CustomHeadLayer.class)
 public abstract class CustomHeadLayerMixin<S extends LivingEntityRenderState, M extends EntityModel<S> & HeadedModel> extends RenderLayer<S, M> {
     @Shadow
@@ -40,7 +39,7 @@ public abstract class CustomHeadLayerMixin<S extends LivingEntityRenderState, M 
             float g,
             CallbackInfo info
     ) {
-        var appearance = ((DragonHeadRenderState) state).dragonmounts$getAppearance();
+        var appearance = ((DragonHeadRenderState) state).dragonmounts$plus$getAppearance();
         if (appearance == null) return;
         matrices.pushPose();
         matrices.scale(this.transforms.horizontalScale(), 1.0F, this.transforms.horizontalScale());

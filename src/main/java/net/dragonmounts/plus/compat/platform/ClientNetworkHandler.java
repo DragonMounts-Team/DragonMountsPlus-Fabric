@@ -54,7 +54,7 @@ public class ClientNetworkHandler {
     public static void handleCooldownSync(SyncCooldownPayload payload, ClientPlayNetworking.Context context) {
         var category = CooldownCategory.REGISTRY.byId(payload.id());
         if (category == null) return;
-        ((Provider) context.player()).dragonmounts$getManager().setCooldown(category, payload.cd());
+        ((Provider) context.player()).dragonmounts$plus$getManager().setCooldown(category, payload.cd());
     }
 
     public static void handleEggShake(ShakeEggPayload payload, ClientPlayNetworking.Context context) {

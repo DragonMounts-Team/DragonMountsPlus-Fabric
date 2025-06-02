@@ -2,6 +2,8 @@ package net.dragonmounts.plus.data;
 
 import net.dragonmounts.plus.common.init.DMBlocks;
 import net.dragonmounts.plus.common.init.DragonVariants;
+import net.dragonmounts.plus.compat.registry.DeferredBlock;
+import net.dragonmounts.plus.compat.registry.DragonVariant;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricBlockLootTableProvider;
 import net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags;
@@ -35,11 +37,21 @@ import java.util.stream.Stream;
 public class DMBlockLootProvider extends FabricBlockLootTableProvider {
     private static final Set<Item> EXPLOSION_RESISTANT = Stream.concat(
             DMBlocks.BUILTIN_DRAGON_EGGS.stream().map(ItemLike::asItem),
-            DragonVariants.BUILTIN_VALUES.stream().map(variant -> variant.head.item())
+            DragonVariants.BUILTIN_VALUES.stream().map(variant -> variant.head.item.get())
     ).collect(Collectors.toSet());
 
     protected DMBlockLootProvider(FabricDataOutput output, CompletableFuture<HolderLookup.Provider> future) {
         super(output, future);
+    }
+
+    public void dropSelf(DeferredBlock<?> block) {
+        this.dropSelf(block.get());
+    }
+
+    public void dropHead(DragonVariant variant) {
+        var head = variant.head;
+        var value = head.standing.get();
+        this.dropOther(value, head);
     }
 
     @Override
@@ -47,11 +59,7 @@ public class DMBlockLootProvider extends FabricBlockLootTableProvider {
         this.dropSelf(DMBlocks.DRAGON_NEST);
         DMBlocks.BUILTIN_DRAGON_EGGS.forEach(this::dropSelf);
         DMBlocks.BUILTIN_DRAGON_SCALE_BLOCKS.forEach(this::dropSelf);
-        DragonVariants.BUILTIN_VALUES.forEach(variant -> {
-            var head = variant.head;
-            this.dropOther(head.standing(), head);
-            this.dropOther(head.wall(), head);
-        });
+        DragonVariants.BUILTIN_VALUES.forEach(this::dropHead);
         this.fixShear();
     }
 

@@ -1,12 +1,11 @@
 package net.dragonmounts.plus.data;
 
-import com.mojang.logging.LogUtils;
 import net.dragonmounts.plus.common.init.DMBlocks;
 import net.dragonmounts.plus.common.init.DMItems;
 import net.dragonmounts.plus.common.item.*;
 import net.dragonmounts.plus.common.tag.DMBlockTags;
 import net.dragonmounts.plus.common.tag.DMItemTags;
-import net.dragonmounts.plus.common.util.DragonScaleArmorSuit;
+import net.dragonmounts.plus.compat.registry.DragonScaleArmorSuit;
 import net.dragonmounts.plus.compat.registry.DragonType;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagProvider;
@@ -16,14 +15,11 @@ import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
-import org.slf4j.Logger;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 
 public class DMItemTagProvider extends FabricTagProvider.ItemTagProvider {
-    private static final Logger LOGGER = LogUtils.getLogger();
-
     public DMItemTagProvider(
             FabricDataOutput output,
             CompletableFuture<HolderLookup.Provider> provider,
@@ -40,30 +36,30 @@ public class DMItemTagProvider extends FabricTagProvider.ItemTagProvider {
     @Override
     protected void addTags(HolderLookup.Provider registries) {
         var scales = this.getOrCreateTagBuilder(DMItemTags.DRAGON_SCALES);
-        this.addToParent(scales, DMItemTags.AETHER_DRAGON_SCALES).add(DMItems.AETHER_DRAGON_SCALES);
-        this.addToParent(scales, DMItemTags.ENCHANTED_DRAGON_SCALES).add(DMItems.ENCHANTED_DRAGON_SCALES);
-        this.addToParent(scales, DMItemTags.ENDER_DRAGON_SCALES).add(DMItems.ENDER_DRAGON_SCALES);
-        this.addToParent(scales, DMItemTags.FIRE_DRAGON_SCALES).add(DMItems.FIRE_DRAGON_SCALES);
-        this.addToParent(scales, DMItemTags.FOREST_DRAGON_SCALES).add(DMItems.FOREST_DRAGON_SCALES);
-        this.addToParent(scales, DMItemTags.ICE_DRAGON_SCALES).add(DMItems.ICE_DRAGON_SCALES);
-        this.addToParent(scales, DMItemTags.MOONLIGHT_DRAGON_SCALES).add(DMItems.MOONLIGHT_DRAGON_SCALES);
-        this.addToParent(scales, DMItemTags.NETHER_DRAGON_SCALES).add(DMItems.NETHER_DRAGON_SCALES);
-        this.addToParent(scales, DMItemTags.SCULK_DRAGON_SCALES).add(DMItems.SCULK_DRAGON_SCALES);
-        this.addToParent(scales, DMItemTags.STORM_DRAGON_SCALES).add(DMItems.STORM_DRAGON_SCALES);
-        this.addToParent(scales, DMItemTags.SUNLIGHT_DRAGON_SCALES).add(DMItems.SUNLIGHT_DRAGON_SCALES);
-        this.addToParent(scales, DMItemTags.TERRA_DRAGON_SCALES).add(DMItems.TERRA_DRAGON_SCALES);
-        this.addToParent(scales, DMItemTags.WATER_DRAGON_SCALES).add(DMItems.WATER_DRAGON_SCALES);
-        this.addToParent(scales, DMItemTags.ZOMBIE_DRAGON_SCALES).add(DMItems.ZOMBIE_DRAGON_SCALES);
-        this.addToParent(scales, DMItemTags.DARK_DRAGON_SCALES).add(DMItems.DARK_DRAGON_SCALES);
+        this.addToParent(scales, DMItemTags.AETHER_DRAGON_SCALES).add(DMItems.AETHER_DRAGON_SCALES.key);
+        this.addToParent(scales, DMItemTags.ENCHANTED_DRAGON_SCALES).add(DMItems.ENCHANTED_DRAGON_SCALES.key);
+        this.addToParent(scales, DMItemTags.ENDER_DRAGON_SCALES).add(DMItems.ENDER_DRAGON_SCALES.key);
+        this.addToParent(scales, DMItemTags.FIRE_DRAGON_SCALES).add(DMItems.FIRE_DRAGON_SCALES.key);
+        this.addToParent(scales, DMItemTags.FOREST_DRAGON_SCALES).add(DMItems.FOREST_DRAGON_SCALES.key);
+        this.addToParent(scales, DMItemTags.ICE_DRAGON_SCALES).add(DMItems.ICE_DRAGON_SCALES.key);
+        this.addToParent(scales, DMItemTags.MOONLIGHT_DRAGON_SCALES).add(DMItems.MOONLIGHT_DRAGON_SCALES.key);
+        this.addToParent(scales, DMItemTags.NETHER_DRAGON_SCALES).add(DMItems.NETHER_DRAGON_SCALES.key);
+        this.addToParent(scales, DMItemTags.SCULK_DRAGON_SCALES).add(DMItems.SCULK_DRAGON_SCALES.key);
+        this.addToParent(scales, DMItemTags.STORM_DRAGON_SCALES).add(DMItems.STORM_DRAGON_SCALES.key);
+        this.addToParent(scales, DMItemTags.SUNLIGHT_DRAGON_SCALES).add(DMItems.SUNLIGHT_DRAGON_SCALES.key);
+        this.addToParent(scales, DMItemTags.TERRA_DRAGON_SCALES).add(DMItems.TERRA_DRAGON_SCALES.key);
+        this.addToParent(scales, DMItemTags.WATER_DRAGON_SCALES).add(DMItems.WATER_DRAGON_SCALES.key);
+        this.addToParent(scales, DMItemTags.ZOMBIE_DRAGON_SCALES).add(DMItems.ZOMBIE_DRAGON_SCALES.key);
+        this.addToParent(scales, DMItemTags.DARK_DRAGON_SCALES).add(DMItems.DARK_DRAGON_SCALES.key);
         this.getOrCreateTagBuilder(DMItemTags.HARD_SHEARS)
-                .add(DMItems.DIAMOND_SHEARS)
-                .add(DMItems.NETHERITE_SHEARS);
+                .add(DMItems.DIAMOND_SHEARS.key)
+                .add(DMItems.NETHERITE_SHEARS.key);
         this.getOrCreateTagBuilder(ItemTags.PIGLIN_LOVED)
-                .add(DMItems.GOLDEN_DRAGON_ARMOR);
+                .add(DMItems.GOLDEN_DRAGON_ARMOR.key);
         this.getOrCreateTagBuilder(ItemTags.PIGLIN_REPELLENTS)
                 .add(DMBlocks.DRAGON_CORE.asItem());
         this.getOrCreateTagBuilder(DMItemTags.BATONS)
-                .addOptionalTag(ConventionalItemTags.RODS)
+                .forceAddTag(ConventionalItemTags.RODS)
                 .add(Items.DEBUG_STICK)
                 .add(Items.BONE)
                 .add(Items.BAMBOO);
@@ -72,10 +68,11 @@ public class DMItemTagProvider extends FabricTagProvider.ItemTagProvider {
         var leg = this.getOrCreateTagBuilder(ItemTags.LEG_ARMOR);
         var foot = this.getOrCreateTagBuilder(ItemTags.FOOT_ARMOR);
         Consumer<DragonScaleArmorSuit> addScaleSuit = suit -> {
-            head.add(suit.helmet);
-            chest.add(suit.chestplate);
-            leg.add(suit.leggings);
-            foot.add(suit.boots);
+            var info = suit.info;
+            head.add(info.helmet());
+            chest.add(info.chestplate());
+            leg.add(info.leggings());
+            foot.add(info.boots());
         };
         Consumer<Item> addToSwords = this.getOrCreateTagBuilder(ItemTags.SWORDS)::add;
         Consumer<Item> addToBows = this.getOrCreateTagBuilder(DMItemTags.DRAGON_SCALE_BOWS)::add;
@@ -100,11 +97,11 @@ public class DMItemTagProvider extends FabricTagProvider.ItemTagProvider {
                 .add(Items.AXOLOTL_BUCKET)
                 .add(Items.TADPOLE_BUCKET);
         this.getOrCreateTagBuilder(DMItemTags.COOKED_DRAGON_FOODS)
-                .addOptionalTag(ConventionalItemTags.COOKED_MEAT_FOODS)
-                .addOptionalTag(ConventionalItemTags.COOKED_FISH_FOODS);
+                .forceAddTag(ConventionalItemTags.COOKED_MEAT_FOODS)
+                .forceAddTag(ConventionalItemTags.COOKED_FISH_FOODS);
         this.getOrCreateTagBuilder(DMItemTags.RAW_DRAGON_FOODS)
-                .addOptionalTag(ConventionalItemTags.RAW_MEAT_FOODS)
-                .addOptionalTag(ConventionalItemTags.RAW_FISH_FOODS)
+                .forceAddTag(ConventionalItemTags.RAW_MEAT_FOODS)
+                .forceAddTag(ConventionalItemTags.RAW_FISH_FOODS)
                 .add(Items.COD_BUCKET)
                 .add(Items.SALMON_BUCKET)
                 .add(Items.TROPICAL_FISH_BUCKET);
@@ -121,6 +118,6 @@ public class DMItemTagProvider extends FabricTagProvider.ItemTagProvider {
         this.copy(DMBlockTags.DRAGON_EGGS, DMItemTags.DRAGON_EGGS);
         this.copy(DMBlockTags.DRAGON_SCALE_BLOCKS, DMItemTags.DRAGON_SCALE_BLOCKS);
         this.getOrCreateTagBuilder(ItemTags.PIGLIN_REPELLENTS).add(DMBlocks.DRAGON_CORE.asItem());
-        this.getOrCreateTagBuilder(ItemTags.PIGLIN_LOVED).add(DMItems.GOLDEN_DRAGON_ARMOR);
+        this.getOrCreateTagBuilder(ItemTags.PIGLIN_LOVED).add(DMItems.GOLDEN_DRAGON_ARMOR.key);
     }
 }

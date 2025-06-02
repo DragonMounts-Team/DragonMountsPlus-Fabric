@@ -82,7 +82,7 @@ public class DoubleEntry extends ConfigEntry<Double> {
     }
 
     @Override
-    public final LiteralArgumentBuilder<CommandSourceStack> generateCommand() {
+    public final LiteralArgumentBuilder<CommandSourceStack> buildCommand() {
         return this.generateCommand(this.min, this.max);
     }
 

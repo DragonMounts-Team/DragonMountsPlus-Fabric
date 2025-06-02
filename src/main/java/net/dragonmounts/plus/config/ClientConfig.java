@@ -5,7 +5,7 @@ import net.fabricmc.loader.impl.FabricLoaderImpl;
 import net.minecraft.nbt.CompoundTag;
 
 public class ClientConfig extends ConfigHolder {
-    public static final ClientConfig INSTANCE = new ClientConfig(DragonMountsShared.MOD_ID);
+    public static final ClientConfig INSTANCE = new ClientConfig(DragonMountsShared.NAMESPACE);
     public final FloatEntry camera_distance = new FloatEntry("CameraDistance", "camera_distance", 20F);
     public final FloatEntry camera_offset = new FloatEntry("CameraOffset", "camera_offset", 0F);
     public final BooleanEntry converge_pitch_angle = new BooleanEntry("ConvergePitchAngle", "converge_pitch_angle", true);

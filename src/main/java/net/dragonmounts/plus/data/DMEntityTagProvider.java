@@ -16,14 +16,12 @@ public class DMEntityTagProvider extends FabricTagProvider.EntityTypeTagProvider
 
     @Override
     protected void addTags(HolderLookup.Provider registries) {
-        this.getOrCreateTagBuilder(EntityTypeTags.CAN_BREATHE_UNDER_WATER)
-                .add(DMEntities.TAMEABLE_DRAGON)
-                .add(DMEntities.HATCHABLE_DRAGON_EGG);
-        this.getOrCreateTagBuilder(EntityTypeTags.FALL_DAMAGE_IMMUNE)
-                .add(DMEntities.TAMEABLE_DRAGON)
-                .add(DMEntities.HATCHABLE_DRAGON_EGG);
         this.getOrCreateTagBuilder(DMEntityTags.DRAGONS)
-                .add(DMEntities.TAMEABLE_DRAGON)
-                .add(DMEntities.HATCHABLE_DRAGON_EGG);
+                .add(DMEntities.TAMEABLE_DRAGON.key)
+                .add(DMEntities.HATCHABLE_DRAGON_EGG.key);
+        this.getOrCreateTagBuilder(EntityTypeTags.CAN_BREATHE_UNDER_WATER)
+                .addTag(DMEntityTags.DRAGONS);
+        this.getOrCreateTagBuilder(EntityTypeTags.FALL_DAMAGE_IMMUNE)
+                .addTag(DMEntityTags.DRAGONS);
     }
 }

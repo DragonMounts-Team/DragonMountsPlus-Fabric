@@ -4,7 +4,7 @@ import net.dragonmounts.plus.common.init.DMBlocks;
 import net.dragonmounts.plus.common.init.DMItems;
 import net.dragonmounts.plus.common.item.*;
 import net.dragonmounts.plus.common.tag.DMItemTags;
-import net.dragonmounts.plus.common.util.DragonScaleArmorSuit;
+import net.dragonmounts.plus.compat.registry.DragonScaleArmorSuit;
 import net.dragonmounts.plus.compat.registry.DragonType;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricRecipeProvider;
@@ -50,10 +50,10 @@ public class DMRecipeProvider extends RecipeProvider {
         blasting(Ingredient.of(DMItems.GOLDEN_DRAGON_ARMOR), RecipeCategory.MISC, Items.GOLD_INGOT, 1.0F, 100)
                 .unlockedBy("has_armor", has(DMItems.GOLDEN_DRAGON_ARMOR))
                 .save(output, makeKey(registry, "gold_ingot_form_blasting"));
-        dragonArmor(output, ConventionalItemTags.IRON_INGOTS, ConventionalItemTags.STORAGE_BLOCKS_IRON, DMItems.IRON_DRAGON_ARMOR);
-        dragonArmor(output, ConventionalItemTags.GOLD_INGOTS, ConventionalItemTags.STORAGE_BLOCKS_GOLD, DMItems.GOLDEN_DRAGON_ARMOR);
-        dragonArmor(output, ConventionalItemTags.EMERALD_GEMS, ConventionalItemTags.STORAGE_BLOCKS_EMERALD, DMItems.EMERALD_DRAGON_ARMOR);
-        dragonArmor(output, ConventionalItemTags.DIAMOND_GEMS, ConventionalItemTags.STORAGE_BLOCKS_DIAMOND, DMItems.DIAMOND_DRAGON_ARMOR);
+        dragonArmor(output, ConventionalItemTags.IRON_INGOTS, ConventionalItemTags.STORAGE_BLOCKS_IRON, DMItems.IRON_DRAGON_ARMOR.get());
+        dragonArmor(output, ConventionalItemTags.GOLD_INGOTS, ConventionalItemTags.STORAGE_BLOCKS_GOLD, DMItems.GOLDEN_DRAGON_ARMOR.get());
+        dragonArmor(output, ConventionalItemTags.EMERALD_GEMS, ConventionalItemTags.STORAGE_BLOCKS_EMERALD, DMItems.EMERALD_DRAGON_ARMOR.get());
+        dragonArmor(output, ConventionalItemTags.DIAMOND_GEMS, ConventionalItemTags.STORAGE_BLOCKS_DIAMOND, DMItems.DIAMOND_DRAGON_ARMOR.get());
         for (DragonType type : DragonType.REGISTRY) {
             var scales = type.getInstance(DragonScalesItem.class, null);
             if (scales == null) continue;
@@ -132,10 +132,10 @@ public class DMRecipeProvider extends RecipeProvider {
 
     private void dragonScaleArmors(RecipeOutput consumer, Item scales, DragonScaleArmorSuit suit) {
         if (suit == null) return;
-        shaped(RecipeCategory.COMBAT, suit.helmet).define('X', scales).pattern("XXX").pattern("X X").unlockedBy("has_dragon_scales", has(scales)).save(consumer);
-        shaped(RecipeCategory.COMBAT, suit.chestplate).define('X', scales).pattern("X X").pattern("XXX").pattern("XXX").unlockedBy("has_dragon_scales", has(scales)).save(consumer);
-        shaped(RecipeCategory.COMBAT, suit.leggings).define('X', scales).pattern("XXX").pattern("X X").pattern("X X").unlockedBy("has_dragon_scales", has(scales)).save(consumer);
-        shaped(RecipeCategory.COMBAT, suit.boots).define('X', scales).pattern("X X").pattern("X X").unlockedBy("has_dragon_scales", has(scales)).save(consumer);
+        shaped(RecipeCategory.COMBAT, suit.getHelmet()).define('X', scales).pattern("XXX").pattern("X X").unlockedBy("has_dragon_scales", has(scales)).save(consumer);
+        shaped(RecipeCategory.COMBAT, suit.getChestplate()).define('X', scales).pattern("X X").pattern("XXX").pattern("XXX").unlockedBy("has_dragon_scales", has(scales)).save(consumer);
+        shaped(RecipeCategory.COMBAT, suit.getLeggings()).define('X', scales).pattern("XXX").pattern("X X").pattern("X X").unlockedBy("has_dragon_scales", has(scales)).save(consumer);
+        shaped(RecipeCategory.COMBAT, suit.getBoots()).define('X', scales).pattern("X X").pattern("X X").unlockedBy("has_dragon_scales", has(scales)).save(consumer);
     }
 
     private void dragonScaleBow(RecipeOutput consumer, Item scales, Item result) {

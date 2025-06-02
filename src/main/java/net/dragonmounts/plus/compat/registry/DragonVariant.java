@@ -2,9 +2,9 @@ package net.dragonmounts.plus.compat.registry;
 
 import com.mojang.serialization.Codec;
 import net.dragonmounts.plus.common.api.DragonTypified;
-import net.dragonmounts.plus.common.block.DragonHeadBlock;
 import net.dragonmounts.plus.common.client.variant.VariantAppearance;
 import net.dragonmounts.plus.common.init.DragonVariants;
+import net.dragonmounts.plus.common.util.DragonHead;
 import net.minecraft.core.DefaultedMappedRegistry;
 import net.minecraft.core.Registry;
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -47,13 +47,13 @@ public class DragonVariant implements DragonTypified {
     public final DragonType type;
     public final ResourceLocation identifier;
     public final VariantAppearance appearance;
-    public final DragonHeadBlock.Holder head;
+    public final DragonHead head;
 
     public DragonVariant(
             DragonType type,
             ResourceLocation identifier,
             VariantAppearance appearance,
-            Function<DragonVariant, DragonHeadBlock.Holder> factory
+            Function<DragonVariant, DragonHead> factory
     ) {
         this.type = type;
         this.identifier = identifier;

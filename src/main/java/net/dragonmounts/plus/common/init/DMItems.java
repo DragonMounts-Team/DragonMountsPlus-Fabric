@@ -27,6 +27,74 @@ public class DMItems {
             DMBlocks.DRAGON_CORE,
             (block, props) -> new BlockItem(block, props.rarity(Rarity.RARE))
     );
+    public static final DeferredBlockItem<HatchableDragonEggBlock, ?> AETHER_DRAGON_EGG = DRAGON_EGGS.register(
+            DMBlocks.AETHER_DRAGON_EGG,
+            (block, props) -> makeDragonEggBlock(block, props.rarity(Rarity.UNCOMMON))
+    );
+    public static final DeferredBlockItem<HatchableDragonEggBlock, ?> DARK_DRAGON_EGG = DRAGON_EGGS.register(
+            DMBlocks.DARK_DRAGON_EGG,
+            (block, props) -> makeDragonEggBlock(block, props.rarity(Rarity.UNCOMMON))
+    );
+    public static final DeferredBlockItem<HatchableDragonEggBlock, ?> ENCHANTED_DRAGON_EGG = DRAGON_EGGS.register(
+            DMBlocks.ENCHANTED_DRAGON_EGG,
+            (block, props) -> makeDragonEggBlock(block, props.rarity(Rarity.UNCOMMON))
+    );
+    public static final DeferredBlockItem<HatchableDragonEggBlock, ?> ENDER_DRAGON_EGG = DRAGON_EGGS.register(
+            DMBlocks.ENDER_DRAGON_EGG,
+            (block, props) -> makeDragonEggBlock(block, props.rarity(Rarity.EPIC))
+    );
+    public static final DeferredBlockItem<HatchableDragonEggBlock, ?> FIRE_DRAGON_EGG = DRAGON_EGGS.register(
+            DMBlocks.FIRE_DRAGON_EGG,
+            (block, props) -> makeDragonEggBlock(block, props.rarity(Rarity.UNCOMMON))
+    );
+    public static final DeferredBlockItem<HatchableDragonEggBlock, ?> FOREST_DRAGON_EGG = DRAGON_EGGS.register(
+            DMBlocks.FOREST_DRAGON_EGG,
+            (block, props) -> makeDragonEggBlock(block, props.rarity(Rarity.UNCOMMON))
+    );
+    public static final DeferredBlockItem<HatchableDragonEggBlock, ?> ICE_DRAGON_EGG = DRAGON_EGGS.register(
+            DMBlocks.ICE_DRAGON_EGG,
+            (block, props) -> makeDragonEggBlock(block, props.rarity(Rarity.UNCOMMON))
+    );
+    public static final DeferredBlockItem<HatchableDragonEggBlock, ?> MOONLIGHT_DRAGON_EGG = DRAGON_EGGS.register(
+            DMBlocks.MOONLIGHT_DRAGON_EGG,
+            (block, props) -> makeDragonEggBlock(block, props.rarity(Rarity.UNCOMMON))
+    );
+    public static final DeferredBlockItem<HatchableDragonEggBlock, ?> NETHER_DRAGON_EGG = DRAGON_EGGS.register(
+            DMBlocks.NETHER_DRAGON_EGG,
+            (block, props) -> makeDragonEggBlock(block, props.rarity(Rarity.UNCOMMON))
+    );
+    public static final DeferredBlockItem<HatchableDragonEggBlock, ?> SCULK_DRAGON_EGG = DRAGON_EGGS.register(
+            DMBlocks.SCULK_DRAGON_EGG,
+            (block, props) -> makeDragonEggBlock(block, props.rarity(Rarity.RARE).fireResistant())
+    );
+    public static final DeferredBlockItem<HatchableDragonEggBlock, ?> SKELETON_DRAGON_EGG = DRAGON_EGGS.register(
+            DMBlocks.SKELETON_DRAGON_EGG,
+            (block, props) -> makeDragonEggBlock(block, props.rarity(Rarity.UNCOMMON))
+    );
+    public static final DeferredBlockItem<HatchableDragonEggBlock, ?> STORM_DRAGON_EGG = DRAGON_EGGS.register(
+            DMBlocks.STORM_DRAGON_EGG,
+            (block, props) -> makeDragonEggBlock(block, props.rarity(Rarity.UNCOMMON))
+    );
+    public static final DeferredBlockItem<HatchableDragonEggBlock, ?> SUNLIGHT_DRAGON_EGG = DRAGON_EGGS.register(
+            DMBlocks.SUNLIGHT_DRAGON_EGG,
+            (block, props) -> makeDragonEggBlock(block, props.rarity(Rarity.UNCOMMON))
+    );
+    public static final DeferredBlockItem<HatchableDragonEggBlock, ?> TERRA_DRAGON_EGG = DRAGON_EGGS.register(
+            DMBlocks.TERRA_DRAGON_EGG,
+            (block, props) -> makeDragonEggBlock(block, props.rarity(Rarity.UNCOMMON))
+    );
+    public static final DeferredBlockItem<HatchableDragonEggBlock, ?> WATER_DRAGON_EGG = DRAGON_EGGS.register(
+            DMBlocks.WATER_DRAGON_EGG,
+            (block, props) -> makeDragonEggBlock(block, props.rarity(Rarity.UNCOMMON))
+    );
+    public static final DeferredBlockItem<HatchableDragonEggBlock, ?> WITHER_DRAGON_EGG = DRAGON_EGGS.register(
+            DMBlocks.WITHER_DRAGON_EGG,
+            (block, props) -> makeDragonEggBlock(block, props.rarity(Rarity.UNCOMMON))
+    );
+    public static final DeferredBlockItem<HatchableDragonEggBlock, ?> ZOMBIE_DRAGON_EGG = DRAGON_EGGS.register(
+            DMBlocks.ZOMBIE_DRAGON_EGG,
+            (block, props) -> makeDragonEggBlock(block, props.rarity(Rarity.UNCOMMON))
+    );
     public static final DeferredBlockItem<FlammableBlock, ?> DRAGON_NEST = BLOCK_TAB.register(DMBlocks.DRAGON_NEST, BlockItem::new);
     public static final DeferredBlockItem<DragonScaleBlock, ?> AETHER_DRAGON_SCALE_BLOCK = BLOCK_TAB.register(DMBlocks.AETHER_DRAGON_SCALE_BLOCK, DMItems::makeDragonScaleBlock);
     public static final DeferredBlockItem<DragonScaleBlock, ?> DARK_DRAGON_SCALE_BLOCK = BLOCK_TAB.register(DMBlocks.DARK_DRAGON_SCALE_BLOCK, DMItems::makeDragonScaleBlock);
@@ -43,74 +111,6 @@ public class DMItems {
     public static final DeferredBlockItem<DragonScaleBlock, ?> TERRA_DRAGON_SCALE_BLOCK = BLOCK_TAB.register(DMBlocks.TERRA_DRAGON_SCALE_BLOCK, DMItems::makeDragonScaleBlock);
     public static final DeferredBlockItem<DragonScaleBlock, ?> WATER_DRAGON_SCALE_BLOCK = BLOCK_TAB.register(DMBlocks.WATER_DRAGON_SCALE_BLOCK, DMItems::makeDragonScaleBlock);
     public static final DeferredBlockItem<DragonScaleBlock, ?> ZOMBIE_DRAGON_SCALE_BLOCK = BLOCK_TAB.register(DMBlocks.ZOMBIE_DRAGON_SCALE_BLOCK, DMItems::makeDragonScaleBlock);
-    public static final DeferredBlockItem<HatchableDragonEggBlock, ?> AETHER_DRAGON_EGG = BLOCK_TAB.register(
-            DMBlocks.AETHER_DRAGON_EGG,
-            (block, props) -> makeDragonEggBlock(block, props.rarity(Rarity.UNCOMMON))
-    );
-    public static final DeferredBlockItem<HatchableDragonEggBlock, ?> DARK_DRAGON_EGG = BLOCK_TAB.register(
-            DMBlocks.DARK_DRAGON_EGG,
-            (block, props) -> makeDragonEggBlock(block, props.rarity(Rarity.UNCOMMON))
-    );
-    public static final DeferredBlockItem<HatchableDragonEggBlock, ?> ENCHANTED_DRAGON_EGG = BLOCK_TAB.register(
-            DMBlocks.ENCHANTED_DRAGON_EGG,
-            (block, props) -> makeDragonEggBlock(block, props.rarity(Rarity.UNCOMMON))
-    );
-    public static final DeferredBlockItem<HatchableDragonEggBlock, ?> ENDER_DRAGON_EGG = BLOCK_TAB.register(
-            DMBlocks.ENDER_DRAGON_EGG,
-            (block, props) -> makeDragonEggBlock(block, props.rarity(Rarity.EPIC))
-    );
-    public static final DeferredBlockItem<HatchableDragonEggBlock, ?> FIRE_DRAGON_EGG = BLOCK_TAB.register(
-            DMBlocks.FIRE_DRAGON_EGG,
-            (block, props) -> makeDragonEggBlock(block, props.rarity(Rarity.UNCOMMON))
-    );
-    public static final DeferredBlockItem<HatchableDragonEggBlock, ?> FOREST_DRAGON_EGG = BLOCK_TAB.register(
-            DMBlocks.FOREST_DRAGON_EGG,
-            (block, props) -> makeDragonEggBlock(block, props.rarity(Rarity.UNCOMMON))
-    );
-    public static final DeferredBlockItem<HatchableDragonEggBlock, ?> ICE_DRAGON_EGG = BLOCK_TAB.register(
-            DMBlocks.ICE_DRAGON_EGG,
-            (block, props) -> makeDragonEggBlock(block, props.rarity(Rarity.UNCOMMON))
-    );
-    public static final DeferredBlockItem<HatchableDragonEggBlock, ?> MOONLIGHT_DRAGON_EGG = BLOCK_TAB.register(
-            DMBlocks.MOONLIGHT_DRAGON_EGG,
-            (block, props) -> makeDragonEggBlock(block, props.rarity(Rarity.UNCOMMON))
-    );
-    public static final DeferredBlockItem<HatchableDragonEggBlock, ?> NETHER_DRAGON_EGG = BLOCK_TAB.register(
-            DMBlocks.NETHER_DRAGON_EGG,
-            (block, props) -> makeDragonEggBlock(block, props.rarity(Rarity.UNCOMMON))
-    );
-    public static final DeferredBlockItem<HatchableDragonEggBlock, ?> SCULK_DRAGON_EGG = BLOCK_TAB.register(
-            DMBlocks.SCULK_DRAGON_EGG,
-            (block, props) -> makeDragonEggBlock(block, props.rarity(Rarity.RARE).fireResistant())
-    );
-    public static final DeferredBlockItem<HatchableDragonEggBlock, ?> SKELETON_DRAGON_EGG = BLOCK_TAB.register(
-            DMBlocks.SKELETON_DRAGON_EGG,
-            (block, props) -> makeDragonEggBlock(block, props.rarity(Rarity.UNCOMMON))
-    );
-    public static final DeferredBlockItem<HatchableDragonEggBlock, ?> STORM_DRAGON_EGG = BLOCK_TAB.register(
-            DMBlocks.STORM_DRAGON_EGG,
-            (block, props) -> makeDragonEggBlock(block, props.rarity(Rarity.UNCOMMON))
-    );
-    public static final DeferredBlockItem<HatchableDragonEggBlock, ?> SUNLIGHT_DRAGON_EGG = BLOCK_TAB.register(
-            DMBlocks.SUNLIGHT_DRAGON_EGG,
-            (block, props) -> makeDragonEggBlock(block, props.rarity(Rarity.UNCOMMON))
-    );
-    public static final DeferredBlockItem<HatchableDragonEggBlock, ?> TERRA_DRAGON_EGG = BLOCK_TAB.register(
-            DMBlocks.TERRA_DRAGON_EGG,
-            (block, props) -> makeDragonEggBlock(block, props.rarity(Rarity.UNCOMMON))
-    );
-    public static final DeferredBlockItem<HatchableDragonEggBlock, ?> WATER_DRAGON_EGG = BLOCK_TAB.register(
-            DMBlocks.WATER_DRAGON_EGG,
-            (block, props) -> makeDragonEggBlock(block, props.rarity(Rarity.UNCOMMON))
-    );
-    public static final DeferredBlockItem<HatchableDragonEggBlock, ?> WITHER_DRAGON_EGG = BLOCK_TAB.register(
-            DMBlocks.WITHER_DRAGON_EGG,
-            (block, props) -> makeDragonEggBlock(block, props.rarity(Rarity.UNCOMMON))
-    );
-    public static final DeferredBlockItem<HatchableDragonEggBlock, ?> ZOMBIE_DRAGON_EGG = BLOCK_TAB.register(
-            DMBlocks.ZOMBIE_DRAGON_EGG,
-            (block, props) -> makeDragonEggBlock(block, props.rarity(Rarity.UNCOMMON))
-    );
     public static final DeferredItem<DragonScalesItem> AETHER_DRAGON_SCALES = ITEM_TAB.register("aether_dragon_scales", props -> makeDragonScales(DragonTypes.AETHER, props));
     public static final DeferredItem<DragonScalesItem> ENCHANTED_DRAGON_SCALES = ITEM_TAB.register("enchanted_dragon_scales", props -> makeDragonScales(DragonTypes.ENCHANTED, props));
     public static final DeferredItem<DragonScalesItem> ENDER_DRAGON_SCALES = ITEM_TAB.register("ender_dragon_scales", props -> makeDragonScales(DragonTypes.ENDER, props));

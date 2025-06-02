@@ -26,4 +26,6 @@ public abstract class CameraMixin {
             info.cancel();
         }
     }
+
+    private CameraMixin() {}
 }

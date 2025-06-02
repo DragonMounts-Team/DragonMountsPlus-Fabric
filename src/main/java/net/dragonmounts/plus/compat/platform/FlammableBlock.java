@@ -12,8 +12,8 @@ public class FlammableBlock extends Block {
         return FlammableBlockRegistry.getDefaultInstance().get(state.getBlock()).getBurnChance();
     }
 
-    public FlammableBlock(int burn, int speed, Properties props) {
+    public FlammableBlock(int flammability, int spreadSpeed, Properties props) {
         super(props);
-        FlammableBlockRegistry.getDefaultInstance().add(this, burn, speed);
+        FlammableBlockRegistry.getDefaultInstance().add(this, flammability, spreadSpeed);
     }
 }

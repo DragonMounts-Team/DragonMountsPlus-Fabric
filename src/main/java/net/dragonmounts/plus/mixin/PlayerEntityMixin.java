@@ -47,16 +47,16 @@ public abstract class PlayerEntityMixin extends LivingEntity implements Provider
     public abstract void setItemSlot(EquipmentSlot equipmentSlot, ItemStack itemStack);
 
     @Unique
-    protected ArmorEffectManagerImpl manager = new ArmorEffectManagerImpl(Player.class.cast(this));
+    protected ArmorEffectManagerImpl dragonmounts$plus$manager = new ArmorEffectManagerImpl(Player.class.cast(this));
 
     @Inject(method = "tick", at = @At("HEAD"))
     public void tickManager(CallbackInfo info) {
-        this.manager.tick();
+        this.dragonmounts$plus$manager.tick();
     }
 
     @Inject(method = "readAdditionalSaveData", at = @At("TAIL"))
     public void saveCooldown(CompoundTag tag, CallbackInfo info) {
-        var data = this.manager.saveNBT();
+        var data = this.dragonmounts$plus$manager.saveNBT();
         if (data.isEmpty()) return;
         var caps = tag.getCompound("ForgeCaps");
         caps.put(DATA_PARAMETER_KEY, data);
@@ -65,7 +65,7 @@ public abstract class PlayerEntityMixin extends LivingEntity implements Provider
 
     @Inject(method = "readAdditionalSaveData", at = @At("TAIL"))
     public void readCooldown(CompoundTag tag, CallbackInfo info) {
-        this.manager.readNBT(tag.getCompound("ForgeCaps").getCompound(DATA_PARAMETER_KEY));
+        this.dragonmounts$plus$manager.readNBT(tag.getCompound("ForgeCaps").getCompound(DATA_PARAMETER_KEY));
     }
 
     @Inject(method = "hurtCurrentlyUsedShield", at = @At("HEAD"))
@@ -97,10 +97,10 @@ public abstract class PlayerEntityMixin extends LivingEntity implements Provider
     }
 
     @Inject(method = "actuallyHurt", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/player/Player;setHealth(F)V"))
-    public void riposte(ServerLevel level, DamageSource damageSource, float amount, CallbackInfo ci) {
+    public void riposte(ServerLevel level, DamageSource damageSource, float amount, CallbackInfo info) {
         var ice = DMArmorEffects.ICE;
         var nether = DMArmorEffects.NETHER;
-        var manager = this.manager;
+        var manager = this.dragonmounts$plus$manager;
         var iceFlag = manager.isActive(ice) && manager.getCooldown(ice) <= 0;
         var netherFlag = manager.isActive(nether) && manager.getCooldown(nether) <= 0;
         int flag = (iceFlag ? 0b01 : 0b00) | (netherFlag ? 0b10 : 0b00);
@@ -139,8 +139,8 @@ public abstract class PlayerEntityMixin extends LivingEntity implements Provider
     }
 
     @Override
-    public ArmorEffectManagerImpl dragonmounts$getManager() {
-        return this.manager;
+    public ArmorEffectManagerImpl dragonmounts$plus$getManager() {
+        return this.dragonmounts$plus$manager;
     }
 
     private PlayerEntityMixin(EntityType<? extends LivingEntity> a, Level b) {super(a, b);}

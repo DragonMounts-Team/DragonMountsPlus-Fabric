@@ -12,7 +12,7 @@ import java.util.concurrent.CompletableFuture;
 public class DMDynamicProvider extends FabricDynamicRegistryProvider {
     static <T> void addAll(Entries entries, HolderLookup.RegistryLookup<T> registry) {
         registry.listElementIds().forEach(key -> {
-            if (DragonMountsShared.MOD_ID.equals(key.location().getNamespace())) {
+            if (DragonMountsShared.NAMESPACE.equals(key.location().getNamespace())) {
                 entries.add(registry, key);
             }
         });
