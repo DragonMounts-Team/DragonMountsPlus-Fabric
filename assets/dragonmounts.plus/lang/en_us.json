@@ -28,6 +28,7 @@
   "commands.dragonmounts.plus.type.entity.get": "The type of %s is currently set to: %s",
   "commands.dragonmounts.plus.type.entity.set": "The type of %s is now set to: %s",
   "container.dragonmounts.plus.dragon_core": "Dragon Core",
+  "container.dragonmounts.plus.dragon_inventory": "Dragon Inventory",
   "dragonmounts.plus.life_stage.adult": "Adult",
   "dragonmounts.plus.life_stage.egg": "Egg",
   "dragonmounts.plus.life_stage.fledgling": "Fledgling",

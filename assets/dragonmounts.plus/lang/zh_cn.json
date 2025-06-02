@@ -28,6 +28,7 @@
   "commands.dragonmounts.plus.type.entity.get": "%s的种类目前为：%s",
   "commands.dragonmounts.plus.type.entity.set": "%s的种类已被设为：%s",
   "container.dragonmounts.plus.dragon_core": "龙核心",
+  "container.dragonmounts.plus.dragon_inventory": "龙的物品栏",
   "dragonmounts.plus.life_stage.adult": "成年",
   "dragonmounts.plus.life_stage.egg": "龙蛋",
   "dragonmounts.plus.life_stage.fledgling": "少年",
