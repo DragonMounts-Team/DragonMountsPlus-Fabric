@@ -31,14 +31,16 @@ public interface DescribedArmorEffect extends ArmorEffect, TooltipComponent {
     ArmorEffectTooltip getClientTooltip();
 
     class Advanced extends CooldownCategory implements DescribedArmorEffect {
-        public final MutableComponent trigger;
-        public final Component description;
+        protected final MutableComponent trigger;
+        protected final Component title;
+        protected final Component description;
         public final int cooldown;
 
-        public Advanced(ResourceLocation identifier, int cooldown, @Nullable MutableComponent trigger) {
+        public Advanced(ResourceLocation identifier, Component title, int cooldown, @Nullable MutableComponent trigger) {
             super(identifier);
             this.trigger = trigger;
             this.cooldown = cooldown;
+            this.title = title;
             this.description = Component.translatable(Util.makeDescriptionId("tooltip.armor_effect", identifier));
         }
 
@@ -66,7 +68,7 @@ public interface DescribedArmorEffect extends ArmorEffect, TooltipComponent {
         public ArmorEffectTooltip getClientTooltip() {
             var description = this.getDescription();
             this.appendCooldownInfo(description);
-            return new ArmorEffectTooltip(description, formatTrigger(this, this.trigger));
+            return new ArmorEffectTooltip(this.title, description, formatTrigger(this, this.trigger));
         }
     }
 }

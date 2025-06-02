@@ -1,7 +1,7 @@
 package net.dragonmounts.plus.common.inventory;
 
 import net.dragonmounts.plus.common.entity.dragon.TameableDragonEntity;
-import net.dragonmounts.plus.common.init.DMScreenHandlers;
+import net.dragonmounts.plus.compat.platform.DMScreenHandlers;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;

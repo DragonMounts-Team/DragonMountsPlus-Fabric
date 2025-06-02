@@ -42,6 +42,7 @@ public class DMArmorEffects {
 
     public static final DescribedArmorEffect.Advanced AETHER = registerArmorEffect("aether", identifier -> new DescribedArmorEffect.Advanced(
             identifier,
+            DragonTypes.AETHER.getName(),
             300,
             TRIGGER_PIECE_4
     ) {
@@ -58,11 +59,12 @@ public class DMArmorEffects {
     });
 
     public static final DescribedArmorEffect ENCHANTED = registerArmorEffect(makeId("enchanted"), new DescribedArmorEffect() {
+        private static final Component TITLE = DragonTypes.ENCHANTED.getName();
         private static final List<Component> DESCRIPTION = Collections.singletonList(Component.translatable("tooltip.armor_effect.dragonmounts.plus.enchanted"));
 
         @Override
         public ArmorEffectTooltip getClientTooltip() {
-            return new ArmorEffectTooltip(DESCRIPTION, DescribedArmorEffect.formatTrigger(this, TRIGGER_PIECE_4));
+            return new ArmorEffectTooltip(TITLE, DESCRIPTION, DescribedArmorEffect.formatTrigger(this, TRIGGER_PIECE_4));
         }
 
         @Override
@@ -97,6 +99,7 @@ public class DMArmorEffects {
 
     public static final DescribedArmorEffect.Advanced ENDER = registerArmorEffect("ender", identifier -> new DescribedArmorEffect.Advanced(
             identifier,
+            DragonTypes.ENDER.getName(),
             1200,
             TRIGGER_PIECE_4
     ) {
@@ -130,6 +133,7 @@ public class DMArmorEffects {
 
     public static final DescribedArmorEffect.Advanced FIRE = registerArmorEffect("fire", identifier -> new DescribedArmorEffect.Advanced(
             identifier,
+            DragonTypes.FIRE.getName(),
             900,
             TRIGGER_PIECE_4
     ) {
@@ -148,6 +152,7 @@ public class DMArmorEffects {
 
     public static final DescribedArmorEffect.Advanced FOREST = registerArmorEffect("forest", identifier -> new DescribedArmorEffect.Advanced(
             identifier,
+            DragonTypes.FOREST.getName(),
             1200,
             TRIGGER_PIECE_4
     ) {
@@ -178,10 +183,11 @@ public class DMArmorEffects {
 
     public static final DescribedArmorEffect.Advanced ICE = registerArmorEffect(
             "ice",
-            identifier -> new DescribedArmorEffect.Advanced(identifier, 1200, TRIGGER_PIECE_4)
+            identifier -> new DescribedArmorEffect.Advanced(identifier, DragonTypes.ICE.getName(), 1200, TRIGGER_PIECE_4)
     );
 
     public static final DescribedArmorEffect MOONLIGHT = registerArmorEffect(makeId("moonlight"), new DescribedArmorEffect() {
+        private static final Component TITLE = DragonTypes.MOONLIGHT.getName();
         private static final List<Component> DESCRIPTION = Collections.singletonList(Component.translatable("tooltip.armor_effect.dragonmounts.plus.moonlight"));
 
         @Override
@@ -195,22 +201,23 @@ public class DMArmorEffects {
 
         @Override
         public ArmorEffectTooltip getClientTooltip() {
-            return new ArmorEffectTooltip(DESCRIPTION, DescribedArmorEffect.formatTrigger(this, TRIGGER_PIECE_4));
+            return new ArmorEffectTooltip(TITLE, DESCRIPTION, DescribedArmorEffect.formatTrigger(this, TRIGGER_PIECE_4));
         }
     });
 
     public static final DescribedArmorEffect.Advanced NETHER = registerArmorEffect(
             "nether",
-            identifier -> new DescribedArmorEffect.Advanced(identifier, 1200, TRIGGER_PIECE_4)
+            identifier -> new DescribedArmorEffect.Advanced(identifier, DragonTypes.NETHER.getName(), 1200, TRIGGER_PIECE_4)
     );
 
     public static final DescribedArmorEffect.Advanced STORM = registerArmorEffect(
             "storm",
-            identifier -> new DescribedArmorEffect.Advanced(identifier, 160, TRIGGER_PIECE_4)
+            identifier -> new DescribedArmorEffect.Advanced(identifier, DragonTypes.STORM.getName(), 160, TRIGGER_PIECE_4)
     );
 
     public static final DescribedArmorEffect.Advanced SUNLIGHT = registerArmorEffect("sunlight", identifier -> new DescribedArmorEffect.Advanced(
             identifier,
+            DragonTypes.SUNLIGHT.getName(),
             1200,
             TRIGGER_PIECE_4
     ) {
@@ -238,6 +245,7 @@ public class DMArmorEffects {
     });
 
     public static final DescribedArmorEffect TERRA = registerArmorEffect(makeId("terra"), new DescribedArmorEffect() {
+        private static final Component TITLE = DragonTypes.TERRA.getName();
         private static final List<Component> DESCRIPTION = Collections.singletonList(Component.translatable("tooltip.armor_effect.dragonmounts.plus.terra"));
 
         @Override
@@ -251,11 +259,12 @@ public class DMArmorEffects {
 
         @Override
         public ArmorEffectTooltip getClientTooltip() {
-            return new ArmorEffectTooltip(DESCRIPTION, DescribedArmorEffect.formatTrigger(this, TRIGGER_PIECE_4));
+            return new ArmorEffectTooltip(TITLE, DESCRIPTION, DescribedArmorEffect.formatTrigger(this, TRIGGER_PIECE_4));
         }
     });
 
     public static final DescribedArmorEffect WATER = registerArmorEffect(makeId("water"), new DescribedArmorEffect() {
+        private static final Component TITLE = DragonTypes.WATER.getName();
         private static final List<Component> DESCRIPTION = Collections.singletonList(Component.translatable("tooltip.armor_effect.dragonmounts.plus.water"));
 
         @Override
@@ -269,12 +278,13 @@ public class DMArmorEffects {
 
         @Override
         public ArmorEffectTooltip getClientTooltip() {
-            return new ArmorEffectTooltip(DESCRIPTION, DescribedArmorEffect.formatTrigger(this, TRIGGER_PIECE_4));
+            return new ArmorEffectTooltip(TITLE, DESCRIPTION, DescribedArmorEffect.formatTrigger(this, TRIGGER_PIECE_4));
         }
     });
 
     public static final DescribedArmorEffect.Advanced ZOMBIE = registerArmorEffect("zombie", identifier -> new DescribedArmorEffect.Advanced(
             identifier,
+            DragonTypes.ZOMBIE.getName(),
             400,
             TRIGGER_PIECE_4
     ) {
@@ -291,7 +301,7 @@ public class DMArmorEffects {
     @SuppressWarnings("SameReturnValue")
     public static InteractionResult meleeChanneling(Player player, Level level, InteractionHand hand, Entity entity, @Nullable EntityHitResult hit) {
         if (!(level instanceof ServerLevel server) || player.getRandom().nextBoolean()) return InteractionResult.PASS;
-        ArmorEffectManagerImpl manager = ((ArmorEffectManager.Provider) player).dragonmounts$getManager();
+        ArmorEffectManagerImpl manager = ((ArmorEffectManager.Provider) player).dragonmounts$plus$getManager();
         if (manager.isActive(STORM) && manager.getCooldown(STORM) <= 0) {
             BlockPos pos = entity.blockPosition();
             if (level.canSeeSky(pos)) {

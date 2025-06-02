@@ -30,7 +30,7 @@ public interface ArmorEffectManager {
     void sendInitPacket();
 
     interface Provider {
-        default ArmorEffectManagerImpl dragonmounts$getManager() {
+        default ArmorEffectManagerImpl dragonmounts$plus$getManager() {
             throw new NullPointerException();
         }
     }

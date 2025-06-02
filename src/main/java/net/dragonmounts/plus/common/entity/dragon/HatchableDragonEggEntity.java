@@ -99,7 +99,7 @@ public class HatchableDragonEggEntity extends LivingEntity implements DragonTypi
     }
 
     public HatchableDragonEggEntity(Level level) {
-        this(DMEntities.HATCHABLE_DRAGON_EGG, level);
+        this(DMEntities.HATCHABLE_DRAGON_EGG.get(), level);
     }
 
     public static AttributeSupplier.Builder createAttributes() {
@@ -156,7 +156,7 @@ public class HatchableDragonEggEntity extends LivingEntity implements DragonTypi
 
     protected void spawnScales(ServerLevel level, int amount) {
         if (amount > 0) {
-            DragonScalesItem scales = this.getDragonType().getInstance(DragonScalesItem.class, null);
+            var scales = this.getDragonType().getInstance(DragonScalesItem.class, null);
             if (scales != null && level.getGameRules().getBoolean(GameRules.RULE_DOMOBLOOT)) {
                 this.spawnAtLocation(level, new ItemStack(scales, amount), 1.25F);
             }
@@ -175,7 +175,7 @@ public class HatchableDragonEggEntity extends LivingEntity implements DragonTypi
         if (this.level() instanceof ServerLevel level) {
             this.spawnScales(level, this.random.nextInt(4) + 4);
             this.hatched = true;
-            ((ScoreboardAccessor) this.level().getScoreboard()).dragonmounts$preventRemoval(this);
+            ((ScoreboardAccessor) this.level().getScoreboard()).dragonmounts$plus$preventRemoval(this);
         }
         this.discard();
     }
@@ -271,7 +271,7 @@ public class HatchableDragonEggEntity extends LivingEntity implements DragonTypi
 
     @Override
     public ItemStack getPickResult() {
-        return new ItemStack(this.asBlock(DMBlocks.ENDER_DRAGON_EGG));
+        return new ItemStack(this.asBlock(DMBlocks.ENDER_DRAGON_EGG.get()));
     }
 
     @Override
@@ -378,7 +378,7 @@ public class HatchableDragonEggEntity extends LivingEntity implements DragonTypi
         this.amplitude = target * 0.75F;
         if (crack) {
             level.levelEvent(2001, this.blockPosition(), Block.getId(
-                    this.asBlock(DMBlocks.ENDER_DRAGON_EGG).defaultBlockState()
+                    this.asBlock(DMBlocks.ENDER_DRAGON_EGG.get()).defaultBlockState()
             ));
         }
         level.playLocalSound(this, DMSounds.DRAGON_EGG_CRACK, SoundSource.NEUTRAL, 1.0F, 1.0F);

@@ -38,7 +38,7 @@ public class BreathNodeEntity extends Entity implements BreathNodeHost {
     }
 
     public BreathNodeEntity(ServerDragonEntity dragon, Vec3 pos) {
-        super(DMEntities.DRAGON_BREATH, dragon.level());
+        super(DMEntities.DRAGON_BREATH.get(), dragon.level());
         // don't randomise the other properties (size, age) on the server.
         this.node = new BreathNode(dragon.getLifeStage().power, null);
         this.setDeltaMovement(this.node.getRandomisedStartingMotion(dragon.getLookAngle(), this.random));

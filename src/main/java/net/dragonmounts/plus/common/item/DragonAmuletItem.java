@@ -75,7 +75,7 @@ public class DragonAmuletItem extends AmuletItem<TameableDragonEntity> implement
         if (owner != null) {
             stack.set(DMDataComponents.PLAYER_NAME, owner.getDisplayName());
         }
-        stack.set(DMDataComponents.SCORES, ((ScoreboardAccessor) level.getScoreboard()).dragonmounts$getInfo(entity));
+        stack.set(DMDataComponents.SCORES, ((ScoreboardAccessor) level.getScoreboard()).dragonmounts$plus$getInfo(entity));
         stack.applyComponents(patch);
         return stack;
     }

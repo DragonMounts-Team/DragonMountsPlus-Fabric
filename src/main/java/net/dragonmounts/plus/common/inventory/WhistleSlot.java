@@ -45,7 +45,7 @@ public class WhistleSlot extends Slot {
 
     @Override
     public boolean mayPlace(ItemStack stack) {
-        return !stack.isEmpty() && stack.is(DMItems.WHISTLE);
+        return !stack.isEmpty() && DMItems.WHISTLE.is(stack);
     }
 
     @Override
@@ -72,7 +72,7 @@ public class WhistleSlot extends Slot {
     @Override
     public void setChanged() {
         var stack = this.getItem();
-        if (!stack.isEmpty() && stack.is(DMItems.WHISTLE)) {
+        if (!stack.isEmpty() && DMItems.WHISTLE.is(stack)) {
             var result = stack.copy();
             WhistleSound.bindWhistle(result, this.inventory.dragon, this.inventory.player);
             if (this.desiredName != null && !StringUtil.isBlank(this.desiredName)) {

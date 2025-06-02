@@ -7,22 +7,19 @@ import net.dragonmounts.plus.common.block.DragonHeadWallBlock;
 import net.dragonmounts.plus.common.client.variant.VariantAppearance;
 import net.dragonmounts.plus.common.client.variant.VariantAppearances;
 import net.dragonmounts.plus.common.item.DragonHeadItem;
+import net.dragonmounts.plus.common.util.DragonHead;
 import net.dragonmounts.plus.compat.platform.PlatformCompat;
+import net.dragonmounts.plus.compat.registry.DeferredBlock;
+import net.dragonmounts.plus.compat.registry.DeferredItem;
 import net.dragonmounts.plus.compat.registry.DragonType;
 import net.dragonmounts.plus.compat.registry.DragonVariant;
-import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.ResourceKey;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Rarity;
-import net.minecraft.world.level.block.state.BlockBehaviour;
-import net.minecraft.world.level.block.state.properties.NoteBlockInstrument;
-import net.minecraft.world.level.material.PushReaction;
 
 import java.util.function.Function;
 
 import static net.dragonmounts.plus.common.DragonMountsShared.makeId;
-import static net.dragonmounts.plus.common.DragonMountsShared.makeKey;
-import static net.dragonmounts.plus.compat.registry.RegistryHandler.registerBlock;
+import static net.dragonmounts.plus.common.init.DMBlocks.configureDragonHead;
+import static net.dragonmounts.plus.compat.registry.DeferredBlock.registerBlock;
 
 public class DragonVariants {
     public static final ImmutableList<DragonVariant> BUILTIN_VALUES;
@@ -64,37 +61,41 @@ public class DragonVariants {
     public static final DragonVariant WITHER;
     public static final DragonVariant ZOMBIE;
 
+    static DeferredBlock<DragonHeadStandingBlock> registerStandingHead(DragonHead head, String name) {
+        return registerBlock(name, props ->
+                new DragonHeadStandingBlock(head.variant, configureDragonHead(props).overrideDescription(DragonHeadBlock.TRANSLATION_KEY))
+        );
+    }
+
+    static DeferredBlock<DragonHeadWallBlock> registerWallHead(DragonHead head, String name) {
+        return registerBlock(name, props -> {
+            var standing = head.standing.get();
+            return new DragonHeadWallBlock(head.variant, configureDragonHead(props)
+                    .overrideLootTable(standing.getLootTable())
+                    .overrideDescription(standing.getDescriptionId())
+            );
+        });
+    }
+
+    static DeferredItem<DragonHeadItem> registerHeadItem(DragonHead head, String name) {
+        return DMItemGroups.DRAGON_HEADS.register(name, props -> new DragonHeadItem(
+                head.variant,
+                head.wall.get(),
+                head.standing.get(),
+                props.rarity(Rarity.UNCOMMON).overrideDescription(DragonHeadBlock.TRANSLATION_KEY)
+        ));
+    }
+
     static DragonVariant make(Function<String, VariantAppearance> supplier, DragonType type, String name) {
         return new DragonVariant(type, makeId(name), supplier.apply(name), variant -> {
-            var full = name + "_dragon_head_wall";
-            var base = makeId(full.substring(0, full.length() - 5));
-            var itemKey = ResourceKey.create(Registries.ITEM, base);
-            var wallKey = makeKey(Registries.BLOCK, full);
-            var standingKey = ResourceKey.create(Registries.BLOCK, base);
-            DragonHeadStandingBlock standing;
-            DragonHeadWallBlock wall;
-            return new DragonHeadBlock.Holder(
-                    registerBlock(standingKey, standing = new DragonHeadStandingBlock(
-                            variant,
-                            BlockBehaviour.Properties.of()
-                                    .setId(standingKey)
-                                    .strength(1.0F)
-                                    .instrument(NoteBlockInstrument.DRAGON)
-                                    .pushReaction(PushReaction.DESTROY)
-                    )),
-                    registerBlock(wallKey, wall = new DragonHeadWallBlock(
-                            variant,
-                            BlockBehaviour.Properties.ofFullCopy(standing).setId(wallKey)
-                    )),
-                    DMItemGroups.DRAGON_HEADS.register(itemKey, new DragonHeadItem(
-                            variant,
-                            standing,
-                            wall,
-                            new Item.Properties()
-                                    .setId(itemKey)
-                                    .rarity(Rarity.UNCOMMON)
-                                    .overrideDescription(DragonHeadBlock.TRANSLATION_KEY)
-                    ))
+            var wall = variant.identifier.getPath() + "_dragon_head_wall";
+            return new DragonHead(
+                    variant,
+                    wall.substring(0, wall.length() - 5),
+                    wall,
+                    DragonVariants::registerStandingHead,
+                    DragonVariants::registerWallHead,
+                    DragonVariants::registerHeadItem
             );
         });
     }
@@ -143,6 +144,4 @@ public class DragonVariants {
         variants.add(ZOMBIE = make(supplier, DragonTypes.ZOMBIE, "zombie"));
         BUILTIN_VALUES = variants.build();
     }
-
-    public static void init() {}
 }

@@ -51,7 +51,7 @@ public class CooldownCommand {
                 ComponentUtils.formatList(players, player -> Component.translatable(
                         "commands.dragonmounts.plus.cooldown.get.entry",
                         player.getDisplayName(),
-                        ((Provider) player).dragonmounts$getManager().getCooldown(category)
+                        ((Provider) player).dragonmounts$plus$getManager().getCooldown(category)
                 ))
         ), true);
         return players.size();
@@ -63,7 +63,7 @@ public class CooldownCommand {
             return 0;
         }
         for (var player : players) {
-            ((Provider) player).dragonmounts$getManager().setCooldown(category, value);
+            ((Provider) player).dragonmounts$plus$getManager().setCooldown(category, value);
         }
         int size = players.size();
         if (size == 1) {

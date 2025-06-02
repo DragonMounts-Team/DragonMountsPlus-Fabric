@@ -10,15 +10,12 @@ import net.dragonmounts.plus.common.tag.DMItemTags;
 import net.dragonmounts.plus.common.util.math.MathUtil;
 import net.dragonmounts.plus.compat.platform.PlatformItemTags;
 import net.minecraft.core.Holder;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.SaddleItem;
 import net.minecraft.world.level.Level;
@@ -141,12 +138,6 @@ public class ClientDragonEntity extends TameableDragonEntity {
 
     @Override
     public void openCustomInventoryScreen(Player player) {}
-
-    @Override
-    public TameableDragonEntity getScreenOpeningData(ServerPlayer player) {return this;}
-
-    @Override
-    public AbstractContainerMenu createMenu(int id, Inventory inventory, Player player) {return null;}
 
     public @Nullable Vec3 locateCrystal() {
         return this.nearestCrystal == null ? null : this.nearestCrystal.position();

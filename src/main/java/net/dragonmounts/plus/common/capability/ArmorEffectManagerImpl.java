@@ -12,17 +12,17 @@ import net.minecraft.world.entity.player.Player;
 
 import static java.lang.System.arraycopy;
 import static java.util.Arrays.fill;
-import static net.dragonmounts.plus.common.DragonMountsShared.MOD_ID;
+import static net.dragonmounts.plus.common.DragonMountsShared.NAMESPACE;
 
 public final class ArmorEffectManagerImpl implements ArmorEffectManager {
-    public static final String DATA_PARAMETER_KEY = MOD_ID + ":armor_effect_manager";
+    public static final String DATA_PARAMETER_KEY = NAMESPACE + ":armor_effect_manager";
     private static ArmorEffectManagerImpl LOCAL_MANAGER = null;
     public static final int INITIAL_COOLDOWN_SIZE = 8;
     public static final int INITIAL_LEVEL_SIZE = 5;
 
     public static void onPlayerClone(Player player, Player priorPlayer) {
-        var manager = ((ArmorEffectManager.Provider) player).dragonmounts$getManager();
-        var priorManager = ((ArmorEffectManager.Provider) priorPlayer).dragonmounts$getManager();
+        var manager = ((ArmorEffectManager.Provider) player).dragonmounts$plus$getManager();
+        var priorManager = ((ArmorEffectManager.Provider) priorPlayer).dragonmounts$plus$getManager();
         manager.cdRef = priorManager.cdRef;
         manager.cdKey = priorManager.cdKey;
         manager.cdDat = priorManager.cdDat;
@@ -150,7 +150,7 @@ public final class ArmorEffectManagerImpl implements ArmorEffectManager {
 
     @Override
     public void setCooldown(final CooldownCategory category, final int cooldown) {
-        final int id = category.id;
+        final int id = category.getId();
         if (id < 0) return;
         this.setCooldown(id, cooldown);
         if (this.player instanceof ServerPlayer $player) {
@@ -179,7 +179,7 @@ public final class ArmorEffectManagerImpl implements ArmorEffectManager {
         for (var category : CooldownCategory.REGISTRY) {
             var name = category.identifier.toString();
             if (tag.contains(name)) {
-                this.setCooldown(category.id, tag.getInt(name));
+                this.setCooldown(category.getId(), tag.getInt(name));
             }
         }
     }
@@ -201,7 +201,7 @@ public final class ArmorEffectManagerImpl implements ArmorEffectManager {
 
     @Override
     public int getCooldown(final CooldownCategory category) {
-        final int id = category.id;
+        final int id = category.getId();
         if (id < 0) return 0;
         int pos = id & this.cdMask, key = this.cdKey[pos];
         if (key == -1) return 0;
@@ -222,7 +222,7 @@ public final class ArmorEffectManagerImpl implements ArmorEffectManager {
 
     @Override
     public boolean isAvailable(final CooldownCategory category) {
-        final int id = category.id;
+        final int id = category.getId();
         if (id < 0) return true;
         int pos = id & this.cdMask, key = this.cdKey[pos];
         if (key == -1) return true;

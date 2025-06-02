@@ -2,6 +2,7 @@ package net.dragonmounts.plus.common.util;
 
 import com.google.common.collect.ImmutableSet;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import net.dragonmounts.plus.compat.platform.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
@@ -38,13 +39,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Optional;
 import java.util.function.Consumer;
 
-public abstract class EntityUtil extends EntityType<Entity> {//to access protected methods
-
-    @SuppressWarnings("unchecked")
-    public static <T extends Entity> EntityType<T> cast(EntityType<?> type) {
-        return (EntityType<T>) type;
-    }
-
+public abstract class EntityUtil extends /*to access protected methods*/ EntityType<Entity> {
     public static Vec2 getRiddenRotation(LivingEntity rider) {
         return new Vec2(rider.getXRot() * 0.5F, rider.getYRot());
     }
@@ -64,7 +59,7 @@ public abstract class EntityUtil extends EntityType<Entity> {//to access protect
         if (entity instanceof Mob mob) {
             mob.yHeadRot = mob.getYRot();
             mob.yBodyRot = mob.getYRot();
-            mob.finalizeSpawn(level, level.getCurrentDifficultyAt(mob.blockPosition()), reason, null);
+            Util.finalizeMobSpawn(mob, level, level.getCurrentDifficultyAt(mob.blockPosition()), reason, null);
             mob.playAmbientSound();
         }
     }
