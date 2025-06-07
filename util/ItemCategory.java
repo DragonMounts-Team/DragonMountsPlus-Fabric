@@ -13,10 +13,10 @@ import java.util.function.Supplier;
 import static net.dragonmounts.plus.common.DragonMountsShared.makeKey;
 
 public class ItemCategory extends ItemGroup {
-    public final List<CreativeModeTab.DisplayItemsGenerator> children;
+    public final List<ItemGroup> children;
     public final ResourceKey<CreativeModeTab> key;
 
-    public ItemCategory(String name, List<CreativeModeTab.DisplayItemsGenerator> children) {
+    public ItemCategory(String name, List<ItemGroup> children) {
         super(new ObjectArrayList<>());
         this.children = children;
         this.key = makeKey(Registries.CREATIVE_MODE_TAB, name);

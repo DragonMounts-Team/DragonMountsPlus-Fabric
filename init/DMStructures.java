@@ -9,7 +9,6 @@ import net.dragonmounts.plus.common.util.DragonNestRegistry;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.worldgen.BootstrapContext;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.levelgen.structure.Structure;
 import net.minecraft.world.level.levelgen.structure.StructureType;
 import net.minecraft.world.level.levelgen.structure.pieces.StructurePieceType;
@@ -21,7 +20,7 @@ import static net.dragonmounts.plus.common.DragonMountsShared.makeKey;
 import static net.dragonmounts.plus.compat.registry.RegistryHandler.registerStructure;
 
 public interface DMStructures {
-    StructureType<DragonNestStructure> DRAGON_NESTS = registerStructure("dragon_nests", () -> DragonNestStructure.CODEC);
+    StructureType<DragonNestStructure> DRAGON_NEST = registerStructure("dragon_nest", () -> DragonNestStructure.CODEC);
     StructurePieceType DRAGON_NEST_PIECE = registerStructure("nest", DragonNestPiece::new);
     ResourceKey<Structure> AETHER_DRAGON_NEST = register("aether_dragon_nest");
     ResourceKey<Structure> ENCHANTED_DRAGON_NEST = register("enchanted_dragon_nest");
@@ -46,12 +45,12 @@ public interface DMStructures {
                 AETHER_DRAGON_NEST,
                 DMBiomeTags.HAS_AETHER_DRAGON_NEST,
                 new NestConfig(NestPlacement.IN_CLOUDS, List.of(makeId("aether"))),
-                new NestConfig(NestPlacement.IN_CLOUDS, Blocks.DIRT.defaultBlockState(), List.of(makeId("aether2")))
+                new NestConfig(NestPlacement.IN_CLOUDS, List.of(makeId("aether2")))
         );
         registry.register(
                 ENCHANTED_DRAGON_NEST,
                 DMBiomeTags.HAS_ENCHANTED_DRAGON_NEST,
-                new NestConfig(NestPlacement.ON_LAND_SURFACE, Blocks.END_STONE.defaultBlockState(), List.of(makeId("enchanted")))
+                new NestConfig(NestPlacement.ON_LAND_SURFACE, List.of(makeId("enchanted")))
         );
         var fire = List.of(makeId("fire"), makeId("fire2"));
         registry.register(
@@ -88,7 +87,7 @@ public interface DMStructures {
         registry.register(
                 SKELETON_DRAGON_NEST,
                 DMBiomeTags.HAS_SKELETON_DRAGON_NEST,
-                new NestConfig(NestPlacement.IN_NETHER, List.of(makeId("skeleton")))
+                new NestConfig(NestPlacement.FLUSH_WITH_SURFACE, List.of(makeId("skeleton")))
         );
         registry.register(
                 SUNLIGHT_DRAGON_NEST,
@@ -112,7 +111,7 @@ public interface DMStructures {
         registry.register(
                 ZOMBIE_DRAGON_NEST,
                 DMBiomeTags.HAS_ZOMBIE_DRAGON_NEST,
-                new NestConfig(NestPlacement.IN_NETHER, List.of(makeId("zombie")))
+                new NestConfig(NestPlacement.FLUSH_WITH_SURFACE, List.of(makeId("zombie")))
         );
     }
 

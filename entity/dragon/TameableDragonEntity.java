@@ -466,7 +466,15 @@ public abstract class TameableDragonEntity extends TamableAnimal implements
     }
 
     public boolean isPlayerTrusted(Player player) {
+        return this.isTrustingAnyPlayer();
+    }
+
+    public boolean isTrustingAnyPlayer() {
         return this.entityData.get(DATA_TRUST_OTHER);
+    }
+
+    public void setTrustingAnyPlayer(boolean state) {
+        this.entityData.set(DATA_TRUST_OTHER, state);
     }
 
     //----------IDragonTypified.Mutable----------

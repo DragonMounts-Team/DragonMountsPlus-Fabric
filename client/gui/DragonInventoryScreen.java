@@ -5,14 +5,18 @@ import net.dragonmounts.plus.common.inventory.DragonInventoryHandler;
 import net.dragonmounts.plus.common.inventory.SlotListener;
 import net.dragonmounts.plus.common.inventory.WhistleSlot;
 import net.dragonmounts.plus.common.network.c2s.RenameWhistlePayload;
+import net.dragonmounts.plus.common.network.c2s.ToggleSittingByIDPayload;
+import net.dragonmounts.plus.common.network.c2s.ToggleTrustPayload;
 import net.dragonmounts.plus.compat.platform.ClientNetworkHandler;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.gui.screens.inventory.InventoryScreen;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.component.DataComponents;
+import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.ai.attributes.Attributes;
@@ -23,6 +27,7 @@ import java.util.function.Function;
 
 import static net.dragonmounts.plus.common.DragonMountsShared.makeId;
 import static net.dragonmounts.plus.common.inventory.WhistleSlot.getItemName;
+import static net.minecraft.client.gui.components.AbstractWidget.wrapDefaultNarrationMessage;
 
 /**
  * @see net.minecraft.client.gui.screens.inventory.HorseInventoryScreen
@@ -34,7 +39,13 @@ public class DragonInventoryScreen extends AbstractContainerScreen<DragonInvento
     private static final ResourceLocation ARMOR_SPRITE = makeId("dragon_panel/armor");
     private static final ResourceLocation HEALTH_SPRITE = makeId("dragon_panel/health");
     private static final ResourceLocation FOOD_SPRITE = makeId("dragon_panel/food");
+    private static final Component TRUST_STATE = Component.translatable("button.dragonmounts.plus.trust_state");
+    private static final Component SITTING_STATE = Component.translatable("button.dragonmounts.plus.sitting_state");
+    private static final Component ORDER_TO_SIT = Component.translatable("button.dragonmounts.plus.order_to_sit");
+    private static final Component ORDER_TO_STAND = Component.translatable("button.dragonmounts.plus.order_to_stand");
     private static final Component MESSAGE = Component.translatable("container.dragonmounts.plus.dragon_inventory");
+    private IconToggleButton trustToggle;
+    private TextToggleButton sittingToggle;
     private EditBox name;
     private String health;
     private String armor;
@@ -51,7 +62,8 @@ public class DragonInventoryScreen extends AbstractContainerScreen<DragonInvento
     protected void init() {
         super.init();
         var whistle = this.menu.whistle;
-        var name = this.name = new EditBox(this.font, this.leftPos + 32, this.topPos + 12, 104, 12, MESSAGE);
+        int x = this.leftPos + 10, y = this.topPos;
+        var name = this.name = new EditBox(this.font, x + 22, y + 12, 104, 12, MESSAGE);
         name.setCanLoseFocus(false);
         name.setTextColor(-1);
         name.setTextColorUneditable(-1);
@@ -62,6 +74,12 @@ public class DragonInventoryScreen extends AbstractContainerScreen<DragonInvento
         this.addWidget(name);
         name.setEditable(whistle.hasItem());
         whistle.listener = this;
+        this.addWidget(this.trustToggle = new IconToggleButton(x, y + 194, TRUST_STATE, this::handleToggleTrust, toggle ->
+                wrapDefaultNarrationMessage(toggle.getState() ? CommonComponents.OPTION_ON : CommonComponents.OPTION_OFF)
+        ));
+        this.addWidget(this.sittingToggle = new TextToggleButton(x + 22, y + 194, 35, SITTING_STATE, this::handleToggleSitting, toggle ->
+                wrapDefaultNarrationMessage(toggle.getState() ? DragonInventoryScreen.ORDER_TO_SIT : DragonInventoryScreen.ORDER_TO_STAND)
+        ));
         this.containerTick();
     }
 
@@ -71,6 +89,8 @@ public class DragonInventoryScreen extends AbstractContainerScreen<DragonInvento
         var dragon = this.menu.dragon;
         this.health = String.format("%.2f/%.2f", dragon.getHealth(), dragon.getMaxHealth());
         this.armor = String.format("%.2f", dragon.getAttributeValue(Attributes.ARMOR));
+        this.sittingToggle.setState(dragon.isInSittingPose(), ORDER_TO_STAND, ORDER_TO_SIT);
+        this.trustToggle.setState(dragon.isTrustingAnyPlayer());
     }
 
     @Override
@@ -92,6 +112,14 @@ public class DragonInventoryScreen extends AbstractContainerScreen<DragonInvento
             this.minecraft.player.closeContainer();
         }
         return this.name.keyPressed(keyCode, scanCode, modifiers) || this.name.canConsumeInput() || super.keyPressed(keyCode, scanCode, modifiers);
+    }
+
+    public void handleToggleTrust(Button ignored) {
+        ClientNetworkHandler.send(new ToggleTrustPayload(this.menu.dragon.getId()));
+    }
+
+    public void handleToggleSitting(Button ignored) {
+        ClientNetworkHandler.send(new ToggleSittingByIDPayload(this.menu.dragon.getId()));
     }
 
     private void onNameChanged(String name) {
@@ -130,6 +158,8 @@ public class DragonInventoryScreen extends AbstractContainerScreen<DragonInvento
     public void render(GuiGraphics graphics, int x, int y, float ticks) {
         super.render(graphics, x, y, ticks);
         this.name.render(graphics, x, y, ticks);
+        this.trustToggle.render(graphics, x, y, ticks);
+        this.sittingToggle.render(graphics, x, y, ticks);
         this.renderTooltip(graphics, x, y);
     }
 

@@ -5,15 +5,10 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.dragonmounts.plus.common.api.DragonTypified;
 import net.dragonmounts.plus.common.block.entity.DragonHeadBlockEntity;
 import net.dragonmounts.plus.common.init.DMBlockEntities;
-import net.dragonmounts.plus.common.item.DragonHeadItem;
-import net.dragonmounts.plus.compat.registry.DeferredBlock;
-import net.dragonmounts.plus.compat.registry.DeferredItem;
 import net.dragonmounts.plus.compat.registry.DragonType;
 import net.dragonmounts.plus.compat.registry.DragonVariant;
 import net.minecraft.core.BlockPos;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.context.BlockPlaceContext;
-import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.BaseEntityBlock;
 import net.minecraft.world.level.block.Block;
@@ -24,7 +19,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.pathfinder.PathComputationType;
 import net.minecraft.world.level.redstone.Orientation;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.function.BiFunction;
@@ -98,16 +92,5 @@ public abstract class DragonHeadBlock extends BaseEntityBlock implements DragonT
             return createTickerHelper(type, DMBlockEntities.DRAGON_HEAD.get(), DragonHeadBlockEntity::animation);
         }
         return null;
-    }
-
-    public record Holder(
-            DeferredBlock<DragonHeadStandingBlock> standing,
-            DeferredBlock<DragonHeadWallBlock> wall,
-            DeferredItem<DragonHeadItem> item
-    ) implements ItemLike {
-        @Override
-        public @NotNull Item asItem() {
-            return this.item.get();
-        }
     }
 }
