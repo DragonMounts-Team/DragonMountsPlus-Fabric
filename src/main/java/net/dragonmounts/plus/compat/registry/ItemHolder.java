@@ -11,12 +11,12 @@ import java.util.function.Function;
 
 import static net.dragonmounts.plus.common.DragonMountsShared.makeKey;
 
-public class DeferredItem<T extends Item> extends DeferredHolder<T, Item> implements ItemLike {
-    public static <T extends Item> DeferredItem<T> registerItem(String name, Function<Item.Properties, T> factory) {
-        return new DeferredItem<>(makeKey(Registries.ITEM, name), factory);
+public class ItemHolder<T extends Item> extends ObjectHolder<T, Item> implements ItemLike {
+    public static <T extends Item> ItemHolder<T> registerItem(String name, Function<Item.Properties, T> factory) {
+        return new ItemHolder<>(makeKey(Registries.ITEM, name), factory);
     }
 
-    public DeferredItem(ResourceKey<Item> key, Function<Item.Properties, T> factory) {
+    public ItemHolder(ResourceKey<Item> key, Function<Item.Properties, T> factory) {
         super(BuiltInRegistries.ITEM, key, factory.apply(new Item.Properties().setId(key)));
     }
 

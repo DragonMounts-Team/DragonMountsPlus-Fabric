@@ -73,7 +73,9 @@ public class DragonMounts implements ModInitializer, ServerPlayConnectionEvents.
         registerPayloads(PayloadTypeRegistry.playC2S());
         registerGlobalReceiver(ControlDragonPayload.TYPE, ServerNetworkHandler::handleDragonRiding);
         registerGlobalReceiver(TeleportDragonPayload.TYPE, ServerNetworkHandler::handleTeleportDragon);
-        registerGlobalReceiver(ToggleSittingPayload.TYPE, ServerNetworkHandler::handleToggleSitting);
+        registerGlobalReceiver(ToggleSittingByUUIDPayload.TYPE, ServerNetworkHandler::handleToggleSitting);
+        registerGlobalReceiver(ToggleSittingByIDPayload.TYPE, ServerNetworkHandler::handleToggleSitting);
+        registerGlobalReceiver(ToggleTrustPayload.TYPE, ServerNetworkHandler::handleToggleTrust);
         registerGlobalReceiver(ToggleFollowingPayload.TYPE, ServerNetworkHandler::handleToggleFollowing);
         registerGlobalReceiver(RenameWhistlePayload.TYPE, ServerNetworkHandler::handleRenameWhistle);
     }
@@ -89,7 +91,9 @@ public class DragonMounts implements ModInitializer, ServerPlayConnectionEvents.
         registry.register(SyncDragonAgePayload.TYPE, SyncDragonAgePayload.CODEC);
         registry.register(SyncEggAgePayload.TYPE, SyncEggAgePayload.CODEC);
         registry.register(TeleportDragonPayload.TYPE, TeleportDragonPayload.CODEC);
-        registry.register(ToggleSittingPayload.TYPE, ToggleSittingPayload.CODEC);
+        registry.register(ToggleSittingByUUIDPayload.TYPE, ToggleSittingByUUIDPayload.CODEC);
+        registry.register(ToggleSittingByIDPayload.TYPE, ToggleSittingByIDPayload.CODEC);
+        registry.register(ToggleTrustPayload.TYPE, ToggleTrustPayload.CODEC);
         registry.register(ToggleFollowingPayload.TYPE, ToggleFollowingPayload.CODEC);
         registry.register(RenameWhistlePayload.TYPE, RenameWhistlePayload.CODEC);
     }

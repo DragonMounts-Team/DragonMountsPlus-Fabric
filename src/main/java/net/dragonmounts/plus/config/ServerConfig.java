@@ -2,7 +2,7 @@ package net.dragonmounts.plus.config;
 
 import com.mojang.brigadier.builder.ArgumentBuilder;
 import net.dragonmounts.plus.common.DragonMountsShared;
-import net.fabricmc.loader.impl.FabricLoaderImpl;
+import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.nbt.CompoundTag;
@@ -17,7 +17,7 @@ public class ServerConfig extends ConfigHolder {
     public static final ServerConfig INSTANCE = new ServerConfig(DragonMountsShared.NAMESPACE);
 
     protected ServerConfig(String identifier) {
-        super(FabricLoaderImpl.INSTANCE.getConfigDir().resolve(identifier).resolve("server.dat"), false);
+        super(FabricLoader.getInstance().getConfigDir().resolve(identifier).resolve("server.dat"), false);
         this.load();
     }
 

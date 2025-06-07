@@ -9,17 +9,17 @@ import net.dragonmounts.plus.common.client.variant.VariantAppearances;
 import net.dragonmounts.plus.common.item.DragonHeadItem;
 import net.dragonmounts.plus.common.util.DragonHead;
 import net.dragonmounts.plus.compat.platform.PlatformCompat;
-import net.dragonmounts.plus.compat.registry.DeferredBlock;
-import net.dragonmounts.plus.compat.registry.DeferredItem;
+import net.dragonmounts.plus.compat.registry.BlockHolder;
 import net.dragonmounts.plus.compat.registry.DragonType;
 import net.dragonmounts.plus.compat.registry.DragonVariant;
+import net.dragonmounts.plus.compat.registry.ItemHolder;
 import net.minecraft.world.item.Rarity;
 
 import java.util.function.Function;
 
 import static net.dragonmounts.plus.common.DragonMountsShared.makeId;
 import static net.dragonmounts.plus.common.init.DMBlocks.configureDragonHead;
-import static net.dragonmounts.plus.compat.registry.DeferredBlock.registerBlock;
+import static net.dragonmounts.plus.compat.registry.BlockHolder.registerBlock;
 
 public class DragonVariants {
     public static final ImmutableList<DragonVariant> BUILTIN_VALUES;
@@ -61,13 +61,13 @@ public class DragonVariants {
     public static final DragonVariant WITHER;
     public static final DragonVariant ZOMBIE;
 
-    static DeferredBlock<DragonHeadStandingBlock> registerStandingHead(DragonHead head, String name) {
+    static BlockHolder<DragonHeadStandingBlock> registerStandingHead(DragonHead head, String name) {
         return registerBlock(name, props ->
                 new DragonHeadStandingBlock(head.variant, configureDragonHead(props).overrideDescription(DragonHeadBlock.TRANSLATION_KEY))
         );
     }
 
-    static DeferredBlock<DragonHeadWallBlock> registerWallHead(DragonHead head, String name) {
+    static BlockHolder<DragonHeadWallBlock> registerWallHead(DragonHead head, String name) {
         return registerBlock(name, props -> {
             var standing = head.standing.get();
             return new DragonHeadWallBlock(head.variant, configureDragonHead(props)
@@ -77,7 +77,7 @@ public class DragonVariants {
         });
     }
 
-    static DeferredItem<DragonHeadItem> registerHeadItem(DragonHead head, String name) {
+    static ItemHolder<DragonHeadItem> registerHeadItem(DragonHead head, String name) {
         return DMItemGroups.DRAGON_HEADS.register(name, props -> new DragonHeadItem(
                 head.variant,
                 head.wall.get(),

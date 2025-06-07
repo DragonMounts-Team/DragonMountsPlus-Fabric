@@ -14,10 +14,6 @@ public class LazyFloatConfigOption extends AbstractLazyConfigOption<Float, Float
     public static final OptionInstance.CaptionBasedToString<Float> X_2F_STRINGIFIER = (component, config) -> Options.genericValueLabel(component, Component.literal(String.format("%.2f", config)));
     public final Range range;
 
-    public LazyFloatConfigOption(String caption, FloatEntry config, Component tooltip, OptionInstance.CaptionBasedToString<Float> stringifier) {
-        this(caption, config, new Range(config.min, config.max, 0.1F), tooltip, stringifier);
-    }
-
     public LazyFloatConfigOption(
             String caption,
             FloatEntry config,

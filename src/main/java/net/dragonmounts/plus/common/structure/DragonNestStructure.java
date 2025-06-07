@@ -2,6 +2,8 @@ package net.dragonmounts.plus.common.structure;
 
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import it.unimi.dsi.fastutil.ints.IntArrayList;
+import net.dragonmounts.plus.common.api.NoiseColumnExtension;
 import net.dragonmounts.plus.common.init.DMStructures;
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
@@ -9,6 +11,7 @@ import net.minecraft.util.ExtraCodecs;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.LevelHeightAccessor;
+import net.minecraft.world.level.NoiseColumn;
 import net.minecraft.world.level.block.Mirror;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.chunk.ChunkGenerator;
@@ -21,8 +24,8 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.OptionalInt;
 
-import static net.dragonmounts.plus.common.structure.DragonNestPiece.getHeightMapType;
 import static net.dragonmounts.plus.common.structure.DragonNestPiece.getPivot;
 
 /**
@@ -46,18 +49,20 @@ public class DragonNestStructure extends Structure {
     @Override
     public @NotNull Optional<Structure.GenerationStub> findGenerationPoint(Structure.GenerationContext context) {
         var random = context.random();
+        var pos = context.chunkPos().getWorldPosition();
         var config = drawConfig(this.configs, random);
         var structure = Util.getRandom(config.templates(), random);
         var template = context.structureTemplateManager().getOrCreate(structure);
         var rotation = Util.getRandom(Rotation.values(), random);
         var mirror = random.nextBoolean() ? Mirror.NONE : Mirror.FRONT_BACK;
         var pivot = getPivot(template.getSize());
-        var pos = context.chunkPos().getWorldPosition();
-        var location = new BlockPos(pos.getX(), findSuitableY(
+        var height = findSuitableY(
                 context, config, template.getBoundingBox(pos, rotation, pivot, mirror), random
-        ), pos.getZ());
+        );
+        if (height.isEmpty()) return Optional.empty();
+        var location = new BlockPos(pos.getX(), height.getAsInt(), pos.getZ());
         return Optional.of(new Structure.GenerationStub(location, builder -> builder.addPiece(new DragonNestPiece(
-                context.structureTemplateManager(), location, config, structure, rotation, mirror, pivot
+                context.structureTemplateManager(), location, structure, rotation, mirror, pivot
         ))));
     }
 
@@ -66,7 +71,7 @@ public class DragonNestStructure extends Structure {
         return generator.getBaseHeight(center.getX(), center.getZ(), type, level, random) - 1;
     }
 
-    public static int findSuitableY(
+    public static OptionalInt findSuitableY(
             Structure.GenerationContext context,
             NestConfig config,
             BoundingBox box,
@@ -77,56 +82,83 @@ public class DragonNestStructure extends Structure {
         var state = context.randomState();
         var level = context.heightAccessor();
         int bottom = level.getMinY() + MIN_Y_INDEX;
-        var type = getHeightMapType(placement);
         int height;
         switch (placement) {
             case IN_MOUNTAIN:
-                height = getRandomWithinInterval(random, 70, getGroundHeight(generator, level, box, type, state) - box.getYSpan());
+                height = getRandomWithinInterval(random, 70, getGroundHeight(generator, level, box, placement.type, state) - box.getYSpan());
                 break;
             case UNDERGROUND:
-                height = getRandomWithinInterval(random, bottom, getGroundHeight(generator, level, box, type, state) - box.getYSpan());
+                height = getRandomWithinInterval(random, bottom, getGroundHeight(generator, level, box, placement.type, state) - box.getYSpan());
                 break;
             case PARTLY_BURIED:
-                height = getGroundHeight(generator, level, box, type, state) - Mth.randomBetweenInclusive(random, 2, box.getYSpan() / 2);
+                height = getGroundHeight(generator, level, box, placement.type, state) - Mth.randomBetweenInclusive(random, 2, box.getYSpan() / 2);
                 break;
             case IN_NETHER:
                 height = Mth.randomBetweenInclusive(random, 27, 127 - box.getYSpan());
                 break;
             case IN_CLOUDS: {
                 var maxY = level.getMaxY();
-                return Math.max(
-                        getGroundHeight(generator, level, box, type, state) + MIN_Y_INDEX,
+                return OptionalInt.of(Math.max(
+                        getGroundHeight(generator, level, box, placement.type, state) + MIN_Y_INDEX,
                         Mth.randomBetweenInclusive(random, maxY - 96, maxY - 48)
-                );
+                ));
             }
             case ON_LAND_SURFACE:
-                height = getGroundHeight(generator, level, box, type, state);
-                if (height < bottom && config.island().isPresent()) {
-                    int range = level.getHeight();
-                    return Mth.randomBetweenInclusive(
-                            random,
-                            bottom + (int) (range * 0.125F),
-                            bottom + (int) (range * 0.375F)
-                    );
-                }
+                height = getGroundHeight(generator, level, box, placement.type, state);
+                if (height < bottom) return OptionalInt.empty();
                 break;
+            case FLUSH_WITH_SURFACE: {
+                var center = box.getCenter();
+                int centerX = center.getX(), centerZ = center.getZ();
+                var candidates = new IntArrayList();
+                var isSupport = placement.type.isOpaque();
+                var major = generator.getBaseColumn(centerX, centerZ, level, state);
+                var minors = new NoiseColumn[]{
+                        generator.getBaseColumn(box.minX(), box.minZ(), level, state),
+                        generator.getBaseColumn(box.maxX(), box.minZ(), level, state),
+                        generator.getBaseColumn(box.minX(), box.maxZ(), level, state),
+                        generator.getBaseColumn(box.maxX(), box.maxZ(), level, state)
+                };
+                height = NoiseColumnExtension.getMaxHeight(major);
+                boolean wasEmpty = !isSupport.test(major.getBlock(height--));
+                do {
+                    var block = major.getBlock(height);
+                    if (isSupport.test(block)) {
+                        if (wasEmpty) {
+                            int layers = 0;
+                            for (var column : minors) {
+                                if (isSupport.test(column.getBlock(height)) && ++layers == 3) {
+                                    candidates.add(height);
+                                    break;
+                                }
+                            }
+                        }
+                        wasEmpty = false;
+                    } else {
+                        wasEmpty = true;
+                    }
+                } while (--height > bottom);
+                return candidates.isEmpty()
+                        ? OptionalInt.of(bottom)
+                        : OptionalInt.of(Math.max(Util.getRandom(candidates, random) + 1 - box.getYSpan(), bottom));
+            }
             default:
-                height = getGroundHeight(generator, level, box, type, state);
+                height = getGroundHeight(generator, level, box, placement.type, state);
         }
-        var columns = List.of(
+        var columns = new NoiseColumn[]{
                 generator.getBaseColumn(box.minX(), box.minZ(), level, state),
                 generator.getBaseColumn(box.maxX(), box.minZ(), level, state),
                 generator.getBaseColumn(box.minX(), box.maxZ(), level, state),
                 generator.getBaseColumn(box.maxX(), box.maxZ(), level, state)
-        );
-        var isOpaque = type.isOpaque();
+        };
+        var isSupport = placement.type.isOpaque();
         do {
             int layers = 0;
             for (var column : columns) {
-                if (isOpaque.test(column.getBlock(height)) && ++layers == 3) return height;
+                if (isSupport.test(column.getBlock(height)) && ++layers == 3) return OptionalInt.of(height);
             }
         } while (--height > bottom);
-        return bottom;
+        return OptionalInt.of(bottom);
     }
 
     public static int getRandomWithinInterval(RandomSource random, int min, int max) {
@@ -149,6 +181,6 @@ public class DragonNestStructure extends Structure {
 
     @Override
     public @NotNull StructureType<?> type() {
-        return DMStructures.DRAGON_NESTS;
+        return DMStructures.DRAGON_NEST;
     }
 }

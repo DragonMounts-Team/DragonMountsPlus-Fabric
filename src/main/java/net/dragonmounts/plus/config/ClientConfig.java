@@ -1,7 +1,7 @@
 package net.dragonmounts.plus.config;
 
 import net.dragonmounts.plus.common.DragonMountsShared;
-import net.fabricmc.loader.impl.FabricLoaderImpl;
+import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.nbt.CompoundTag;
 
 public class ClientConfig extends ConfigHolder {
@@ -15,7 +15,7 @@ public class ClientConfig extends ConfigHolder {
     public final BooleanEntry toggle_breathing = new BooleanEntry("ToggleBreathing", "toggle_breathing", false);
 
     protected ClientConfig(String identifier) {
-        super(FabricLoaderImpl.INSTANCE.getConfigDir().resolve(identifier).resolve("client.dat"), false);
+        super(FabricLoader.getInstance().getConfigDir().resolve(identifier).resolve("client.dat"), false);
         this.load();
     }
 

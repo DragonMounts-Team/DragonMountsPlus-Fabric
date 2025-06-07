@@ -1,5 +1,6 @@
 package net.dragonmounts.plus.compat.platform;
 
+import net.dragonmounts.plus.common.entity.dragon.Relation;
 import net.dragonmounts.plus.common.entity.dragon.ServerDragonEntity;
 import net.dragonmounts.plus.common.init.DMMemories;
 import net.dragonmounts.plus.common.init.DMSounds;
@@ -58,12 +59,26 @@ public class ServerNetworkHandler {
         player.level().playSound(null, player, DMSounds.WHISTLE_BLOW_LONG, SoundSource.PLAYERS, 1.0F, 1.0F);
     }
 
-    public static void handleToggleSitting(ToggleSittingPayload payload, ServerPlayNetworking.Context context) {
+    public static void handleToggleSitting(ToggleSittingByUUIDPayload payload, ServerPlayNetworking.Context context) {
         var player = context.player();
         var dragon = WhistleItem.getOrDeny(player, payload.dragon());
         if (dragon == null) return;
         dragon.setOrderedToSit(!dragon.isOrderedToSit());
         player.level().playSound(null, player, DMSounds.WHISTLE_BLOW_SHORT, SoundSource.PLAYERS, 1.0F, 1.0F);
+    }
+
+    public static void handleToggleSitting(ToggleSittingByIDPayload payload, ServerPlayNetworking.Context context) {
+        var player = context.player();
+        if (player.serverLevel().getEntity(payload.dragon()) instanceof ServerDragonEntity dragon && Relation.checkRelation(dragon, player).isTrusted) {
+            dragon.setOrderedToSit(!dragon.isOrderedToSit());
+        }
+    }
+
+    public static void handleToggleTrust(ToggleTrustPayload payload, ServerPlayNetworking.Context context) {
+        var player = context.player();
+        if (player.serverLevel().getEntity(payload.dragon()) instanceof ServerDragonEntity dragon && dragon.isOwnedBy(player)) {
+            dragon.setTrustingAnyPlayer(!dragon.isTrustingAnyPlayer());
+        }
     }
 
     public static void handleToggleFollowing(ToggleFollowingPayload payload, ServerPlayNetworking.Context context) {

@@ -15,8 +15,8 @@ import java.util.function.Supplier;
 
 import static net.dragonmounts.plus.common.DragonMountsShared.makeKey;
 
-public class DeferredEntity<T extends Entity> extends DeferredHolder<EntityType<T>, EntityType<?>> {
-    public static <T extends Entity> DeferredEntity<T> registerEntity(
+public class EntityHolder<T extends Entity> extends ObjectHolder<EntityType<T>, EntityType<?>> {
+    public static <T extends Entity> EntityHolder<T> registerEntity(
             String name,
             MobCategory category,
             EntityType.EntityFactory<T> factory,
@@ -25,10 +25,10 @@ public class DeferredEntity<T extends Entity> extends DeferredHolder<EntityType<
         var builder = EntityType.Builder.of(factory, category);
         init.accept(builder);
         var key = makeKey(Registries.ENTITY_TYPE, name);
-        return new DeferredEntity<>(key, builder);
+        return new EntityHolder<>(key, builder);
     }
 
-    public static <T extends LivingEntity> DeferredEntity<T> registerLivingEntity(
+    public static <T extends LivingEntity> EntityHolder<T> registerLivingEntity(
             String name,
             MobCategory category,
             EntityType.EntityFactory<T> factory,
@@ -38,10 +38,10 @@ public class DeferredEntity<T extends Entity> extends DeferredHolder<EntityType<
         var builder = FabricEntityType.Builder.createLiving(factory, category, type -> type.defaultAttributes(supplier));
         init.accept(builder);
         var key = makeKey(Registries.ENTITY_TYPE, name);
-        return new DeferredEntity<>(key, builder);
+        return new EntityHolder<>(key, builder);
     }
 
-    public DeferredEntity(ResourceKey<EntityType<?>> key, EntityType.Builder<T> builder) {
+    public EntityHolder(ResourceKey<EntityType<?>> key, EntityType.Builder<T> builder) {
         super(BuiltInRegistries.ENTITY_TYPE, key, builder.build(key));
     }
 

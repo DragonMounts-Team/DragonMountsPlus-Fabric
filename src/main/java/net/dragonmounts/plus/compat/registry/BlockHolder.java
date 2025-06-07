@@ -14,12 +14,12 @@ import java.util.function.Function;
 
 import static net.dragonmounts.plus.common.DragonMountsShared.makeKey;
 
-public class DeferredBlock<T extends Block> extends DeferredHolder<T, Block> implements ItemLike {
-    public static <T extends Block> DeferredBlock<T> registerBlock(String name, Function<Properties, T> factory) {
-        return new DeferredBlock<>(makeKey(Registries.BLOCK, name), factory);
+public class BlockHolder<T extends Block> extends ObjectHolder<T, Block> implements ItemLike {
+    public static <T extends Block> BlockHolder<T> registerBlock(String name, Function<Properties, T> factory) {
+        return new BlockHolder<>(makeKey(Registries.BLOCK, name), factory);
     }
 
-    public DeferredBlock(ResourceKey<Block> key, Function<Properties, T> factory) {
+    public BlockHolder(ResourceKey<Block> key, Function<Properties, T> factory) {
         super(BuiltInRegistries.BLOCK, key, factory.apply(Properties.of().setId(key)));
     }
 

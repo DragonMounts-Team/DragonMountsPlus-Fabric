@@ -4,10 +4,21 @@ import net.dragonmounts.plus.common.init.DMStructureSets;
 import net.dragonmounts.plus.common.init.DMStructures;
 import net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
+import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
+import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.core.RegistrySetBuilder;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.data.PackOutput;
+import net.minecraft.data.structures.NbtToSnbt;
+import net.minecraft.data.structures.SnbtToNbt;
+import net.minecraft.data.structures.StructureUpdater;
+
+import java.util.Collections;
 
 public class DMDataGenerator implements DataGeneratorEntrypoint {
+    static boolean STRINGIFY_STRUCTURE = false;
+    static boolean UPDATE_STRUCTURE = false;
+
     @Override
     public void onInitializeDataGenerator(FabricDataGenerator generator) {
         var pack = generator.createPack();
@@ -21,6 +32,27 @@ public class DMDataGenerator implements DataGeneratorEntrypoint {
         pack.addProvider(DMEquipmentAssetProvider::new);
         pack.addProvider(DMDynamicProvider::new);
         pack.addProvider(DMBlockLootProvider::new);
+        pack.addProvider(DMChestLootProvider::new);
+        if (STRINGIFY_STRUCTURE) {
+            pack.addProvider(DMDataGenerator::stringifyStructures);
+        }
+        if (UPDATE_STRUCTURE) {
+            pack.addProvider(DMDataGenerator::updateStructures);
+        }
+    }
+
+    public static NbtToSnbt stringifyStructures(FabricDataOutput output) {
+        return new NbtToSnbt(
+                new PackOutput(output.getOutputFolder().resolve(".cache").resolve("plain")),
+                Collections.singleton(FabricLoader.getInstance().getGameDir().resolve("structures"))
+        );
+    }
+
+    public static SnbtToNbt updateStructures(FabricDataOutput output) {
+        return new SnbtToNbt(
+                new PackOutput(output.getOutputFolder().resolve(".cache").resolve("updated")),
+                Collections.singleton(FabricLoader.getInstance().getGameDir().resolve("structures"))
+        ).addFilter(StructureUpdater::update);
     }
 
     @Override

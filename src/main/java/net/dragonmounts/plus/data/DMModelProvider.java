@@ -113,11 +113,11 @@ public class DMModelProvider extends FabricModelProvider {
         }
     }
 
-    public static void generateFlatItem(ItemModelGenerators gen, DeferredItem<?> item) {
+    public static void generateFlatItem(ItemModelGenerators gen, ItemHolder<?> item) {
         gen.generateFlatItem(item.get(), ModelTemplates.FLAT_ITEM);
     }
 
-    public static void generateSpawnEgg(ItemModelGenerators gen, DeferredItem<?> item, int primaryColor, int secondaryColor) {
+    public static void generateSpawnEgg(ItemModelGenerators gen, ItemHolder<?> item, int primaryColor, int secondaryColor) {
         gen.generateSpawnEgg(item.get(), primaryColor, secondaryColor);
     }
 
@@ -186,7 +186,7 @@ public class DMModelProvider extends FabricModelProvider {
         gen.generateFlatItem(item, ModelTemplates.FLAT_HANDHELD_ITEM);
     }
 
-    public static <T extends Block> void generateBlocksWithItem(BlockModelGenerators gen, BiConsumer<BlockModelGenerators, T> consumer, Collection<DeferredBlock<T>> holders) {
+    public static <T extends Block> void generateBlocksWithItem(BlockModelGenerators gen, BiConsumer<BlockModelGenerators, T> consumer, Collection<BlockHolder<T>> holders) {
         for (var holder : holders) {
             var block = holder.get();
             consumer.accept(gen, block);

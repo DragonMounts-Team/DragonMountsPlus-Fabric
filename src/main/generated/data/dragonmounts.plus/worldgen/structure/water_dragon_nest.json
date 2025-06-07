@@ -1,5 +1,5 @@
 {
-  "type": "dragonmounts.plus:dragon_nests",
+  "type": "dragonmounts.plus:dragon_nest",
   "biomes": "#dragonmounts.plus:has_structure/water_dragon_nest",
   "configs": [
     {

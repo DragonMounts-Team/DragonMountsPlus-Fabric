@@ -2,7 +2,7 @@ package net.dragonmounts.plus.data;
 
 import net.dragonmounts.plus.common.init.DMBlocks;
 import net.dragonmounts.plus.common.tag.DMBlockTags;
-import net.dragonmounts.plus.compat.registry.DeferredBlock;
+import net.dragonmounts.plus.compat.registry.BlockHolder;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagProvider;
 import net.fabricmc.fabric.api.tag.convention.v2.ConventionalBlockTags;
@@ -79,9 +79,10 @@ public class DMBlockTagProvider extends FabricTagProvider.BlockTagProvider {
         addAll(this.getOrCreateTagBuilder(DMBlockTags.DRAGON_EGGS).add(Blocks.DRAGON_EGG), DMBlocks.BUILTIN_DRAGON_EGGS);
         addAll(this.getOrCreateTagBuilder(DMBlockTags.DRAGON_SCALE_BLOCKS), DMBlocks.BUILTIN_DRAGON_SCALE_BLOCKS);
         this.getOrCreateTagBuilder(BlockTags.FEATURES_CANNOT_REPLACE).addTag(DMBlockTags.DRAGON_EGGS);
+        this.getOrCreateTagBuilder(BlockTags.BEACON_BASE_BLOCKS).addTag(DMBlockTags.DRAGON_SCALE_BLOCKS);
     }
 
-    static void addAll(TagAppender<Block> builder, Collection<? extends DeferredBlock<?>> blocks) {
+    static void addAll(TagAppender<Block> builder, Collection<? extends BlockHolder<?>> blocks) {
         for (var block : blocks) {
             builder.add(block.key);
         }

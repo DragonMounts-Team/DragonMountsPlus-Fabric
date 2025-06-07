@@ -1,12 +1,6 @@
 {
   "values": [
-    {
-      "id": "#c:foods/cooked_meat",
-      "required": false
-    },
-    {
-      "id": "#c:foods/cooked_fish",
-      "required": false
-    }
+    "#c:foods/cooked_meat",
+    "#c:foods/cooked_fish"
   ]
 }

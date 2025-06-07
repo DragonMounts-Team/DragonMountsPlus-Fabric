@@ -2,7 +2,7 @@ package net.dragonmounts.plus.data;
 
 import net.dragonmounts.plus.common.init.DMBlocks;
 import net.dragonmounts.plus.common.init.DragonVariants;
-import net.dragonmounts.plus.compat.registry.DeferredBlock;
+import net.dragonmounts.plus.compat.registry.BlockHolder;
 import net.dragonmounts.plus.compat.registry.DragonVariant;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricBlockLootTableProvider;
@@ -44,7 +44,7 @@ public class DMBlockLootProvider extends FabricBlockLootTableProvider {
         super(output, future);
     }
 
-    public void dropSelf(DeferredBlock<?> block) {
+    public void dropSelf(BlockHolder<?> block) {
         this.dropSelf(block.get());
     }
 

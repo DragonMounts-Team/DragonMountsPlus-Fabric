@@ -2,22 +2,22 @@ package net.dragonmounts.plus.common.init;
 
 import net.dragonmounts.plus.common.block.entity.DragonCoreBlockEntity;
 import net.dragonmounts.plus.common.block.entity.DragonHeadBlockEntity;
-import net.dragonmounts.plus.compat.registry.DeferredBlock;
-import net.dragonmounts.plus.compat.registry.DeferredBlockEntity;
+import net.dragonmounts.plus.compat.registry.BlockEntityHolder;
+import net.dragonmounts.plus.compat.registry.BlockHolder;
 
-import static net.dragonmounts.plus.compat.registry.DeferredBlockEntity.registerBlockEntity;
+import static net.dragonmounts.plus.compat.registry.BlockEntityHolder.registerBlockEntity;
 
 
 public class DMBlockEntities {
-    public static final DeferredBlockEntity<DragonCoreBlockEntity> DRAGON_CORE = registerBlockEntity(
+    public static final BlockEntityHolder<DragonCoreBlockEntity> DRAGON_CORE = registerBlockEntity(
             "dragon_core",
             DragonCoreBlockEntity::new,
             DMBlocks.DRAGON_CORE
     );
-    public static final DeferredBlockEntity<DragonHeadBlockEntity> DRAGON_HEAD;
+    public static final BlockEntityHolder<DragonHeadBlockEntity> DRAGON_HEAD;
 
     static {
-        var blocks = new DeferredBlock<?>[DragonVariants.BUILTIN_VALUES.size() << 1];
+        var blocks = new BlockHolder<?>[DragonVariants.BUILTIN_VALUES.size() << 1];
         int i = 0;
         for (var variant : DragonVariants.BUILTIN_VALUES) {
             var head = variant.head;

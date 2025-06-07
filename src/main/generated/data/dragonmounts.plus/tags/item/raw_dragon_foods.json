@@ -1,13 +1,7 @@
 {
   "values": [
-    {
-      "id": "#c:foods/raw_meat",
-      "required": false
-    },
-    {
-      "id": "#c:foods/raw_fish",
-      "required": false
-    },
+    "#c:foods/raw_meat",
+    "#c:foods/raw_fish",
     "minecraft:cod_bucket",
     "minecraft:salmon_bucket",
     "minecraft:tropical_fish_bucket"

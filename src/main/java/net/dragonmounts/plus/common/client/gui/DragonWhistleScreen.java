@@ -3,7 +3,7 @@ package net.dragonmounts.plus.common.client.gui;
 import net.dragonmounts.plus.common.init.DMSounds;
 import net.dragonmounts.plus.common.network.c2s.TeleportDragonPayload;
 import net.dragonmounts.plus.common.network.c2s.ToggleFollowingPayload;
-import net.dragonmounts.plus.common.network.c2s.ToggleSittingPayload;
+import net.dragonmounts.plus.common.network.c2s.ToggleSittingByUUIDPayload;
 import net.dragonmounts.plus.compat.platform.ClientNetworkHandler;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.layouts.HeaderAndFooterLayout;
@@ -78,7 +78,7 @@ public class DragonWhistleScreen extends Screen {
     }
 
     public void toggleSiting(@Nullable Button ignored) {
-        ClientNetworkHandler.send(new ToggleSittingPayload(this.uuid));
+        ClientNetworkHandler.send(new ToggleSittingByUUIDPayload(this.uuid));
         this.onClose();
     }
 

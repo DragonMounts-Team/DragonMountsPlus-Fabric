@@ -1,9 +1,6 @@
 {
   "values": [
-    {
-      "id": "#c:rods",
-      "required": false
-    },
+    "#c:rods",
     "minecraft:debug_stick",
     "minecraft:bone",
     "minecraft:bamboo"

@@ -1,9 +1,9 @@
 {
-  "type": "dragonmounts.plus:dragon_nests",
+  "type": "dragonmounts.plus:dragon_nest",
   "biomes": "#dragonmounts.plus:has_structure/zombie_dragon_nest",
   "configs": [
     {
-      "placement": "in_nether",
+      "placement": "flush_with_surface",
       "templates": [
         "dragonmounts.plus:zombie"
       ]
