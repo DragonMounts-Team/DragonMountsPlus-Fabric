@@ -548,7 +548,7 @@ public abstract class TameableDragonEntity extends TamableAnimal implements
     }
 
     @Override
-    public boolean wantsToAttack(LivingEntity target, LivingEntity owner) {
+    public boolean wantsToAttack(@Nullable LivingEntity target, @Nullable LivingEntity owner) {
         return switch (target) {
             case ArmorStand ignored -> false;
             case TamableAnimal other -> !other.isTame() || other.getOwner() != owner;
@@ -587,7 +587,7 @@ public abstract class TameableDragonEntity extends TamableAnimal implements
         super.tickRidden(player, input);
         float rotY = this.getYRot();
         var rot = EntityUtil.getRiddenRotation(player);
-        rotY += +Mth.wrapDegrees(rot.y - rotY) * 0.08F;
+        rotY += Mth.wrapDegrees(rot.y - rotY) * 0.08F;
         this.setRot(rotY, rot.x * 1.5F);
         this.yRotO = this.yBodyRot = this.yHeadRot = rotY;
     }
