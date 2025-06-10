@@ -18,7 +18,7 @@ public class DMItemGroups {
 
     public static void register(ItemCategory.Registry registry) {
         registry.register(BLOCK_TAB, "itemGroup.dragonmounts.plus.blocks", () -> new ItemStack(DMBlocks.ENDER_DRAGON_EGG));
-        registry.register(ITEM_TAB, "itemGroup.dragonmounts.plus.items", () -> new ItemStack(DMItems.ENDER_DRAGON_SCALES.get()));
-        registry.register(TOOL_TAB, "itemGroup.dragonmounts.plus.tools", () -> new ItemStack(DMItems.ENDER_DRAGON_SCALE_SWORD.get()));
+        registry.register(ITEM_TAB, "itemGroup.dragonmounts.plus.items", () -> new ItemStack(DMItems.ENDER_DRAGON_SCALES));
+        registry.register(TOOL_TAB, "itemGroup.dragonmounts.plus.tools", () -> new ItemStack(DMItems.ENDER_DRAGON_SCALE_SWORD));
     }
 }
