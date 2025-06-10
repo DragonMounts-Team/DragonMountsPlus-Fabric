@@ -51,7 +51,7 @@ public class SaveCommand {
                 return 1;
             }
         }
-        var stack = DMItems.AMULET.value().saveEntity(target, DataComponentPatch.EMPTY);
+        var stack = DMItems.AMULET.get().saveEntity(target, DataComponentPatch.EMPTY);
         if (stack.isEmpty()) {
             source.sendFailure(Component.translatable("commands.dragonmounts.plus.save.cannot_serialize", target.getDisplayName()));
             return 0;

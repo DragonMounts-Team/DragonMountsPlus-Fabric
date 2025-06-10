@@ -165,6 +165,6 @@ public class DragonCoreBlock extends BaseEntityBlock {
 
     @Nullable
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
-        return createTickerHelper(type, DMBlockEntities.DRAGON_CORE.value(), DragonCoreBlockEntity::tick);
+        return createTickerHelper(type, DMBlockEntities.DRAGON_CORE.get(), DragonCoreBlockEntity::tick);
     }
 }

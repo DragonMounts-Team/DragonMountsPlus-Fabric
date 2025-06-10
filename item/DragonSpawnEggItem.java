@@ -59,7 +59,7 @@ public class DragonSpawnEggItem extends SpawnEggItem implements EntityContainer<
     }
 
     public DragonSpawnEggItem(DragonType type, Properties props) {
-        this(DMEntities.TAMEABLE_DRAGON.value(), type, props);
+        this(DMEntities.TAMEABLE_DRAGON.get(), type, props);
     }
 
     protected void putDragonData(SpawnData data, EntityType<?> type, RandomSource random) {

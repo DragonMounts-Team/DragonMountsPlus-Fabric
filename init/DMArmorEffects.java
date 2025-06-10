@@ -70,7 +70,7 @@ public class DMArmorEffects {
         @Override
         public boolean activate(ArmorEffectManager manager, Player player, int level) {
             if (level > 3) {
-                addOrResetEffect(player, DMMobEffects.DARK_DRAGONS_GRACE, 600, 0, true, true, true, 201);
+                addOrResetEffect(player, DMMobEffects.DARK_DRAGONS_GRACE.wrap(), 600, 0, true, true, true, 201);
                 return true;
             }
             return false;

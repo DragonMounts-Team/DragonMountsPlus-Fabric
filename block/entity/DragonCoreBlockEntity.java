@@ -51,7 +51,7 @@ public class DragonCoreBlockEntity extends RandomizableContainerBlockEntity impl
     private float progressOld;
 
     public DragonCoreBlockEntity(BlockPos pos, BlockState state) {
-        super(DMBlockEntities.DRAGON_CORE.value(), pos, state);
+        super(DMBlockEntities.DRAGON_CORE.get(), pos, state);
     }
 
     public static void tick(Level level, BlockPos pos, BlockState state, DragonCoreBlockEntity entity) {
