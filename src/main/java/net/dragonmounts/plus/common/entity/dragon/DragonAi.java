@@ -77,7 +77,7 @@ public class DragonAi {
     static void initIdleActivity(Brain<ServerDragonEntity> brain) {
         brain.addActivity(Activity.IDLE, 10, ImmutableList.of(
                 new Swim<>(0.8F),
-                new AnimalMakeLoveEx(DMEntities.TAMEABLE_DRAGON.value(), 1.0F, 4, 6),
+                new AnimalMakeLoveEx(DMEntities.TAMEABLE_DRAGON.get(), 1.0F, 4, 6),
                 new FollowTemptation(entity -> 1.25F, entity -> 3.0),
                 new FollowOwner(1.0F, 14.0F, 10),
                 StartAttacking.create(DragonAi::findNearestValidAttackTarget),

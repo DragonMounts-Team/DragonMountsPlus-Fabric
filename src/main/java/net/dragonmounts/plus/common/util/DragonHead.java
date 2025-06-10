@@ -34,6 +34,6 @@ public final class DragonHead implements ItemLike {
 
     @Override
     public @NotNull Item asItem() {
-        return this.item.value();
+        return this.item.get();
     }
 }
