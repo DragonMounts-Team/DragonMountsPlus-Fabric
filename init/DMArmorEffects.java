@@ -58,6 +58,25 @@ public class DMArmorEffects {
         }
     });
 
+    public static final DescribedArmorEffect DARK = registerArmorEffect(makeId("dark"), new DescribedArmorEffect() {
+        private static final Component TITLE = DragonTypes.DARK.getName();
+        private static final List<Component> DESCRIPTION = Collections.singletonList(Component.translatable("tooltip.armor_effect.dragonmounts.plus.dark"));
+
+        @Override
+        public ArmorEffectTooltip getClientTooltip() {
+            return new ArmorEffectTooltip(TITLE, DESCRIPTION, DescribedArmorEffect.formatTrigger(this, TRIGGER_PIECE_4));
+        }
+
+        @Override
+        public boolean activate(ArmorEffectManager manager, Player player, int level) {
+            if (level > 3) {
+                addOrResetEffect(player, DMMobEffects.DARK_DRAGONS_GRACE, 600, 0, true, true, true, 201);
+                return true;
+            }
+            return false;
+        }
+    });
+
     public static final DescribedArmorEffect ENCHANTED = registerArmorEffect(makeId("enchanted"), new DescribedArmorEffect() {
         private static final Component TITLE = DragonTypes.ENCHANTED.getName();
         private static final List<Component> DESCRIPTION = Collections.singletonList(Component.translatable("tooltip.armor_effect.dragonmounts.plus.enchanted"));

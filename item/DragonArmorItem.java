@@ -38,7 +38,7 @@ public class DragonArmorItem extends Item {
         super(applyMaterial(props, material).component(DataComponents.EQUIPPABLE, Equippable.builder(EquipmentSlot.BODY)
                 .setEquipSound(SoundEvents.HORSE_ARMOR)
                 .setAsset(material.assetId())
-                .setAllowedEntities(DMEntities.TAMEABLE_DRAGON.get())
+                .setAllowedEntities(DMEntities.TAMEABLE_DRAGON.value())
                 .setDamageOnHurt(false)
                 .build()
         ));

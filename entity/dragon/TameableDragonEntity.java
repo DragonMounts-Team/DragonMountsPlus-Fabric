@@ -357,7 +357,7 @@ public abstract class TameableDragonEntity extends TamableAnimal implements
 
     @Override
     public ItemStack getPickResult() {
-        return new ItemStack(this.getDragonType().getInstance(DragonSpawnEggItem.class, DMItems.ENDER_DRAGON_SPAWN_EGG.get()));
+        return new ItemStack(this.getDragonType().getInstance(DragonSpawnEggItem.class, DMItems.ENDER_DRAGON_SPAWN_EGG.value()));
     }
 
     public boolean isRiddenByPlayer() {

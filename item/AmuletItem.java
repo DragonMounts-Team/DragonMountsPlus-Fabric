@@ -137,7 +137,7 @@ public class AmuletItem<T extends Entity> extends Item implements EntityContaine
                 level.addFreshEntityWithPassengers(entity);
                 level.gameEvent(player, GameEvent.ENTITY_PLACE, spawnPos);
                 if (player != null) {
-                    consumeStack(player, context.getHand(), stack, new ItemStack(DMItems.AMULET));
+                    consumeStack(player, context.getHand(), stack, new ItemStack(DMItems.AMULET.value()));
                 }
                 // stat will be awarded at `ItemStack#useOn`
             }
@@ -159,7 +159,7 @@ public class AmuletItem<T extends Entity> extends Item implements EntityContaine
             var entity = this.loadEntity(world, stack, player, pos, EntitySpawnReason.BUCKET, false, false);
             if (entity == null) return InteractionResult.PASS;
             world.addFreshEntityWithPassengers(entity);
-            consumeStack(player, hand, stack, new ItemStack(DMItems.AMULET));
+            consumeStack(player, hand, stack, new ItemStack(DMItems.AMULET.value()));
             world.gameEvent(player, GameEvent.ENTITY_PLACE, pos);
             player.awardStat(Stats.ITEM_USED.get(this));
             return InteractionResult.SUCCESS;

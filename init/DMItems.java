@@ -405,7 +405,7 @@ public class DMItems {
     );
     public static final DragonScaleArmorSuit DARK_DRAGON_SCALE_ARMORS = makeSuit(
             DragonTypes.DARK,
-            null,
+            DMArmorEffects.DARK,
             TOOL_TAB,
             "dark_dragon_scale_helmet",
             "dark_dragon_scale_chestplate",
