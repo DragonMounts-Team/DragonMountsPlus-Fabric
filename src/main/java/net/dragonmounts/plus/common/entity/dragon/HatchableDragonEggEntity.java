@@ -101,7 +101,7 @@ public class HatchableDragonEggEntity extends LivingEntity implements DragonTypi
     }
 
     public HatchableDragonEggEntity(Level level) {
-        this(DMEntities.HATCHABLE_DRAGON_EGG.get(), level);
+        this(DMEntities.HATCHABLE_DRAGON_EGG.value(), level);
     }
 
     public static AttributeSupplier.Builder createAttributes() {
@@ -274,7 +274,7 @@ public class HatchableDragonEggEntity extends LivingEntity implements DragonTypi
 
     @Override
     public ItemStack getPickResult() {
-        return new ItemStack(this.asBlock(DMBlocks.ENDER_DRAGON_EGG.get()));
+        return new ItemStack(this.asBlock(DMBlocks.ENDER_DRAGON_EGG.value()));
     }
 
     @Override
@@ -399,7 +399,7 @@ public class HatchableDragonEggEntity extends LivingEntity implements DragonTypi
         this.amplitude = target * 0.75F;
         if (crack) {
             level.levelEvent(2001, this.blockPosition(), Block.getId(
-                    this.asBlock(DMBlocks.ENDER_DRAGON_EGG.get()).defaultBlockState()
+                    this.asBlock(DMBlocks.ENDER_DRAGON_EGG.value()).defaultBlockState()
             ));
         }
         level.playLocalSound(this, DMSounds.DRAGON_EGG_CRACK, SoundSource.NEUTRAL, 1.0F, 1.0F);

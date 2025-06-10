@@ -13,7 +13,7 @@ import static net.minecraft.world.level.block.state.properties.BlockStatePropert
  */
 public class DragonHeadBlockEntity extends BlockEntity {
     public DragonHeadBlockEntity(BlockPos pos, BlockState state) {
-        super(DMBlockEntities.DRAGON_HEAD.get(), pos, state);
+        super(DMBlockEntities.DRAGON_HEAD.value(), pos, state);
     }
 
     private int ticks;

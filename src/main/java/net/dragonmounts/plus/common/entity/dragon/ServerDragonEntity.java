@@ -67,7 +67,7 @@ public class ServerDragonEntity extends TameableDragonEntity {
     }
 
     public ServerDragonEntity(ServerLevel level, BiConsumer<ServerLevel, ServerDragonEntity> init) {
-        super(DMEntities.TAMEABLE_DRAGON.get(), level);
+        super(DMEntities.TAMEABLE_DRAGON.value(), level);
         this.resetAttributes(level);
         init.accept(level, this);
         if (this.stage != null) return;
@@ -341,7 +341,7 @@ public class ServerDragonEntity extends TameableDragonEntity {
     public void die(DamageSource source) {
         super.die(source);
         if (this.isTame()) {
-            this.spawnEssence(this.getDragonType().getInstance(DragonEssenceItem.class, DMItems.ENDER_DRAGON_ESSENCE.get())
+            this.spawnEssence(this.getDragonType().getInstance(DragonEssenceItem.class, DMItems.ENDER_DRAGON_ESSENCE.value())
                     .saveEntity(this, DataComponentPatch.EMPTY)
             );
         }

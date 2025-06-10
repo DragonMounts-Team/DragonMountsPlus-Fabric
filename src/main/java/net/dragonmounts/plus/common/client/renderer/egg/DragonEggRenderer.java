@@ -41,7 +41,7 @@ public class DragonEggRenderer extends EntityRenderer<HatchableDragonEggEntity, 
         state.level = egg.level();
         state.random = egg.level().random;
         state.biome = egg.level().getBiome(pos);
-        state.block = egg.asBlock(DMBlocks.ENDER_DRAGON_EGG.get()).defaultBlockState();
+        state.block = egg.asBlock(DMBlocks.ENDER_DRAGON_EGG.value()).defaultBlockState();
         state.amplitude = egg.getAmplitude(partialTicks);
         if (state.amplitude != 0) {
             state.axis = egg.getRotationAxis();
