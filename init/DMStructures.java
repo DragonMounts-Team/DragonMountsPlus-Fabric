@@ -52,13 +52,13 @@ public interface DMStructures {
                 DMBiomeTags.HAS_ENCHANTED_DRAGON_NEST,
                 new NestConfig(NestPlacement.ON_LAND_SURFACE, List.of(makeId("enchanted")))
         );
-        var fire = List.of(makeId("fire"), makeId("fire2"));
+        var fire = List.of(makeId("fire"));
         registry.register(
                 FIRE_DRAGON_NEST,
                 DMBiomeTags.HAS_FIRE_DRAGON_NEST,
                 new NestConfig(NestPlacement.IN_MOUNTAIN, fire),
                 new NestConfig(NestPlacement.PARTLY_BURIED, fire),
-                new NestConfig(NestPlacement.UNDERGROUND, List.of(makeId("fire")))
+                new NestConfig(NestPlacement.UNDERGROUND, fire)
         );
         var forest = List.of(makeId("forest1"), makeId("forest2"));
         registry.register(

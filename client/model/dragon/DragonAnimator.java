@@ -25,8 +25,7 @@ import static net.dragonmounts.plus.common.util.math.Interpolation.clampedSmooth
  */
 public class DragonAnimator extends DragonHeadLocator<ClientDragonEntity> {
     // constants
-    public static final int JAW_OPENING_TIME_FOR_ATTACK = 5;
-    public static final int JAW_OPENING_TIME_FOR_ROAR = 20;
+    public static final int JAW_SPEED = 20;
     // interpolate between folded and unfolded wing angles
     private static final float[] FOLDED_FINGER_ROT = {2.7F, 2.8F, 2.9F, 3.0F};
     private static final float[] UNFOLDED_FINGER_ROT = {0.1F, 0.9F, 1.7F, 2.5F};
@@ -57,8 +56,6 @@ public class DragonAnimator extends DragonHeadLocator<ClientDragonEntity> {
     // timing vars
     private float cycleOfs;
     private boolean wingsDown;
-    private int ticksSinceLastAttack = JAW_OPENING_TIME_FOR_ATTACK;
-    private int ticksSinceLastRoar = JAW_OPENING_TIME_FOR_ROAR;
 
     // timing interp vars
     private final LinearInterpolation animTimer = new LinearInterpolation(0.0F);
@@ -66,10 +63,7 @@ public class DragonAnimator extends DragonHeadLocator<ClientDragonEntity> {
     private final LinearInterpolation flutterTimer = new LinearInterpolation.Clamped(0.0F);
     private final LinearInterpolation walkTimer = new LinearInterpolation.Clamped(0.0F);
     private final LinearInterpolation sitTimer = new LinearInterpolation.Clamped(0.0F);
-    private final LinearInterpolation breathTimer = new LinearInterpolation.Clamped(0.0F);
-    private final LinearInterpolation biteTimer = new LinearInterpolation.Clamped(0.0F);
     private final LinearInterpolation speedTimer = new LinearInterpolation.Clamped(1.0F);
-    private final LinearInterpolation roarTimer = new LinearInterpolation.Clamped(0.0F);
 
     // trails
     private final CircularBuffer yTrail = new CircularBuffer(8);
@@ -94,6 +88,11 @@ public class DragonAnimator extends DragonHeadLocator<ClientDragonEntity> {
     private int hurtTime;
     private int maxDeathTime;
     public boolean renderCrystalBeams = true;
+    private float jawRotX;
+    private float lastJawRotX;
+    private MouthState mouth = MouthState.IDLE;
+    private int duration;
+    public int remainingEating;
 
     public DragonAnimator(ClientDragonEntity dragon) {
         super(dragon);
@@ -139,11 +138,48 @@ public class DragonAnimator extends DragonHeadLocator<ClientDragonEntity> {
         // update pitch
         state.pitch = this.getPitch() * MathUtil.TO_RAD_FACTOR;
         state.head = this.head;
-        state.jawRotX = (1.0F - Mth.sin(animBase)) * 0.1F * flutter + (
-                biteTimer.get(partialTicks) * 0.72F
-                        + breathTimer.get(partialTicks) * 0.58F
-                        + roarTimer.get(partialTicks) * 0.67F
-        );
+        state.jawRotX = (1.0F - Mth.sin(animBase)) * 0.1F * flutter + Mth.lerp(partialTicks, this.lastJawRotX, jawRotX);
+    }
+
+    public void transitMouthState(MouthState mouth) {
+        this.mouth = mouth;
+        this.duration = 0;
+    }
+
+    public void transitOrKeepMouthState(MouthState mouth) {
+        if (mouth == this.mouth) return;
+        this.mouth = mouth;
+        this.duration = 0;
+    }
+
+    protected boolean updateBasicMouthRotX() {
+        var mouth = this.mouth;
+        if (++this.duration < mouth.turning) {
+            this.jawRotX = MathUtil.clamp(this.duration * JAW_SPEED) * mouth.amplitude;
+        } else if (this.duration < mouth.duration) {
+            this.jawRotX = MathUtil.clamp((mouth.duration - this.duration) * JAW_SPEED) * mouth.amplitude;
+        } else return false;
+        return true;
+    }
+
+    protected void updateMouthRotX() {
+        switch (this.mouth) {
+            case IDLE -> this.jawRotX = 0.0F;
+            case EATING -> {
+                if (this.updateBasicMouthRotX()) break;
+                if (this.remainingEating < 0) {
+                    this.transitMouthState(MouthState.IDLE);
+                } else {
+                    this.duration = 0;
+                }
+                this.jawRotX = 0.0F;
+            }
+            default -> {
+                if (this.updateBasicMouthRotX()) break;
+                this.transitMouthState(MouthState.IDLE);
+                this.jawRotX = 0.0F;
+            }
+        }
     }
 
     @Override
@@ -156,10 +192,8 @@ public class DragonAnimator extends DragonHeadLocator<ClientDragonEntity> {
             this.animTimer.sync();
             this.groundTimer.sync();
             this.flutterTimer.sync();
-            this.biteTimer.sync();
             this.walkTimer.sync();
             this.sitTimer.sync();
-            this.roarTimer.sync();
             this.relativeHealth = 0.0F;
             return;
         }
@@ -201,23 +235,27 @@ public class DragonAnimator extends DragonHeadLocator<ClientDragonEntity> {
         }
 
         // update bite opening transition and breath transitions
+        this.lastJawRotX = this.jawRotX;
         switch (dragon.breathHelper.getCurrentBreathState()) {
-            case IDLE -> {  // breath is idle, handle bite attack
-                biteTimer.add(this.ticksSinceLastAttack < JAW_OPENING_TIME_FOR_ATTACK ? 0.2F : -0.2F);
-                breathTimer.set(0.0F);
-                roarTimer.add(this.ticksSinceLastRoar < JAW_OPENING_TIME_FOR_ROAR ? 0.2F : -0.2F);
+            case IDLE -> {
+                if (this.mouth == MouthState.BREATHING) {
+                    this.transitMouthState(MouthState.IDLE);
+                    this.jawRotX = 0.0F;
+                    break;
+                }
+                this.updateMouthRotX();
             }
             case STARTING -> {
-                biteTimer.set(0.0F);
-                breathTimer.set(dragon.breathHelper.getBreathStateFractionComplete());
+                this.transitOrKeepMouthState(MouthState.BREATHING);
+                this.updateMouthRotX();
             }
-            case STOPPING -> {
-                float breathStateFractionComplete = dragon.breathHelper.getBreathStateFractionComplete();
-                breathTimer.set(1.0F - breathStateFractionComplete);
+            case SUSTAIN -> {
+                var mouth = this.mouth = MouthState.BREATHING;
+                this.duration = mouth.turning + 2;
+                this.jawRotX = mouth.amplitude;
             }
-            case SUSTAIN -> breathTimer.set(1.0F);
+            case STOPPING -> this.updateMouthRotX();
         }
-
         // update speed transition
         speedTimer.add(!flying ||
                 speedEnt > speedMax ||
@@ -240,13 +278,7 @@ public class DragonAnimator extends DragonHeadLocator<ClientDragonEntity> {
         //yTrail.update(entity.posY - entity.getYOffset());
         yawTrail.update((float) yawAbs);
         pitchTrail.update(this.getPitch());
-
-        if (this.ticksSinceLastAttack < JAW_OPENING_TIME_FOR_ATTACK) {
-            ++this.ticksSinceLastAttack;
-        }
-        if (this.ticksSinceLastRoar < JAW_OPENING_TIME_FOR_ROAR) {
-            ++this.ticksSinceLastRoar;
-        }
+        --this.remainingEating;
     }
 
     private void animateWing(DragonRenderState state) {
@@ -378,7 +410,7 @@ public class DragonAnimator extends DragonHeadLocator<ClientDragonEntity> {
     }
 
     private void animateLegs(DragonRenderState state) {
-        float swing = state.walkAnimationPos * 0.5F / state.scale / state.ageScale;
+        float swing = state.walkAnimationPos * 0.25F / state.scale / state.ageScale;
         float sit = this.sit, walk = this.walk, ground = this.ground;
         LegPart.Pose leftFrontLeg = state.leftFrontLeg,
                 rightFrontLeg = state.rightFrontLeg,

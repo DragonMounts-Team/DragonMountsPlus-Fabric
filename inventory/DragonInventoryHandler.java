@@ -16,7 +16,8 @@ import static net.dragonmounts.plus.common.DragonMountsShared.makeId;
 import static net.dragonmounts.plus.common.inventory.DragonInventory.*;
 
 public class DragonInventoryHandler extends AbstractContainerMenu {
-    protected static final int PLAYER_INVENTORY_SIZE = INVENTORY_SIZE + 27;
+    protected static final int LOGICAL_SIZE = INVENTORY_SIZE + 1;
+    protected static final int PLAYER_INVENTORY_SIZE = LOGICAL_SIZE + 27;
     protected static final int PLAYER_HOTBAR_SIZE = PLAYER_INVENTORY_SIZE + 9;
     protected final DragonInventory inventory;
     public final TameableDragonEntity dragon;
@@ -53,8 +54,8 @@ public class DragonInventoryHandler extends AbstractContainerMenu {
         var slot = this.getSlot(index);
         if (slot.hasItem()) {
             ItemStack stack = slot.getItem(), copy = stack.copy();
-            if (index < INVENTORY_SIZE) {
-                if (!this.moveItemStackTo(stack, INVENTORY_SIZE, this.slots.size(), true)) return ItemStack.EMPTY;
+            if (index < LOGICAL_SIZE) {
+                if (!this.moveItemStackTo(stack, LOGICAL_SIZE, this.slots.size(), true)) return ItemStack.EMPTY;
             } else if (canPlaceAt(this, 3, stack)) {
                 if (!this.moveItemStackTo(stack, 3, 4, false)) return ItemStack.EMPTY;
             } else if (canPlaceAt(this, 2, stack)) {
@@ -63,9 +64,9 @@ public class DragonInventoryHandler extends AbstractContainerMenu {
                 if (!this.moveItemStackTo(stack, 1, 2, false)) return ItemStack.EMPTY;
             } else if (canPlaceAt(this, 0, stack)) {
                 if (!this.moveItemStackTo(stack, 0, 1, false)) return ItemStack.EMPTY;
-            } else if (!this.dragon.hasChest() || !this.moveItemStackTo(stack, 3, INVENTORY_SIZE, false)) {
+            } else if (!this.dragon.hasChest() || !this.moveItemStackTo(stack, 4, LOGICAL_SIZE, false)) {
                 if (index >= PLAYER_INVENTORY_SIZE) {
-                    this.moveItemStackTo(stack, INVENTORY_SIZE, PLAYER_INVENTORY_SIZE, false);
+                    this.moveItemStackTo(stack, LOGICAL_SIZE, PLAYER_INVENTORY_SIZE, false);
                 } else {
                     this.moveItemStackTo(stack, PLAYER_INVENTORY_SIZE, PLAYER_HOTBAR_SIZE, false);
                 }

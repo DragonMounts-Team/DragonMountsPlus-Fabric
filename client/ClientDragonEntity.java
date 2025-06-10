@@ -2,15 +2,19 @@ package net.dragonmounts.plus.common.client;
 
 import net.dragonmounts.plus.common.client.breath.impl.ClientBreathHelper;
 import net.dragonmounts.plus.common.client.model.dragon.DragonAnimator;
+import net.dragonmounts.plus.common.client.model.dragon.MouthState;
 import net.dragonmounts.plus.common.component.DragonFood;
 import net.dragonmounts.plus.common.entity.dragon.DragonLifeStage;
 import net.dragonmounts.plus.common.entity.dragon.TameableDragonEntity;
+import net.dragonmounts.plus.common.init.DMSounds;
 import net.dragonmounts.plus.common.item.DragonArmorItem;
 import net.dragonmounts.plus.common.tag.DMItemTags;
 import net.dragonmounts.plus.common.util.math.MathUtil;
 import net.dragonmounts.plus.compat.platform.PlatformItemTags;
 import net.minecraft.core.Holder;
+import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -77,6 +81,16 @@ public class ClientDragonEntity extends TameableDragonEntity {
                 --this.age;
             }
         }
+        var sneeze = this.getVariant().type.sneezeParticle;
+        if (sneeze != null && !this.isBaby() && !this.isBreathing() && this.random.nextInt(700) == 0) {
+            var level = this.level();
+            var pos = this.getHeadRelativeOffset(0.0F, 4.0F, 22.0F);
+            double x = pos.x, y = pos.y, z = pos.z;
+            for (int i = -1; i < 1; ++i) {
+                level.addParticle(sneeze, x, y + 0.5 * i, z, 0, 0.3, 0);
+            }
+            level.playSound(null, x, y, z, DMSounds.DRAGON_SNEEZE, SoundSource.NEUTRAL, 0.8F, 1);
+        }
     }
 
     @Override
@@ -107,6 +121,23 @@ public class ClientDragonEntity extends TameableDragonEntity {
             return InteractionResult.CONSUME;
         }
         return InteractionResult.PASS;
+    }
+
+    @Override
+    public void handleEntityEvent(byte id) {
+        switch (id) {
+            case ON_ATTACK -> {
+                this.playSound(SoundEvents.GENERIC_EAT.value(), 1.0F, 0.7F);
+                this.animator.transitMouthState(MouthState.ATTACKING);
+            }
+            case ON_ROAR -> {
+                SoundEvent sound = this.getVariant().type.getRoarSound(this);
+                if (sound == null) break;
+                this.playSound(sound, Mth.clamp(this.getAgeScale(), 0.3F, 0.6F), 1.0F);
+                this.animator.transitMouthState(MouthState.ROARING);
+            }
+            default -> super.handleEntityEvent(id);
+        }
     }
 
     @Override

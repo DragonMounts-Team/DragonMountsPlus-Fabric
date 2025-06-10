@@ -84,9 +84,14 @@ public class DragonNestStructure extends Structure {
         int bottom = level.getMinY() + MIN_Y_INDEX;
         int height;
         switch (placement) {
-            case IN_MOUNTAIN:
-                height = getRandomWithinInterval(random, 70, getGroundHeight(generator, level, box, placement.type, state) - box.getYSpan());
+            case IN_MOUNTAIN: {
+                int span = box.getYSpan();
+                int top = getGroundHeight(generator, level, box, placement.type, state) - span;
+                height = top < generator.getSeaLevel()
+                        ? getRandomWithinInterval(random, bottom, getGroundHeight(generator, level, box, Heightmap.Types.OCEAN_FLOOR_WG, state) - span)
+                        : getRandomWithinInterval(random, 70, top + span / 2);
                 break;
+            }
             case UNDERGROUND:
                 height = getRandomWithinInterval(random, bottom, getGroundHeight(generator, level, box, placement.type, state) - box.getYSpan());
                 break;
@@ -97,7 +102,7 @@ public class DragonNestStructure extends Structure {
                 height = Mth.randomBetweenInclusive(random, 27, 127 - box.getYSpan());
                 break;
             case IN_CLOUDS: {
-                var maxY = level.getMaxY();
+                int maxY = level.getMaxY();
                 return OptionalInt.of(Math.max(
                         getGroundHeight(generator, level, box, placement.type, state) + MIN_Y_INDEX,
                         Mth.randomBetweenInclusive(random, maxY - 96, maxY - 48)

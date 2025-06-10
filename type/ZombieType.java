@@ -20,7 +20,7 @@ public class ZombieType extends DragonType {
     }
 
     @Override
-    public SoundEvent getLivingSound(TameableDragonEntity dragon) {
+    public SoundEvent getAmbientSound(TameableDragonEntity dragon) {
         return dragon.isBaby() ? DMSounds.DRAGON_PURR_HATCHLING : DMSounds.DRAGON_PURR_ZOMBIE;
     }
 

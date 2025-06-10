@@ -83,7 +83,7 @@ public class DragonModel extends EntityModel<DragonRenderState> implements Heade
         this.root.xRot = -state.pitch;
         var head = this.head;
         loadBasic(head, state.head);
-        head.xScale = head.yScale = head.zScale = 0.92F;
+        head.xScale = head.yScale = head.zScale = MAGICAL_HEAD_SCALE;
         this.jaw.xRot = state.jawRotX;
         loadWithScale(this.necks, state.neckSegments, NECK_SEGMENTS);
         loadWithScale(this.tails, state.tailSegments, TAIL_SEGMENTS);

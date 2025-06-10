@@ -26,16 +26,17 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.game.DebugPackets;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.sounds.SoundEvents;
 import net.minecraft.stats.Stats;
 import net.minecraft.util.Unit;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.Brain;
 import net.minecraft.world.entity.ai.attributes.AttributeMap;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.navigation.PathNavigation;
 import net.minecraft.world.entity.animal.Animal;
@@ -49,7 +50,8 @@ import net.minecraft.world.phys.Vec3;
 import java.util.function.BiConsumer;
 
 import static net.dragonmounts.plus.common.entity.dragon.DragonModelContracts.NECK_SEGMENTS;
-import static net.dragonmounts.plus.common.util.EntityUtil.*;
+import static net.dragonmounts.plus.common.util.EntityUtil.addOrResetEffect;
+import static net.dragonmounts.plus.common.util.EntityUtil.addOrUpdateTransientModifier;
 import static net.dragonmounts.plus.compat.platform.DMGameRules.*;
 import static net.minecraft.resources.ResourceLocation.tryParse;
 import static net.minecraft.world.level.block.state.properties.BlockStateProperties.HORIZONTAL_FACING;
@@ -237,41 +239,47 @@ public class ServerDragonEntity extends TameableDragonEntity {
     public InteractionResult mobInteract(Player player, InteractionHand hand) {
         boolean isOwner = this.isOwnedBy(player);
         var stack = player.getItemInHand(hand);
-        var item = stack.getItem();
-        var food = DragonFood.getInstance(stack);
-        if (food != null) {
-            if (food.requiresOwner() && !isOwner) return InteractionResult.FAIL;
-            var level = this.level();
-            var locked = this.isAgeLocked();
-            for (var effect : food.effects()) {
-                effect.apply(level, stack, this);
-            }
-            if (!locked) {
-                // detoxification should not ripen the dragon
-                this.ageUp(food.age(), false);
-            }
-            this.setHealth(this.getHealth() + food.health());
-            if (isOwner) {
-                if (this.getLifeStage() == DragonLifeStage.ADULT && this.canFallInLove()) {
-                    this.setInLove(player);
+        if (!this.isBreathing()) {
+            var food = DragonFood.getInstance(stack);
+            if (food != null) {
+                if (food.requiresOwner() && !isOwner) return InteractionResult.FAIL;
+                var level = this.level();
+                var locked = this.isAgeLocked();
+                for (var effect : food.effects()) {
+                    effect.apply(level, stack, this);
                 }
-            } else if (!this.isTame() && this.random.nextFloat() < food.tamingProbability()) {
-                this.tame(player);
-                this.setOrderedToSit(true);
+                if (!locked) {
+                    // detoxification should not ripen the dragon
+                    this.ageUp(food.age(), false);
+                }
+                this.setHealth(this.getHealth() + food.health());
+                if (isOwner) {
+                    if (this.getLifeStage() == DragonLifeStage.ADULT && this.canFallInLove()) {
+                        this.setInLove(player);
+                    }
+                } else if (!this.isTame()) {
+                    if (this.random.nextFloat() < food.tamingProbability()) {
+                        level.broadcastEntityEvent(this, ON_TAMING_SUCCEED);
+                        this.tame(player);
+                        this.setOrderedToSit(true);
+                    } else {
+                        level.broadcastEntityEvent(this, ON_TAMING_FAIL);
+                    }
+                }
+                int count = stack.getCount();
+                var remainder = stack.get(DataComponents.USE_REMAINDER);
+                stack.consume(1, player);
+                if (remainder != null) {
+                    player.setItemInHand(hand, remainder.convertIntoRemainder(
+                            stack,
+                            count,
+                            player.hasInfiniteMaterials(),
+                            player::handleExtraItemsCreatedOnUse
+                    ));
+                }
+                ServerNetworkHandler.sendTracking(this, new FeedDragonPayload(this.getId(), this.age, this.stage, stack));
+                return InteractionResult.SUCCESS_SERVER;
             }
-            int count = stack.getCount();
-            var remainder = stack.get(DataComponents.USE_REMAINDER);
-            stack.consume(1, player);
-            if (remainder != null) {
-                player.setItemInHand(hand, remainder.convertIntoRemainder(
-                        stack,
-                        count,
-                        player.hasInfiniteMaterials(),
-                        player::handleExtraItemsCreatedOnUse
-                ));
-            }
-            ServerNetworkHandler.sendTracking(this, new FeedDragonPayload(this.getId(), this.age, this.stage, stack));
-            return InteractionResult.SUCCESS_SERVER;
         }
         if (!isOwner) return InteractionResult.PASS;
         if (this.inventory.onInteract(stack)) return InteractionResult.SUCCESS_SERVER;
@@ -279,7 +287,7 @@ public class ServerDragonEntity extends TameableDragonEntity {
             this.setOrderedToSit(!this.isOrderedToSit());
             return InteractionResult.SUCCESS_SERVER;
         }
-        var result = item.interactLivingEntity(stack, player, this, hand);
+        var result = stack.interactLivingEntity(player, this, hand);
         if (result.consumesAction()) return result;
         if (player.isSecondaryUseActive()) {
             this.openCustomInventoryScreen(player);
@@ -305,15 +313,28 @@ public class ServerDragonEntity extends TameableDragonEntity {
     @Override
     public void thunderHit(ServerLevel level, LightningBolt bolt) {
         super.thunderHit(level, bolt);
-        addOrMergeEffect(this, MobEffects.DAMAGE_BOOST, 700, 0, false, true, true);//35s
-        DragonType current = this.getDragonType();
-        if (current == DragonTypes.SKELETON) {
-            this.setDragonType(DragonTypes.WITHER, false);
-        } else if (current == DragonTypes.WATER) {
-            this.setDragonType(DragonTypes.STORM, false);
-        } else return;
-        this.playSound(SoundEvents.END_PORTAL_SPAWN, 2, 1);
-        this.playSound(SoundEvents.PORTAL_TRIGGER, 2, 1);
+        this.getDragonType().onThunderHit(this, bolt);
+    }
+
+    @Override
+    public boolean doHurtTarget(ServerLevel level, Entity target) {
+        level.broadcastEntityEvent(this, ON_ATTACK);
+        return super.doHurtTarget(level, target);
+    }
+
+    @Override
+    public boolean hurtServer(ServerLevel level, DamageSource source, float amount) {
+        if (super.hurtServer(level, source, amount)) {
+            if (!this.isBreathing() && this.random.nextFloat() < 0.25F) {
+                level.broadcastEntityEvent(this, ON_ROAR);
+            }
+            if (!source.is(DamageTypes.IN_WALL)) {
+                // don't just sit there!
+                this.setOrderedToSit(false);
+            }
+            return true;
+        }
+        return false;
     }
 
     @Override
@@ -333,12 +354,13 @@ public class ServerDragonEntity extends TameableDragonEntity {
 
     @Override
     public void setLifeStage(DragonLifeStage stage, boolean reset, boolean sync) {
-        var modifier = stage.modifier;
+        var modifier = stage.makeModifier(1.0, AttributeModifier.Operation.ADD_MULTIPLIED_BASE);
         var attributes = this.getAttributes();
         float health = this.getHealth() / this.getMaxHealth();
         addOrUpdateTransientModifier(attributes, Attributes.MAX_HEALTH, modifier);
         addOrUpdateTransientModifier(attributes, Attributes.ATTACK_DAMAGE, modifier);
-        addOrUpdateTransientModifier(attributes, Attributes.ARMOR, modifier);
+        // TODO: use config
+        addOrUpdateTransientModifier(attributes, Attributes.ARMOR, stage.makeModifier(DEFAULT_DRAGON_BASE_ARMOR, AttributeModifier.Operation.ADD_VALUE));
         this.setHealth(health * this.getMaxHealth());
         if (this.stage == stage) return;
         this.stage = stage;

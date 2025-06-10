@@ -1,7 +1,6 @@
 package net.dragonmounts.plus.common.entity.breath;
 
 import net.dragonmounts.plus.common.entity.dragon.TameableDragonEntity;
-import net.dragonmounts.plus.common.util.math.MathUtil;
 import net.dragonmounts.plus.compat.registry.DragonType;
 
 /**
@@ -54,14 +53,6 @@ public abstract class DragonBreathHelper<T extends TameableDragonEntity> {
 
     public boolean canBreathe() {
         return this.breath != null;
-    }
-
-    public float getBreathStateFractionComplete() {
-        return switch (currentBreathState) {
-            case IDLE, SUSTAIN -> 0.0F;
-            case STARTING -> MathUtil.clamp((tickCounter - transitionStartTick) / (float) BREATH_START_DURATION);
-            case STOPPING -> MathUtil.clamp((tickCounter - transitionStartTick) / (float) BREATH_STOP_DURATION);
-        };
     }
 
     protected void updateBreathState(boolean isBreathing) {

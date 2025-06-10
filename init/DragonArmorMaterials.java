@@ -7,39 +7,29 @@ import net.minecraft.world.item.equipment.*;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.EnumMap;
-import java.util.Map;
 
-import static net.dragonmounts.plus.common.DragonMountsShared.makeId;
 import static net.dragonmounts.plus.common.DragonMountsShared.makeKey;
 
 public class DragonArmorMaterials {
-    public static final String TEXTURE_PREFIX = "textures/entity/equipment/dragon_body/";
     private static final Object2ObjectOpenHashMap<ResourceKey<EquipmentAsset>, ResourceLocation> TEXTURES = new Object2ObjectOpenHashMap<>();
-    public static final ArmorMaterial IRON = makeMaterial(ArmorMaterials.IRON, makeAsset("iron"), TEXTURE_PREFIX + "iron.png");
-    public static final ArmorMaterial GOLD = makeMaterial(ArmorMaterials.GOLD, makeAsset("gold"), TEXTURE_PREFIX + "gold.png");
-    public static final ArmorMaterial DIAMOND;
-    public static final ArmorMaterial EMERALD;
-    public static final ArmorMaterial NETHERITE;
-
-    static {
-        var copy = new EnumMap<>(ArmorMaterials.DIAMOND.defense());
-        copy.put(ArmorType.BODY, 11);
-        DIAMOND = makeMaterial(ArmorMaterials.DIAMOND, makeAsset("diamond"), copy, TEXTURE_PREFIX + "diamond.png");
-        EMERALD = makeMaterial(ArmorMaterials.DIAMOND, makeAsset("emerald"), copy, TEXTURE_PREFIX + "emerald.png");
-        copy = new EnumMap<>(ArmorMaterials.NETHERITE.defense());
-        copy.put(ArmorType.BODY, 15);
-        NETHERITE = makeMaterial(ArmorMaterials.NETHERITE, makeAsset("netherite"), copy, TEXTURE_PREFIX + "netherite.png");
-    }
+    public static final String TEXTURE_PREFIX = "textures/entity/equipment/dragon_body/";
+    public static final ArmorMaterial IRON = makeMaterial(ArmorMaterials.IRON, makeAsset("iron"), 3, TEXTURE_PREFIX + "iron.png");
+    public static final ArmorMaterial GOLD = makeMaterial(ArmorMaterials.GOLD, makeAsset("gold"), 5, TEXTURE_PREFIX + "gold.png");
+    public static final ArmorMaterial EMERALD = makeMaterial(ArmorMaterials.DIAMOND, makeAsset("emerald"), 6, TEXTURE_PREFIX + "emerald.png");
+    public static final ArmorMaterial DIAMOND = makeMaterial(ArmorMaterials.DIAMOND, makeAsset("diamond"), 9, TEXTURE_PREFIX + "diamond.png");
+    public static final ArmorMaterial NETHERITE = makeMaterial(ArmorMaterials.NETHERITE, makeAsset("netherite"), 11, TEXTURE_PREFIX + "netherite.png");
 
     static ResourceKey<EquipmentAsset> makeAsset(String name) {
         return makeKey(EquipmentAssets.ROOT_ID, name);
     }
 
-    static ArmorMaterial makeMaterial(ArmorMaterial base, ResourceKey<EquipmentAsset> asset, Map<ArmorType, Integer> defense, String texture) {
-        bindTexture(asset, makeId(texture));
+    public static ArmorMaterial makeMaterial(ArmorMaterial base, ResourceKey<EquipmentAsset> asset, int defense, String texture) {
+        bindTexture(asset, asset.location().withPath(texture));
+        var copy = new EnumMap<>(base.defense());
+        copy.put(ArmorType.BODY, defense);
         return new ArmorMaterial(
                 base.durability(),
-                defense,
+                copy,
                 base.enchantmentValue(),
                 base.equipSound(),
                 base.toughness(),
@@ -47,10 +37,6 @@ public class DragonArmorMaterials {
                 base.repairIngredient(),
                 asset
         );
-    }
-
-    static ArmorMaterial makeMaterial(ArmorMaterial base, ResourceKey<EquipmentAsset> asset, String texture) {
-        return makeMaterial(base, asset, base.defense(), texture);
     }
 
     public static void bindTexture(ResourceKey<EquipmentAsset> asset, ResourceLocation texture) {
