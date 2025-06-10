@@ -119,9 +119,10 @@ public class DragonHeadLocator<T extends TameableDragonEntity> {
     public Vec3 getHeadRelativeOffset(float x, float y, float z) {
         final float scale = this.dragon.getAdjustedSize();
         final float modelScale = scale * MathUtil.MOJANG_MODEL_SCALE;
+        final float headScale = modelScale * DragonModelContracts.MAGICAL_HEAD_SCALE;
         var head = this.head;
         var pos = this.dragon.position();
-        return new Vec3(x * modelScale, y * modelScale, -z * modelScale)
+        return new Vec3(x * headScale, y * headScale, -z * headScale)
                 .xRot(head.rotX)
                 .yRot(-head.rotY)
                 .add(-head.posX * modelScale, -head.posY * modelScale, head.posZ * modelScale)

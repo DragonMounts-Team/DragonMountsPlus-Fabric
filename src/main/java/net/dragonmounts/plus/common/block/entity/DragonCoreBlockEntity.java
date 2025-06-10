@@ -42,7 +42,7 @@ import static net.dragonmounts.plus.common.util.BlockUtil.updateNeighborStates;
  */
 public class DragonCoreBlockEntity extends RandomizableContainerBlockEntity implements WorldlyContainer, MenuProvider<BlockPos> {
     public static final int[] SLOTS = new int[]{0};
-    private static final String TRANSLATION_KEY = "container.dragonmounts.dragon_core";
+    private static final String TRANSLATION_KEY = "container.dragonmounts.plus.dragon_core";
     private static final Vec3 BOTTOM_CENTER = new Vec3(0.5, 0.0, 0.5);
     private NonNullList<ItemStack> items = NonNullList.withSize(1, ItemStack.EMPTY);
     private AnimationStatus stage = AnimationStatus.CLOSED;

@@ -7,20 +7,28 @@ import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagProvider;
 import net.fabricmc.fabric.api.tag.convention.v2.ConventionalBlockTags;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.tags.BlockTags;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 
 import java.util.Collection;
 import java.util.concurrent.CompletableFuture;
 
+import static net.minecraft.resources.ResourceLocation.fromNamespaceAndPath;
+
 public class DMBlockTagProvider extends FabricTagProvider.BlockTagProvider {
+    public static final TagKey<Block> TORCHES = TagKey.create(Registries.BLOCK, fromNamespaceAndPath("c", "torches"));
+
     public DMBlockTagProvider(FabricDataOutput output, CompletableFuture<HolderLookup.Provider> provider) {
         super(output, provider);
     }
 
     @Override
     protected void addTags(HolderLookup.Provider registries) {
+        this.getOrCreateTagBuilder(TORCHES)
+                .add(Blocks.TORCH, Blocks.WALL_TORCH, Blocks.SOUL_TORCH, Blocks.SOUL_WALL_TORCH, Blocks.REDSTONE_TORCH, Blocks.REDSTONE_WALL_TORCH);
         this.getOrCreateTagBuilder(BlockTags.PIGLIN_REPELLENTS).add(DMBlocks.DRAGON_CORE.key);
         this.getOrCreateTagBuilder(BlockTags.DRAGON_IMMUNE).add(DMBlocks.DRAGON_CORE.key);
         this.getOrCreateTagBuilder(DMBlockTags.AIRFLOW_DESTRUCTIBLE)
@@ -35,6 +43,7 @@ public class DMBlockTagProvider extends FabricTagProvider.BlockTagProvider {
                 .forceAddTag(BlockTags.SNOW)
                 .forceAddTag(ConventionalBlockTags.GLASS_PANES)
                 .forceAddTag(ConventionalBlockTags.SANDS)
+                .addTag(TORCHES)
                 .add(
                         // Overworld:
                         Blocks.SHORT_GRASS,
@@ -71,8 +80,6 @@ public class DMBlockTagProvider extends FabricTagProvider.BlockTagProvider {
                         // Other:
                         Blocks.CHORUS_PLANT,
                         Blocks.COBWEB,
-                        Blocks.TORCH,
-                        Blocks.WALL_TORCH,
                         Blocks.SPONGE,
                         Blocks.WET_SPONGE
                 );

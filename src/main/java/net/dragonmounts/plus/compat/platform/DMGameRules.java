@@ -14,11 +14,11 @@ import static net.fabricmc.fabric.api.gamerule.v1.GameRuleFactory.createBooleanR
 import static net.fabricmc.fabric.api.gamerule.v1.GameRuleFactory.createDoubleRule;
 import static net.fabricmc.fabric.api.gamerule.v1.GameRuleRegistry.register;
 
-
+@Deprecated // TODO: use config
 public class DMGameRules {
-    public static final double DEFAULT_DRAGON_BASE_HEALTH = 90D;
-    public static final double DEFAULT_DRAGON_BASE_DAMAGE = 12D;
-    public static final double DEFAULT_DRAGON_BASE_ARMOR = 8D;
+    public static final double DEFAULT_DRAGON_BASE_HEALTH = 90.0;
+    public static final double DEFAULT_DRAGON_BASE_DAMAGE = 12.0;
+    public static final double DEFAULT_DRAGON_BASE_ARMOR = 8.0;
     public static final CustomGameRuleCategory GAMEPLAY = new CustomGameRuleCategory(makeId("gameplay"), Component.translatable("gamerule.category.dragonmounts.plus.gameplay"));
     public static final GameRules.Key<DoubleRule> DRAGON_BASE_HEALTH = register("dragonmounts.plus.dragonBaseHealth", GameRules.Category.MOBS, createDoubleRule(DEFAULT_DRAGON_BASE_HEALTH, 1D, 1024D));
     public static final GameRules.Key<DoubleRule> DRAGON_BASE_DAMAGE = register("dragonmounts.plus.dragonBaseDamage", GameRules.Category.MOBS, createDoubleRule(DEFAULT_DRAGON_BASE_DAMAGE, 0D, 2048D));

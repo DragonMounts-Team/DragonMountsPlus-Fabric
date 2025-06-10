@@ -1,0 +1,10 @@
+{
+  "type": "minecraft:smelting",
+  "category": "food",
+  "cookingtime": 200,
+  "experience": 0.35,
+  "ingredient": "dragonmounts.plus:dragon_meat",
+  "result": {
+    "id": "dragonmounts.plus:cooked_dragon_meat"
+  }
+}

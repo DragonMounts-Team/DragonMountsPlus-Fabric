@@ -81,6 +81,8 @@ public class DMModelProvider extends FabricModelProvider {
         generateFlatItem(gen, DMItems.DIAMOND_SHEARS);
         generateFlatItem(gen, DMItems.NETHERITE_SHEARS);
         generateFlatItem(gen, DMItems.VARIATION_ORB);
+        generateFlatItem(gen, DMItems.DRAGON_MEAT);
+        generateFlatItem(gen, DMItems.COOKED_DRAGON_MEAT);
         generateSpawnEgg(gen, DMItems.AETHER_DRAGON_SPAWN_EGG, 0x06E9FA, 0x281EE7);
         generateSpawnEgg(gen, DMItems.DARK_DRAGON_SPAWN_EGG, 0x222121, 0x971B1B);
         generateSpawnEgg(gen, DMItems.ENCHANTED_DRAGON_SPAWN_EGG, 0xF30FFF, 0xD7D7D7);

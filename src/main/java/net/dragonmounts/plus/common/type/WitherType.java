@@ -19,7 +19,7 @@ public class WitherType extends SkeletonType {
     }
 
     @Override
-    public SoundEvent getLivingSound(TameableDragonEntity dragon) {
+    public SoundEvent getAmbientSound(TameableDragonEntity dragon) {
         return dragon.isBaby() ? DMSounds.DRAGON_PURR_NETHER_HATCHLING : DMSounds.DRAGON_PURR_NETHER;
     }
 }

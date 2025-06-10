@@ -14,7 +14,7 @@ import java.util.function.BiFunction;
 public class BlockItemHolder<B extends Block, I extends Item> extends ObjectHolder<I, Item> implements ItemLike {
     public static <B extends Block, I extends Item> BlockItemHolder<B, I> registerItem(BlockHolder<B> block, BiFunction<B, Item.Properties, I> factory) {
         var key = ResourceKey.create(Registries.ITEM, block.key.location());
-        var item = factory.apply(block.get(), new Item.Properties().setId(key));
+        var item = factory.apply(block.get(), new Item.Properties().setId(key).useBlockDescriptionPrefix());
         if (item instanceof BlockItem) {
             ((BlockItem) item).registerBlocks(Item.BY_BLOCK, item);
         }

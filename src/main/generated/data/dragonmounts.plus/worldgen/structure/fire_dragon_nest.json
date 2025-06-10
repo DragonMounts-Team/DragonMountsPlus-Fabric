@@ -5,15 +5,13 @@
     {
       "placement": "in_mountain",
       "templates": [
-        "dragonmounts.plus:fire",
-        "dragonmounts.plus:fire2"
+        "dragonmounts.plus:fire"
       ]
     },
     {
       "placement": "partly_buried",
       "templates": [
-        "dragonmounts.plus:fire",
-        "dragonmounts.plus:fire2"
+        "dragonmounts.plus:fire"
       ]
     },
     {

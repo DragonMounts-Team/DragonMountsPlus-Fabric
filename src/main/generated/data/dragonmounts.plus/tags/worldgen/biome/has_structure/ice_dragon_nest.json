@@ -1,9 +1,6 @@
 {
   "values": [
-    "minecraft:ice_spikes",
-    "minecraft:snowy_beach",
-    "minecraft:snowy_plains",
-    "minecraft:snowy_slopes",
-    "minecraft:snowy_taiga"
+    "#c:is_icy",
+    "#c:is_snowy"
   ]
 }

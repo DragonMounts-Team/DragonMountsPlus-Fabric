@@ -77,13 +77,10 @@ public class DoubleEntry extends ConfigEntry<Double> {
         return 1;
     }
 
-    public LiteralArgumentBuilder<CommandSourceStack> generateCommand(double min, double max) {
-        return Commands.literal(this.display).executes(this::get).then(Commands.argument("value", DoubleArgumentType.doubleArg(min, max)).executes(this::set));
-    }
-
     @Override
-    public final LiteralArgumentBuilder<CommandSourceStack> buildCommand() {
-        return this.generateCommand(this.min, this.max);
+    public LiteralArgumentBuilder<CommandSourceStack> buildCommand() {
+        return Commands.literal(this.display).executes(this::get)
+                .then(Commands.argument("value", DoubleArgumentType.doubleArg(this.min, this.max)).executes(this::set));
     }
 
     @Override

@@ -12,12 +12,13 @@ import net.minecraft.data.PackOutput;
 import net.minecraft.data.structures.NbtToSnbt;
 import net.minecraft.data.structures.SnbtToNbt;
 import net.minecraft.data.structures.StructureUpdater;
+import net.minecraft.nbt.CompoundTag;
 
 import java.util.Collections;
 
 public class DMDataGenerator implements DataGeneratorEntrypoint {
-    static boolean STRINGIFY_STRUCTURE = false;
-    static boolean UPDATE_STRUCTURE = false;
+    static final boolean STRINGIFY_STRUCTURE = false;
+    static final boolean UPDATE_STRUCTURE = false;
 
     @Override
     public void onInitializeDataGenerator(FabricDataGenerator generator) {
@@ -33,6 +34,7 @@ public class DMDataGenerator implements DataGeneratorEntrypoint {
         pack.addProvider(DMDynamicProvider::new);
         pack.addProvider(DMBlockLootProvider::new);
         pack.addProvider(DMChestLootProvider::new);
+        pack.addProvider(DMEntityLootProvider::new);
         if (STRINGIFY_STRUCTURE) {
             pack.addProvider(DMDataGenerator::stringifyStructures);
         }
@@ -52,7 +54,15 @@ public class DMDataGenerator implements DataGeneratorEntrypoint {
         return new SnbtToNbt(
                 new PackOutput(output.getOutputFolder().resolve(".cache").resolve("updated")),
                 Collections.singleton(FabricLoader.getInstance().getGameDir().resolve("structures"))
-        ).addFilter(StructureUpdater::update);
+        ).addFilter(DMDataGenerator::updateStructure);
+    }
+
+    public static CompoundTag updateStructure(String path, CompoundTag structure) {
+        var updated = StructureUpdater.update(path, structure);
+        if (structure.contains("author")) {
+            updated.putString("author", structure.getString("author"));
+        }
+        return updated;
     }
 
     @Override

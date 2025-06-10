@@ -10,7 +10,7 @@ public enum NestPlacement implements StringRepresentable {
     PARTLY_BURIED,
     ON_OCEAN_FLOOR(Heightmap.Types.OCEAN_FLOOR_WG),
     IN_MOUNTAIN,
-    UNDERGROUND,
+    UNDERGROUND(Heightmap.Types.OCEAN_FLOOR_WG),
     IN_CLOUDS,
     IN_NETHER;
     public static final @SuppressWarnings("deprecation") EnumCodec<NestPlacement> CODEC = StringRepresentable.fromEnum(NestPlacement::values);

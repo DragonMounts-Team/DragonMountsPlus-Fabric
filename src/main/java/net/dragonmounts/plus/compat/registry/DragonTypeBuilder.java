@@ -1,9 +1,11 @@
 package net.dragonmounts.plus.compat.registry;
 
 import com.google.common.collect.ImmutableMultimap;
+import com.google.common.collect.ImmutableSet;
 import net.dragonmounts.plus.common.util.ArmorMaterialBuilder;
 import net.dragonmounts.plus.common.util.ItemTierBuilder;
 import net.minecraft.core.Holder;
+import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.particles.SimpleParticleType;
 import net.minecraft.resources.ResourceKey;
@@ -20,8 +22,6 @@ import net.minecraft.world.level.material.MapColor;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.HashSet;
-import java.util.Set;
 import java.util.function.BiFunction;
 
 import static net.dragonmounts.plus.common.DragonMountsShared.makeId;
@@ -30,14 +30,14 @@ public final class DragonTypeBuilder {
     public static final ResourceLocation BONUS_ID = makeId("dragon_type_bonus");
     public final int color;
     public final ImmutableMultimap.Builder<Holder<Attribute>, AttributeModifier> attributes = ImmutableMultimap.builder();
-    public final Set<ResourceKey<DamageType>> immunities = new HashSet<>();
-    public final Set<Block> blocks = new HashSet<>();
-    public final Set<ResourceKey<Biome>> biomes = new HashSet<>();
+    public final ImmutableSet.Builder<ResourceKey<DamageType>> immunities = ImmutableSet.builder();
+    public final ImmutableSet.Builder<Block> blocks = ImmutableSet.builder();
+    public final ImmutableSet.Builder<ResourceKey<Biome>> biomes = ImmutableSet.builder();
     public final @Nullable ItemTierBuilder tier;
     public final @Nullable ArmorMaterialBuilder material;
     public boolean convertible = true;
-    public @NotNull SimpleParticleType sneezeParticle = ParticleTypes.LARGE_SMOKE;
-    public @NotNull SimpleParticleType eggParticle = ParticleTypes.MYCELIUM;
+    public @NotNull ParticleOptions sneezeParticle = ParticleTypes.LARGE_SMOKE;
+    public @NotNull ParticleOptions eggParticle = ParticleTypes.MYCELIUM;
     public @NotNull MapColor scaleColor = MapColor.NONE;
     public TagKey<Item> scales;
 

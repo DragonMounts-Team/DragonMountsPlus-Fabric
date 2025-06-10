@@ -11,6 +11,7 @@
     "#minecraft:snow",
     "#c:glass_panes",
     "#c:sands",
+    "#c:torches",
     "minecraft:short_grass",
     "minecraft:fern",
     "minecraft:dead_bush",
@@ -43,8 +44,6 @@
     "minecraft:weeping_vines_plant",
     "minecraft:chorus_plant",
     "minecraft:cobweb",
-    "minecraft:torch",
-    "minecraft:wall_torch",
     "minecraft:sponge",
     "minecraft:wet_sponge"
   ]

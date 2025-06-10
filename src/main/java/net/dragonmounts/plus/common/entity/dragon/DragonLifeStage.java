@@ -5,6 +5,7 @@ import net.dragonmounts.plus.common.entity.breath.BreathPower;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.ByIdMap;
 import net.minecraft.util.Mth;
 import net.minecraft.util.StringRepresentable;
@@ -13,7 +14,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.function.IntFunction;
 
-import static net.dragonmounts.plus.common.entity.dragon.TameableDragonEntity.STAGE_MODIFIER_ID;
+import static net.dragonmounts.plus.common.DragonMountsShared.makeId;
 import static net.dragonmounts.plus.common.util.TimeUtil.TICKS_PER_GAME_HOUR;
 
 public enum DragonLifeStage implements StringRepresentable {
@@ -23,11 +24,11 @@ public enum DragonLifeStage implements StringRepresentable {
     JUVENILE(60 * TICKS_PER_GAME_HOUR, 0.61F, 0.99F, BreathPower.MEDIUM),
     ADULT(0, 1.00F, 1.00F, BreathPower.LARGE);
     private static final IntFunction<DragonLifeStage> BY_ID = ByIdMap.continuous(DragonLifeStage::ordinal, values(), ByIdMap.OutOfBoundsStrategy.ZERO);
+    public static final ResourceLocation MODIFIER_ID = makeId("life_stage_bonus");
     public static final @SuppressWarnings("deprecation") EnumCodec<DragonLifeStage> CODEC = StringRepresentable.fromEnum(DragonLifeStage::values);
     public static final StreamCodec<ByteBuf, DragonLifeStage> STREAM_CODEC = ByteBufCodecs.idMapper(BY_ID, DragonLifeStage::ordinal);
     public static final String DATA_PARAMETER_KEY = "LifeStage";
     public static final String EGG_TRANSLATION_KEY = "dragonmounts.plus.life_stage.egg";
-    public final AttributeModifier modifier;
     public final BreathPower power;
     public final int duration;
     public final float startSize;
@@ -40,8 +41,11 @@ public enum DragonLifeStage implements StringRepresentable {
         this.startSize = startSize;
         this.endSize = endSize;
         this.text = "dragonmounts.plus.life_stage." + (this.name = this.name().toLowerCase());
-        this.modifier = new AttributeModifier(STAGE_MODIFIER_ID, Math.max(getSizeAverage(this), 0.1F), AttributeModifier.Operation.ADD_MULTIPLIED_BASE);
         this.power = power;
+    }
+
+    public AttributeModifier makeModifier(double factor, AttributeModifier.Operation operation) {
+        return new AttributeModifier(MODIFIER_ID, Math.max(getSizeAverage(this), 0.1F) * factor, operation);
     }
 
     public boolean isOldEnough(@NotNull DragonLifeStage limit) {

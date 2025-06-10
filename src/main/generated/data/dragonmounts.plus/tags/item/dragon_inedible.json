@@ -3,6 +3,8 @@
     "minecraft:pufferfish",
     "minecraft:pufferfish_bucket",
     "minecraft:axolotl_bucket",
-    "minecraft:tadpole_bucket"
+    "minecraft:tadpole_bucket",
+    "dragonmounts.plus:dragon_meat",
+    "dragonmounts.plus:cooked_dragon_meat"
   ]
 }

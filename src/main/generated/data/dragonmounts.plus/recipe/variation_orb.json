@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "#": "#c:gems/amethyst",
+    "*": "#c:ingots/gold",
+    "O": "minecraft:ender_eye"
+  },
+  "pattern": [
+    "*#*",
+    "#O#",
+    "*#*"
+  ],
+  "result": {
+    "count": 1,
+    "id": "dragonmounts.plus:variation_orb"
+  }
+}

@@ -9,6 +9,8 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.equipment.ArmorMaterial;
 import net.minecraft.world.item.equipment.ArmorType;
 import net.minecraft.world.item.equipment.EquipmentAsset;
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.EnumMap;
 
@@ -54,10 +56,12 @@ public class ArmorMaterialBuilder {
         return this;
     }
 
+    @Contract("null, _ -> fail")
     public ArmorMaterial build(
             TagKey<Item> ingredient,
-            ResourceKey<EquipmentAsset> asset
+            @NotNull ResourceKey<EquipmentAsset> asset
     ) {
+        if (ingredient == null) throw new IllegalArgumentException();
         return new ArmorMaterial(
                 this.durabilityFactor,
                 new EnumMap<>(this.defense),

@@ -2,10 +2,7 @@ package net.dragonmounts.plus.common.client.model.dragon;
 
 import net.dragonmounts.plus.common.client.ClientUtil;
 import net.minecraft.client.model.geom.PartPose;
-import net.minecraft.client.model.geom.builders.CubeListBuilder;
-import net.minecraft.client.model.geom.builders.LayerDefinition;
-import net.minecraft.client.model.geom.builders.MeshDefinition;
-import net.minecraft.client.model.geom.builders.PartDefinition;
+import net.minecraft.client.model.geom.builders.*;
 
 import static net.dragonmounts.plus.common.client.ClientUtil.scaledPose;
 import static net.dragonmounts.plus.common.client.model.dragon.BuiltinFactory.*;
@@ -114,12 +111,13 @@ public interface ModelFactory {
     }
 
     default void makeLeftWing(PartDefinition root) {
+        var thickness = new CubeDeformation(0.00F, 0.01F, 0.00F);
         var common = CubeListBuilder.create()
                 .mirror(true)
                 .texOffs(0, 172)
                 .addBox(0, -1, -1, 70, 2, 2)
                 .texOffs(-49, 176)
-                .addBox(0, 0, 1, 70, 0, 48);
+                .addBox(0, 0, 1, 70, 0, 48, thickness);
         var fingers = root.addOrReplaceChild(
                 "left_wing",
                 CubeListBuilder.create()
@@ -127,7 +125,7 @@ public interface ModelFactory {
                         .texOffs(0, 152)
                         .addBox(0, -3, -3, 28, 6, 6)
                         .texOffs(116, 232)
-                        .addBox(0, 0, 2, 28, 0, 24),
+                        .addBox(0, 0, 2, 28, 0, 24, thickness),
                 new PartPose(10, 5, 4, 0.0F, -1.4F, -0.8F, 1.1F, 1.1F, 1.1F)
         ).addOrReplaceChild(
                 "forearm",
@@ -146,18 +144,19 @@ public interface ModelFactory {
                         .texOffs(0, 172)
                         .addBox(0, -1, -1, 70, 2, 2)
                         .texOffs(-32, 224)
-                        .addBox(0, 0, 1, 70, 0, 32),
+                        .addBox(0, 0, 1, 70, 0, 32, thickness),
                 PartPose.offsetAndRotation(47, 0, 0, 0.015F, -3.0F, 0.0F)
         );
     }
 
     default void makeRightWing(PartDefinition root) {
+        var thickness = new CubeDeformation(0.00F, 0.01F, 0.00F);
         var common = CubeListBuilder.create()
                 .mirror(false)
                 .texOffs(0, 172)
                 .addBox(-70, -1, -1, 70, 2, 2)
                 .texOffs(-49, 176)
-                .addBox(-70, 0, 1, 70, 0, 48);
+                .addBox(-70, 0, 1, 70, 0, 48, thickness);
         var fingers = root.addOrReplaceChild(
                 "right_wing",
                 CubeListBuilder.create()
@@ -165,7 +164,7 @@ public interface ModelFactory {
                         .texOffs(0, 152)
                         .addBox(-28, -3, -3, 28, 6, 6)
                         .texOffs(116, 232)
-                        .addBox(-28, 0, 2, 28, 0, 24),
+                        .addBox(-28, 0, 2, 28, 0, 24, thickness),
                 new PartPose(-10, 5, 4, 0.0F, 1.4F, 0.8F, 1.1F, 1.1F, 1.1F)
         ).addOrReplaceChild(
                 "forearm",
@@ -184,7 +183,7 @@ public interface ModelFactory {
                         .texOffs(0, 172)
                         .addBox(-70, -1, -1, 70, 2, 2)
                         .texOffs(-32, 224)
-                        .addBox(-70, 0, 1, 70, 0, 32),
+                        .addBox(-70, 0, 1, 70, 0, 32, thickness),
                 PartPose.offsetAndRotation(-47, 0, 0, 0.015F, 3.0F, 0.0F)
         );
     }

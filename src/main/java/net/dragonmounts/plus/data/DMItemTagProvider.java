@@ -58,6 +58,9 @@ public class DMItemTagProvider extends FabricTagProvider.ItemTagProvider {
                 .add(DMItems.GOLDEN_DRAGON_ARMOR.key);
         this.getOrCreateTagBuilder(ItemTags.PIGLIN_REPELLENTS)
                 .add(DMBlocks.DRAGON_CORE.asItem());
+        this.getOrCreateTagBuilder(ItemTags.MEAT)
+                .add(DMItems.DRAGON_MEAT.key)
+                .add(DMItems.COOKED_DRAGON_MEAT.key);
         this.getOrCreateTagBuilder(DMItemTags.BATONS)
                 .forceAddTag(ConventionalItemTags.RODS)
                 .add(Items.DEBUG_STICK)
@@ -95,7 +98,9 @@ public class DMItemTagProvider extends FabricTagProvider.ItemTagProvider {
                 .add(Items.PUFFERFISH) // fabric considers raw puffer fish as food...
                 .add(Items.PUFFERFISH_BUCKET)
                 .add(Items.AXOLOTL_BUCKET)
-                .add(Items.TADPOLE_BUCKET);
+                .add(Items.TADPOLE_BUCKET)
+                .add(DMItems.DRAGON_MEAT.key)
+                .add(DMItems.COOKED_DRAGON_MEAT.key);
         this.getOrCreateTagBuilder(DMItemTags.COOKED_DRAGON_FOODS)
                 .forceAddTag(ConventionalItemTags.COOKED_MEAT_FOODS)
                 .forceAddTag(ConventionalItemTags.COOKED_FISH_FOODS);
@@ -105,7 +110,6 @@ public class DMItemTagProvider extends FabricTagProvider.ItemTagProvider {
                 .add(Items.COD_BUCKET)
                 .add(Items.SALMON_BUCKET)
                 .add(Items.TROPICAL_FISH_BUCKET);
-        ;
         this.tag(ItemTags.BOW_ENCHANTABLE).addTag(DMItemTags.DRAGON_SCALE_BOWS);
         this.tag(ConventionalItemTags.BOW_TOOLS).addTag(DMItemTags.DRAGON_SCALE_BOWS);
         this.tag(ConventionalItemTags.SHEAR_TOOLS).addTag(DMItemTags.HARD_SHEARS);

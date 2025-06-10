@@ -22,6 +22,7 @@ import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.players.OldUsersConverter;
+import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.ItemTags;
@@ -29,6 +30,7 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
@@ -167,6 +169,7 @@ public class HatchableDragonEggEntity extends LivingEntity implements DragonTypi
     public void setLevelCallback(EntityInLevelCallback callback) {
         if (this.hatched && callback == EntityInLevelCallback.NULL && this.level() instanceof ServerLevel level) {
             level.addFreshEntity(hatch(level, this, DragonLifeStage.HATCHLING));
+            this.makeSound(DMSounds.DRAGON_EGG_SHATTER);
         }
         super.setLevelCallback(callback);
     }
@@ -286,13 +289,21 @@ public class HatchableDragonEggEntity extends LivingEntity implements DragonTypi
 
     @Override
     public boolean hurtServer(ServerLevel level, DamageSource source, float amount) {
-        var weapon = source.getWeaponItem();
-        if (weapon != null && (weapon.is(ItemTags.MACE_ENCHANTABLE))) {
-            if (super.hurtServer(level, source, Math.max(20F, amount * 2F))) {
+        if (source.is(DamageTypes.MACE_SMASH)) {
+            if (super.hurtServer(level, source, Math.max(20F, amount * 3F))) {
                 this.spawnScales(level, 1);
                 return true;
             }
             return false;
+        } else {
+            var weapon = source.getWeaponItem();
+            if (weapon != null && (weapon.is(ItemTags.MACE_ENCHANTABLE))) {
+                if (super.hurtServer(level, source, amount * 3F)) {
+                    this.spawnScales(level, 1);
+                    return true;
+                }
+                return false;
+            }
         }
         return super.hurtServer(level, source, amount);
     }
@@ -365,6 +376,16 @@ public class HatchableDragonEggEntity extends LivingEntity implements DragonTypi
 
     public float getAmplitude(float partialTicks) {
         return this.shaking <= 0 ? 0 : Mth.lerp(partialTicks, this.amplitudeO, this.amplitude);
+    }
+
+    @Override
+    protected SoundEvent getDeathSound() {
+        return DMSounds.DRAGON_EGG_SHATTER;
+    }
+
+    @Override
+    protected @Nullable SoundEvent getHurtSound(DamageSource source) {
+        return source.is(DamageTypes.MACE_SMASH) ? DMSounds.DRAGON_EGG_SHATTER : DMSounds.DRAGON_EGG_CRACK;
     }
 
     public void syncShake(int amplitude, int axis, boolean crack) {

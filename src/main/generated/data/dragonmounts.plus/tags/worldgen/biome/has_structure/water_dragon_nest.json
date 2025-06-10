@@ -1,6 +1,6 @@
 {
   "values": [
-    "minecraft:swamp",
+    "#c:is_swamp",
     "#minecraft:is_ocean"
   ]
 }

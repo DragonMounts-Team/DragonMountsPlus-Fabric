@@ -77,16 +77,12 @@ public class FloatEntry extends ConfigEntry<Float> {
         return 1;
     }
 
-    public LiteralArgumentBuilder<CommandSourceStack> generateCommand(float min, float max) {
-        return Commands.literal(this.display).executes(this::get).then(Commands.argument("value", FloatArgumentType.floatArg(min, max)).executes(this::set));
+    @Override
+    public LiteralArgumentBuilder<CommandSourceStack> buildCommand() {
+        return Commands.literal(this.display).executes(this::get)
+                .then(Commands.argument("value", FloatArgumentType.floatArg(this.min, this.max)).executes(this::set));
     }
 
-    @Override
-    public final LiteralArgumentBuilder<CommandSourceStack> buildCommand() {
-        return this.generateCommand(this.min, this.max);
-    }
-
-    @Override
     public void accept(Float value) {
         this.value = clamp(value, this.min, this.max);
     }

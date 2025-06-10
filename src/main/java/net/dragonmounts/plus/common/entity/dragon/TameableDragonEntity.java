@@ -23,15 +23,17 @@ import net.dragonmounts.plus.common.util.math.MathUtil;
 import net.dragonmounts.plus.compat.platform.MenuProvider;
 import net.dragonmounts.plus.compat.registry.DragonType;
 import net.dragonmounts.plus.compat.registry.DragonVariant;
+import net.dragonmounts.plus.mixin.MobAccessor;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
@@ -56,12 +58,14 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 
-import static net.dragonmounts.plus.common.DragonMountsShared.makeId;
+import java.util.Optional;
+
 import static net.dragonmounts.plus.compat.platform.DMGameRules.*;
 
 /**
@@ -92,7 +96,7 @@ public abstract class TameableDragonEntity extends TamableAnimal implements
                 .add(Attributes.MOVEMENT_SPEED, BASE_GROUND_SPEED)
                 .add(Attributes.ATTACK_DAMAGE, DEFAULT_DRAGON_BASE_DAMAGE)
                 .add(Attributes.ATTACK_KNOCKBACK)
-                .add(Attributes.SCALE, 1.6)
+                .add(Attributes.SCALE, 1.0)
                 .add(Attributes.FOLLOW_RANGE, BASE_FOLLOW_RANGE)
                 .add(Attributes.ARMOR, DEFAULT_DRAGON_BASE_ARMOR)
                 .add(Attributes.ARMOR_TOUGHNESS, BASE_TOUGHNESS)
@@ -100,7 +104,6 @@ public abstract class TameableDragonEntity extends TamableAnimal implements
                 .add(Attributes.TEMPT_RANGE, 16.0);
     }
 
-    public static final ResourceLocation STAGE_MODIFIER_ID = makeId("dragon_stage_bonus");
     // base attributes
     public static final double BASE_GROUND_SPEED = 0.4;
     public static final double BASE_AIR_SPEED = 0.25;
@@ -110,6 +113,11 @@ public abstract class TameableDragonEntity extends TamableAnimal implements
     public static final int HOME_RADIUS = 64;
     public static final double LIFTOFF_THRESHOLD = 10;
     protected static final Logger LOGGER = LogUtils.getLogger();
+    // flags
+    public static final byte ON_ATTACK = 4;
+    public static final byte ON_ROAR = 67;
+    public static final byte ON_TAMING_SUCCEED = 7;
+    public static final byte ON_TAMING_FAIL = 6;
     // data value IDs
     private static final EntityDataAccessor<Boolean> DATA_FLYING = SynchedEntityData.defineId(TameableDragonEntity.class, EntityDataSerializers.BOOLEAN);
     private static final EntityDataAccessor<Boolean> DATA_BOOSTING = SynchedEntityData.defineId(TameableDragonEntity.class, EntityDataSerializers.BOOLEAN);
@@ -321,11 +329,6 @@ public abstract class TameableDragonEntity extends TamableAnimal implements
         return !stack.isEmpty() && DragonFood.isDragonFood(stack);
     }
 
-    /*@Override
-    public boolean hurt(DamageSource source, float amount) {
-        return super.hurt(source, amount);
-    }*/
-
     @Override
     protected void dropEquipment(ServerLevel level) {
         this.inventory.dropContents(false, 0);
@@ -371,7 +374,7 @@ public abstract class TameableDragonEntity extends TamableAnimal implements
         return this.getDragonType().locatePassenger(
                 this.getPassengers().indexOf(entity),
                 this.isInSittingPose()
-        ).scale(scale).yRot(MathUtil.TO_RAD_FACTOR * -this.yBodyRot);
+        ).scale(scale).yRot(-MathUtil.TO_RAD_FACTOR * this.yBodyRot);
     }
 
     @Override
@@ -385,11 +388,6 @@ public abstract class TameableDragonEntity extends TamableAnimal implements
     public boolean canBeAffected(MobEffectInstance effect) {
         return !effect.is(MobEffects.WEAKNESS) && super.canBeAffected(effect);
     }
-
-    /*@Override
-    public int getMaxHeadYRot() {
-        return 90;
-    }*/
 
     @Override
     public void setItemSlot(EquipmentSlot slot, ItemStack stack) {
@@ -406,6 +404,37 @@ public abstract class TameableDragonEntity extends TamableAnimal implements
                 yield access == SlotAccess.NULL ? super.getSlot(slot) : access;
             }
         };
+    }
+
+    @Override
+    protected void playStepSound(BlockPos pos, BlockState state) {
+        if (this.isInWater() || this.isFlying() || this.isInSittingPose()) return;
+        if (this.isBaby()) {
+            super.playStepSound(this.getPrimaryStepSoundBlockPos(pos), state);
+        } else {
+            this.playSound(DMSounds.DRAGON_STEP, 0.2F, 1.0F);
+        }
+    }
+
+    @Override
+    protected SoundEvent getAmbientSound() {
+        return this.getDragonType().getAmbientSound(this);
+    }
+
+    @Override
+    protected SoundEvent getHurtSound(DamageSource damageSource) {
+        return SoundEvents.ENDER_DRAGON_HURT;
+    }
+
+    @Override
+    protected SoundEvent getDeathSound() {
+        return this.getDragonType().getDeathSound(this);
+    }
+
+    @Override
+    public Optional<ResourceKey<LootTable>> getLootTable() {
+        var forced = ((MobAccessor) this).getForcedLootTable();
+        return forced.isPresent() ? forced : Optional.of(this.getDragonType().getLootTable());
     }
 
     //----------AgeableEntity----------

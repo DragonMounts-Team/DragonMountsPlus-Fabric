@@ -3,6 +3,7 @@ package net.dragonmounts.plus.compat.platform;
 import net.dragonmounts.plus.common.capability.ArmorEffectManager.Provider;
 import net.dragonmounts.plus.common.capability.ArmorEffectManagerImpl;
 import net.dragonmounts.plus.common.client.ClientDragonEntity;
+import net.dragonmounts.plus.common.client.model.dragon.MouthState;
 import net.dragonmounts.plus.common.component.DragonFood;
 import net.dragonmounts.plus.common.entity.dragon.DragonLifeStage;
 import net.dragonmounts.plus.common.entity.dragon.HatchableDragonEggEntity;
@@ -87,10 +88,15 @@ public class ClientNetworkHandler {
                 dragon.refreshForcedAgeTimer();
             }
             level.playLocalSound(dragon, food.majorSound().value(), SoundSource.NEUTRAL, 1F, 0.75F);
-            food.minorSound().ifPresent(sound -> level.playLocalSound(dragon, sound.value(), SoundSource.NEUTRAL, 0.25F, 0.75F));
+            @SuppressWarnings("SimplifyOptionalCallChains") var minor = food.minorSound().orElse(null);
+            if (minor != null) {
+                level.playLocalSound(dragon, minor.value(), SoundSource.NEUTRAL, 0.25F, 0.75F);
+            }
+            dragon.animator.transitOrKeepMouthState(MouthState.EATING);
+            dragon.animator.remainingEating = MouthState.EATING.duration;
             var particles = food.particles().orElse(stack);
             if (particles.isEmpty()) return;
-            var pos = dragon.getHeadRelativeOffset(0.0F, -5.0F, 22.0F);
+            var pos = dragon.getHeadRelativeOffset(0.0F, -8.0F, 20.0F);
             var option = new ItemParticleOption(ParticleTypes.ITEM, particles);
             var random = dragon.getRandom();
             float xRot = -dragon.getXRot() * MathUtil.TO_RAD_FACTOR, yRot = -dragon.getYRot() * MathUtil.TO_RAD_FACTOR;

@@ -3,9 +3,11 @@ package net.dragonmounts.plus.compat.registry;
 import com.google.common.collect.ImmutableMultimap;
 import com.mojang.serialization.Codec;
 import it.unimi.dsi.fastutil.objects.Reference2ObjectOpenHashMap;
+import net.dragonmounts.plus.common.api.DragonTypified;
 import net.dragonmounts.plus.common.client.ClientDragonEntity;
 import net.dragonmounts.plus.common.entity.breath.DragonBreath;
 import net.dragonmounts.plus.common.entity.breath.impl.FireBreath;
+import net.dragonmounts.plus.common.entity.dragon.HatchableDragonEggEntity;
 import net.dragonmounts.plus.common.entity.dragon.ServerDragonEntity;
 import net.dragonmounts.plus.common.entity.dragon.TameableDragonEntity;
 import net.dragonmounts.plus.common.init.DMSounds;
@@ -13,7 +15,7 @@ import net.minecraft.Util;
 import net.minecraft.core.DefaultedMappedRegistry;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
-import net.minecraft.core.particles.SimpleParticleType;
+import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
@@ -27,8 +29,11 @@ import net.minecraft.network.syncher.EntityDataSerializer;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.DamageType;
+import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.entity.LightningBolt;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
@@ -46,18 +51,16 @@ import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
 import static net.dragonmounts.plus.common.DragonMountsShared.DRAGON_TYPE;
 import static net.dragonmounts.plus.common.DragonMountsShared.makeId;
+import static net.dragonmounts.plus.common.util.EntityUtil.addOrMergeEffect;
 import static net.dragonmounts.plus.compat.registry.RegistryHandler.makeDefaultedRegistry;
 
-public class DragonType implements TooltipProvider {
+public class DragonType implements TooltipProvider, DragonTypified {
     public static final String DATA_PARAMETER_KEY = "DragonType";
     public static final ResourceLocation DEFAULT_KEY = makeId("ender");
     public static final DefaultedMappedRegistry<DragonType> REGISTRY = makeDefaultedRegistry(DRAGON_TYPE, DEFAULT_KEY);
@@ -68,8 +71,8 @@ public class DragonType implements TooltipProvider {
     public final boolean convertible;
     public final ResourceLocation identifier;
     public final ImmutableMultimap<Holder<Attribute>, AttributeModifier> attributes;
-    public final SimpleParticleType sneezeParticle;
-    public final SimpleParticleType eggParticle;
+    public final ParticleOptions sneezeParticle;
+    public final ParticleOptions eggParticle;
     public final MapColor scaleColor;
     public final DragonVariant.Manager variants = new DragonVariant.Manager(this);
     public final TranslatableContents name;
@@ -79,7 +82,7 @@ public class DragonType implements TooltipProvider {
     private final Style style;
     private final Set<ResourceKey<DamageType>> immunities;
     private final Set<Block> blocks;
-    private final List<ResourceKey<Biome>> biomes;
+    private final Set<ResourceKey<Biome>> biomes;
     private ResourceKey<LootTable> lootTable;
 
     public DragonType(ResourceLocation identifier, DragonTypeBuilder builder) {
@@ -88,9 +91,9 @@ public class DragonType implements TooltipProvider {
         this.convertible = builder.convertible;
         this.style = Style.EMPTY.withColor(TextColor.fromRgb(this.color));
         this.attributes = builder.attributes.build();
-        this.immunities = new HashSet<>(builder.immunities);
-        this.blocks = new HashSet<>(builder.blocks);
-        this.biomes = new ArrayList<>(builder.biomes);
+        this.immunities = builder.immunities.build();
+        this.blocks = builder.blocks.build();
+        this.biomes = builder.biomes.build();
         this.sneezeParticle = builder.sneezeParticle;
         this.eggParticle = builder.eggParticle;
         this.scaleColor = builder.scaleColor;
@@ -114,7 +117,9 @@ public class DragonType implements TooltipProvider {
     }
 
     public final ResourceKey<LootTable> getLootTable() {
-        return this.lootTable == null ? this.lootTable = ResourceKey.create(Registries.LOOT_TABLE, this.makeLootLocation()) : this.lootTable;
+        return this.lootTable == null
+                ? this.lootTable = ResourceKey.create(Registries.LOOT_TABLE, this.makeLootLocation())
+                : this.lootTable;
     }
 
     public MutableComponent getName() {
@@ -134,6 +139,11 @@ public class DragonType implements TooltipProvider {
     /// Do **NOT** directly access client only class here!
     public void tickClient(ClientDragonEntity dragon) {}
 
+    public <T extends LivingEntity & DragonTypified.Mutable> void onThunderHit(T entity, LightningBolt bolt) {
+        if (entity instanceof HatchableDragonEggEntity) return;
+        addOrMergeEffect(entity, MobEffects.DAMAGE_BOOST, 700, 0, false, true, true);//35s
+    }
+
     public boolean isInHabitat(LivingEntity entity) {
         return false;
     }
@@ -142,12 +152,12 @@ public class DragonType implements TooltipProvider {
         return new FireBreath(dragon, 0.7F);
     }
 
-    public SoundEvent getLivingSound(TameableDragonEntity dragon) {
-        return dragon.isBaby() ? DMSounds.DRAGON_PURR_HATCHLING : (
-                dragon.getRandom().nextFloat() < 0.33F
-                        ? DMSounds.DRAGON_PURR
-                        : DMSounds.DRAGON_AMBIENT
-        );
+    public SoundEvent getAmbientSound(TameableDragonEntity dragon) {
+        return dragon.isBaby()
+                ? DMSounds.DRAGON_PURR_HATCHLING
+                : dragon.getRandom().nextFloat() < 0.33F
+                ? DMSounds.DRAGON_PURR
+                : DMSounds.DRAGON_AMBIENT;
     }
 
     public SoundEvent getDeathSound(TameableDragonEntity dragon) {
@@ -159,7 +169,7 @@ public class DragonType implements TooltipProvider {
     }
 
     public Vec3 locatePassenger(int index, boolean sitting) {
-        double yOffset = sitting ? 2.125 : 3.0;
+        double yOffset = sitting ? 2.125 : 2.875;
         double yOffset2 = sitting ? 1.3125 : 1.5625; // maybe not needed
         // dragon position is the middle of the model, and the saddle is on
         // the shoulders, so move player forwards on Z axis relative to the
@@ -186,8 +196,8 @@ public class DragonType implements TooltipProvider {
         return clazz.cast(this.map.put(clazz, instance));
     }
 
-    public final <T> T getInstance(Class<T> clazz, T defaultValue) {
-        return clazz.cast(this.map.getOrDefault(clazz, defaultValue));
+    public final <T> T getInstance(Class<T> clazz, T fallback) {
+        return clazz.cast(this.map.getOrDefault(clazz, fallback));
     }
 
     public <T> void ifPresent(Class<T> clazz, Consumer<? super T> consumer) {
@@ -197,16 +207,27 @@ public class DragonType implements TooltipProvider {
         }
     }
 
-    public final <T, V> V ifPresent(Class<T> clazz, Function<? super T, V> function, V defaultValue) {
+    public final <T, V> V ifPresent(Class<T> clazz, Function<? super T, V> function, V fallback) {
         var value = this.map.get(clazz);
         if (value != null) {
             return function.apply(clazz.cast(value));
         }
-        return defaultValue;
+        return fallback;
     }
 
     @Override
     public void addToTooltip(Item.TooltipContext context, Consumer<Component> consumer, TooltipFlag flag) {
         consumer.accept(this.getName());
+    }
+
+    @Override
+    public final DragonType getDragonType() {
+        return this;
+    }
+
+    public static <T extends LivingEntity & DragonTypified.Mutable> void convertByLightning(T entity, DragonType type) {
+        entity.setDragonType(type, false);
+        entity.playSound(SoundEvents.END_PORTAL_SPAWN, 2, 1);
+        entity.playSound(SoundEvents.PORTAL_TRIGGER, 2, 1);
     }
 }
