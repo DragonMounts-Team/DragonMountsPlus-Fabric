@@ -50,8 +50,7 @@ public class DMBlockLootProvider extends FabricBlockLootTableProvider {
 
     public void dropHead(DragonVariant variant) {
         var head = variant.head;
-        var value = head.standing.get();
-        this.dropOther(value, head);
+        this.dropOther(head.standing.get(), head);
     }
 
     @Override

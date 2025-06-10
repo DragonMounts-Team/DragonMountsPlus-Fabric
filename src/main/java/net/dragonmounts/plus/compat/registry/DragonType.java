@@ -49,6 +49,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.phys.Vec3;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Set;
@@ -187,16 +188,17 @@ public class DragonType implements TooltipProvider, DragonTypified {
         return !this.blocks.isEmpty() && this.blocks.contains(block);
     }
 
-    public boolean isHabitat(ResourceKey<Biome> biome) {
+    public boolean isHabitat(@Nullable ResourceKey<Biome> biome) {
         return biome != null && !this.biomes.isEmpty() && this.biomes.contains(biome);
     }
 
     @SuppressWarnings("UnusedReturnValue")
-    public final <T> T bindInstance(Class<T> clazz, T instance) {
+    public final <T> @Nullable T bindInstance(Class<T> clazz, T instance) {
         return clazz.cast(this.map.put(clazz, instance));
     }
 
-    public final <T> T getInstance(Class<T> clazz, T fallback) {
+    @Contract("_, !null -> !null")
+    public final <T> @Nullable T getInstance(Class<T> clazz, T fallback) {
         return clazz.cast(this.map.getOrDefault(clazz, fallback));
     }
 

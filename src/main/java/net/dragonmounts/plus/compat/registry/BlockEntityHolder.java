@@ -20,7 +20,7 @@ public class BlockEntityHolder<T extends BlockEntity> extends ObjectHolder<Block
     public static Block[] unwrap(BlockHolder<?>... wrapped) {
         var blocks = new Block[wrapped.length];
         for (int i = 0; i < wrapped.length; ++i) {
-            blocks[i] = wrapped[i].get();
+            blocks[i] = wrapped[i].value;
         }
         return blocks;
     }

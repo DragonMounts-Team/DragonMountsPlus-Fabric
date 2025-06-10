@@ -47,6 +47,6 @@ public class EntityHolder<T extends Entity> extends ObjectHolder<EntityType<T>, 
 
     @SuppressWarnings("unchecked")
     public final <R extends T> EntityType<R> cast() {
-        return (EntityType<R>) this.get();
+        return (EntityType<R>) this.value;
     }
 }

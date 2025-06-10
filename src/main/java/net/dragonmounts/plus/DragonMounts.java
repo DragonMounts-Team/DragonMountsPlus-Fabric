@@ -59,6 +59,7 @@ public class DragonMounts implements ModInitializer, ServerPlayConnectionEvents.
         DMSensors.init();
         DMStructures.init();
         DMParticles.init();
+        DMMobEffects.init();
         initNetwork();
         EntityDataSerializers.registerSerializer(DragonType.SERIALIZER);
         EntityDataSerializers.registerSerializer(DragonVariant.SERIALIZER);

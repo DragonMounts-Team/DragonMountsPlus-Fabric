@@ -1,8 +1,8 @@
 package net.dragonmounts.plus.compat.registry;
 
+import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Objects;
@@ -10,19 +10,16 @@ import java.util.function.Supplier;
 
 public abstract class ObjectHolder<V extends T, T> implements Supplier<V> {
     public final ResourceKey<T> key;
-    private final V value;
+    protected final Holder<T> holder;
+    protected final V value;
 
     public ObjectHolder(Registry<T> registry, ResourceKey<T> key, V value) {
         this.key = key;
-        this.value = Registry.register(registry, key, value);
+        this.holder = Registry.registerForHolder(registry, key, this.value = value);
     }
 
-    public final boolean is(@Nullable T other) {
-        return this.value == other;
-    }
-
-    public final boolean is(ItemStack stack) {
-        return this.value == stack.getItem();
+    public final Holder<T> wrap() {
+        return this.holder;
     }
 
     @Override
@@ -30,10 +27,14 @@ public abstract class ObjectHolder<V extends T, T> implements Supplier<V> {
         return this.value;
     }
 
+    public final boolean is(@Nullable T other) {
+        return this.value == other;
+    }
+
     @Override
     public final boolean equals(Object other) {
         return this == other || (
-                other instanceof ObjectHolder<?, ?> that && Objects.equals(key, that.key)
+                other instanceof ObjectHolder<?, ?> that && Objects.equals(this.key, that.key)
         );
     }
 

@@ -25,10 +25,10 @@ public class BlockHolder<T extends Block> extends ObjectHolder<T, Block> impleme
 
     @Override
     public final @NotNull Item asItem() {
-        return this.get().asItem();
+        return this.value.asItem();
     }
 
     public final BlockState defaultBlockState() {
-        return this.get().defaultBlockState();
+        return this.value.defaultBlockState();
     }
 }
