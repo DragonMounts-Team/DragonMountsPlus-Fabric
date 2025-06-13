@@ -35,6 +35,10 @@ repositories {
         name = 'ParchmentMC'
         url = 'https://maven.parchmentmc.org'
     }
+    maven {
+        name = "Terraformers"
+        url = "https://maven.terraformersmc.com/"
+    }
 }
 
 allprojects {
@@ -47,6 +51,7 @@ allprojects {
         }
         modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
         modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
+        modImplementation("com.terraformersmc:modmenu:${project.modmenu_version}")
     }
 }
 

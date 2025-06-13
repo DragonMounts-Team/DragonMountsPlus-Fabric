@@ -1,90 +1,99 @@
 package net.dragonmounts.plus.config;
 
+import com.mojang.brigadier.arguments.ArgumentType;
 import com.mojang.brigadier.arguments.DoubleArgumentType;
-import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
-import net.minecraft.commands.CommandSourceStack;
-import net.minecraft.commands.Commands;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.chat.Component;
-
-import static net.minecraft.util.Mth.clamp;
+import net.dragonmounts.plus.config.network.S2CDoubleConfigPayload;
+import net.minecraft.nbt.DoubleTag;
+import net.minecraft.nbt.NumericTag;
+import net.minecraft.nbt.Tag;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.minecraft.util.Mth;
+import org.jetbrains.annotations.Nullable;
 
 public class DoubleEntry extends ConfigEntry<Double> {
-    private static final double MIN_DOUBLE = -Double.MAX_VALUE;
-    public final double defaultValue;
+    public static final double MIN_DOUBLE = -Double.MAX_VALUE;
+    public final double fallback;
     public final double min;
     public final double max;
-    protected double backup;
+    protected double saved;
     protected double value;
 
-    public DoubleEntry(String key, double init) {
-        this(key, init, MIN_DOUBLE, Double.MAX_VALUE);
-    }
-
-    public DoubleEntry(String key, String display, double init) {
-        this(key, display, init, MIN_DOUBLE, Double.MAX_VALUE);
-    }
-
-    public DoubleEntry(String key, double init, double min, double max) {
-        super(key);
+    public DoubleEntry(
+            ConfigHolder holder,
+            String key,
+            String name,
+            String tooltip,
+            double fallback,
+            double min,
+            double max
+    ) {
+        super(holder, key, name, tooltip);
         this.min = min;
         this.max = max;
-        this.defaultValue = this.value = this.backup = clamp(init, min, max);
-    }
-
-    public DoubleEntry(String key, String display, double init, double min, double max) {
-        super(key, display);
-        this.min = min;
-        this.max = max;
-        this.defaultValue = this.value = this.backup = clamp(init, min, max);
-    }
-
-    public void set(double value) {
-        this.value = clamp(value, this.min, this.max);
+        this.value = this.saved = this.fallback = Mth.clamp(fallback, min, max);
     }
 
     public double get() {
         return this.value;
     }
 
+    public float getAsFloat() {
+        return (float) this.value;
+    }
+
     @Override
-    public void read(CompoundTag tag) {
-        if (tag.contains(this.key)) {
-            this.backup = this.value = clamp(tag.getDouble(this.key), this.min, this.max);
+    public boolean modify(Double wrapped) {
+        double value = Mth.clamp(wrapped, this.min, this.max);
+        if (this.value == value) return false;
+        this.value = value;
+        return true;
+    }
+
+    @Override
+    public boolean isChanged() {
+        return this.get() != this.saved;
+    }
+
+    @Override
+    public void setSaved() {
+        this.saved = this.value;
+    }
+
+    @Override
+    public boolean isDefault() {
+        return this.get() == this.fallback;
+    }
+
+    @Override
+    public Double parse(CommandContext<?> context, String name) {
+        return DoubleArgumentType.getDouble(context, name);
+    }
+
+    @Override
+    public ArgumentType<Double> getArgument() {
+        return DoubleArgumentType.doubleArg(this.min, this.max);
+    }
+
+    @Override
+    public String getAsString() {
+        return Double.toString(this.get());
+    }
+
+    @Override
+    public Tag dump() {
+        return DoubleTag.valueOf(this.get());
+    }
+
+    @Override
+    public void load(@Nullable Tag data) {
+        if (data instanceof NumericTag tag) {
+            this.modify(tag.getAsDouble());
         }
     }
 
     @Override
-    public void save(CompoundTag tag) {
-        if (this.backup != this.value) {
-            if (this.defaultValue != this.value) tag.putDouble(this.key, this.backup = this.value);
-            else tag.remove(this.key);
-        }
-    }
-
-    @Override
-    protected int get(CommandContext<CommandSourceStack> context) {
-        context.getSource().sendSuccess(() -> Component.translatable("commands.dragonmounts.plus.config.query", this.display, this.get()), true);
-        return 1;
-    }
-
-    @Override
-    protected int set(CommandContext<CommandSourceStack> context) {
-        this.set(DoubleArgumentType.getDouble(context, "value"));
-        context.getSource().sendSuccess(() -> Component.translatable("commands.dragonmounts.plus.config.set", this.display, this.get()), true);
-        ServerConfig.INSTANCE.save();
-        return 1;
-    }
-
-    @Override
-    public LiteralArgumentBuilder<CommandSourceStack> buildCommand() {
-        return Commands.literal(this.display).executes(this::get)
-                .then(Commands.argument("value", DoubleArgumentType.doubleArg(this.min, this.max)).executes(this::set));
-    }
-
-    @Override
-    public void accept(Double value) {
-        this.value = clamp(value, this.min, this.max);
+    public CustomPacketPayload wrap(int id) {
+        return new S2CDoubleConfigPayload(id, this.get());
     }
 }

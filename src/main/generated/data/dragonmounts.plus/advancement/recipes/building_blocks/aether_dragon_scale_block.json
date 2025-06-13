@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_aether_dragon_scales": {
+      "conditions": {
+        "items": [
+          {
+            "items": "dragonmounts.plus:aether_dragon_scales"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "minecraft:aether_dragon_scale_block"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_aether_dragon_scales"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "minecraft:aether_dragon_scale_block"
+    ]
+  }
+}

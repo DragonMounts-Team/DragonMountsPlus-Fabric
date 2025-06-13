@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "dragonmounts.plus:terra_dragon_scale_block"
+  ],
+  "result": {
+    "count": 9,
+    "id": "dragonmounts.plus:terra_dragon_scales"
+  }
+}

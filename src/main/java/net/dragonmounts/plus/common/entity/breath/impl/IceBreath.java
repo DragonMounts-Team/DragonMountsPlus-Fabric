@@ -6,7 +6,7 @@ import net.dragonmounts.plus.common.entity.breath.DragonBreath;
 import net.dragonmounts.plus.common.entity.dragon.DragonLifeStage;
 import net.dragonmounts.plus.common.entity.dragon.TameableDragonEntity;
 import net.dragonmounts.plus.common.init.DMSounds;
-import net.dragonmounts.plus.compat.platform.DMGameRules;
+import net.dragonmounts.plus.config.ServerConfig;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
@@ -26,11 +26,10 @@ public class IceBreath extends DragonBreath {
 
     @Override
     public BreathAffectedBlock affectBlock(ServerLevel level, long location, BreathAffectedBlock hit) {
-        var gamerules = level.getGameRules();
         var pos = BlockPos.of(location);
         var state = level.getBlockState(pos);
         if (state.is(Blocks.LAVA)) {
-            if (!gamerules.getBoolean(DMGameRules.QUENCHING_BREATH)) return hit;
+            if (!ServerConfig.INSTANCE.quenchingBreath.get()) return hit;
             level.setBlockAndUpdate(pos, (
                     level.getFluidState(pos).isSource() ? Blocks.OBSIDIAN : Blocks.COBBLESTONE
             ).defaultBlockState());
@@ -38,7 +37,7 @@ public class IceBreath extends DragonBreath {
         } else if (state.is(Blocks.WATER)) {
             if (!level.getFluidState(pos).is(Fluids.WATER)) return hit; // requires full water block
             level.setBlockAndUpdate(pos, (
-                    gamerules.getBoolean(DMGameRules.FROSTY_BREATH) ? Blocks.ICE : Blocks.FROSTED_ICE
+                    ServerConfig.INSTANCE.frostyBreath.get() ? Blocks.ICE : Blocks.FROSTED_ICE
             ).defaultBlockState());
         } else if (AbstractCandleBlock.isLit(state)) {
             AbstractCandleBlock.extinguish(null, state, level, pos);
@@ -49,7 +48,7 @@ public class IceBreath extends DragonBreath {
             level.destroyBlock(pos, true, this.dragon);
         } else {
             BlockPos upper;
-            if (gamerules.getBoolean(DMGameRules.FROSTY_BREATH) && level.getBlockState(upper = pos.above()).isAir() && (
+            if (ServerConfig.INSTANCE.frostyBreath.get() && level.getBlockState(upper = pos.above()).isAir() && (
                     state.is(BlockTags.LEAVES) || state.isFaceSturdy(level, pos, Direction.UP)
             )) {
                 level.setBlockAndUpdate(upper, Blocks.SNOW.defaultBlockState());

@@ -5,10 +5,12 @@
   "name": "Dragon Mounts 2",
   "description": "",
   "authors": [],
-  "contact": {},
-  "license": "All-Rights-Reserved",
+  "contact": {
+    "sources": "https://github.com/DragonMounts-Team/DragonMountsPlus-Fabric",
+    "issues": "https://github.com/DragonMounts-Team/DragonMountsPlus-Fabric/issues"
+  },
+  "license": "GNU GPLv3",
   "accessWidener": "dragonmounts.plus.accesswidener",
-  "icon": "assets/dragonmounts.plus/icon.png",
   "environment": "*",
   "entrypoints": {
     "client": [
@@ -19,6 +21,9 @@
     ],
     "fabric-datagen": [
       "net.dragonmounts.plus.data.DMDataGenerator"
+    ],
+    "modmenu": [
+      "net.dragonmounts.plus.compat.ModMenuCompat"
     ]
   },
   "mixins": [
@@ -28,5 +33,17 @@
     "fabricloader": ">=${loader_version}",
     "fabric": "*",
     "minecraft": "${minecraft_version}"
+  },
+  "suggests": {
+    "modmenu": "*"
+  },
+  "custom": {
+    "modmenu": {
+      "links": {
+        "modmenu.discord": "https://discord.gg/Ewm8aTTJ3K",
+        "modmenu.github_releases": "https://github.com/DragonMounts-Team/DragonMountsPlus-Fabric/releases"
+      },
+      "update_checker": false
+    }
   }
 }

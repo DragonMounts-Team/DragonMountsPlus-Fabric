@@ -7,7 +7,7 @@ import net.dragonmounts.plus.common.entity.dragon.DragonLifeStage;
 import net.dragonmounts.plus.common.entity.dragon.TameableDragonEntity;
 import net.dragonmounts.plus.common.init.DMSounds;
 import net.dragonmounts.plus.common.tag.DMBlockTags;
-import net.dragonmounts.plus.compat.platform.DMGameRules;
+import net.dragonmounts.plus.config.ServerConfig;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
@@ -40,7 +40,7 @@ public class AetherBreath extends DragonBreath {
             level.levelEvent(null, 1009, pos, 0);
             level.setBlockAndUpdate(pos, state.setValue(CampfireBlock.LIT, false));
             return new BreathAffectedBlock();
-        } else if (level.getGameRules().getBoolean(DMGameRules.DESTRUCTIVE_BREATH) && state.is(DMBlockTags.AIRFLOW_DESTRUCTIBLE)) {
+        } else if (ServerConfig.INSTANCE.destructiveBreath.get() && state.is(DMBlockTags.AIRFLOW_DESTRUCTIBLE)) {
             // effects- which occur after the block has been exposed for sufficient time
             // soft blocks such as sand, leaves, grass, flowers, plants, etc get blown away (destroyed)
             // blows away snow but not ice

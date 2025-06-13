@@ -165,7 +165,7 @@ public class DragonType implements TooltipProvider, DragonTypified {
         return DMSounds.DRAGON_DEATH;
     }
 
-    public SoundEvent getRoarSound(TameableDragonEntity dragon) {
+    public @Nullable SoundEvent getRoarSound(TameableDragonEntity dragon) {
         return dragon.isBaby() ? DMSounds.DRAGON_ROAR_HATCHLING : DMSounds.DRAGON_ROAR;
     }
 

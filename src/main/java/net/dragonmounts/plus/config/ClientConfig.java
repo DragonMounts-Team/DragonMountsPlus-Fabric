@@ -1,48 +1,64 @@
 package net.dragonmounts.plus.config;
 
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.dragonmounts.plus.common.DragonMountsShared;
-import net.fabricmc.loader.api.FabricLoader;
-import net.minecraft.nbt.CompoundTag;
+
+import java.util.Collection;
+
+import static net.dragonmounts.plus.config.EntryBuilder.config;
 
 public class ClientConfig extends ConfigHolder {
-    public static final ClientConfig INSTANCE = new ClientConfig(DragonMountsShared.NAMESPACE);
-    public final FloatEntry camera_distance = new FloatEntry("CameraDistance", "camera_distance", 20F);
-    public final FloatEntry camera_offset = new FloatEntry("CameraOffset", "camera_offset", 0F);
-    public final BooleanEntry converge_pitch_angle = new BooleanEntry("ConvergePitchAngle", "converge_pitch_angle", true);
-    public final BooleanEntry converge_yaw_angle = new BooleanEntry("ConvergeYawAngle", "converge_yaw_angle", true);
-    public final BooleanEntry hover_animation = new BooleanEntry("HoverAnimation", "hover_animation", true);
-    public final BooleanEntry toggle_descending = new BooleanEntry("ToggleDescending", "toggle_descending", false);
-    public final BooleanEntry toggle_breathing = new BooleanEntry("ToggleBreathing", "toggle_breathing", false);
+    public static final ClientConfig INSTANCE = new ClientConfig(DragonMountsShared.NAMESPACE, "client.dat");
+    protected final ObjectArrayList<ConfigEntry<?>> entries;
+    public final BooleanEntry debug;
+    public final DoubleEntry cameraDistance;
+    public final DoubleEntry cameraOffset;
+    public final BooleanEntry convergePitchAngle;
+    public final BooleanEntry convergeYawAngle;
+    public final BooleanEntry hoverState;
+    public final BooleanEntry toggleDescending;
+    public final BooleanEntry toggleBreathing;
+    public final BooleanEntry pauseOnWhistle;
 
-    protected ClientConfig(String identifier) {
-        super(FabricLoader.getInstance().getConfigDir().resolve(identifier).resolve("client.dat"), false);
-        this.load();
+    protected ClientConfig(String mod, String file) {
+        super(mod, file);
+        var entries = new ObjectArrayList<ConfigEntry<?>>();
+        entries.add(this.debug = config(this, "debug", false));
+        entries.add(this.cameraDistance = config(this, "cameraDistance")
+                .withTooltip("options.dragonmounts.plus.camera.tooltip")
+                .build(20.0)
+        );
+        entries.add(this.cameraOffset = config(this, "cameraOffset")
+                .withTooltip("options.dragonmounts.plus.camera.tooltip")
+                .build(0.0)
+        );
+        entries.add(this.convergePitchAngle = config(this, "convergePitchAngle", true));
+        entries.add(this.convergeYawAngle = config(this, "convergeYawAngle", true));
+        entries.add(this.hoverState = config(this, "hoverState", true));
+        entries.add(this.toggleDescending = config(this, "toggleDescending").withName("key.dragonmounts.plus.descend").build(false));
+        entries.add(this.toggleBreathing = config(this, "toggleBreathing").withName("key.dragonmounts.plus.breathe").build(false));
+        entries.add(this.pauseOnWhistle = config(this, "pauseOnWhistle", true));
+        this.entries = entries;
+        this.local.load(this);
     }
 
     @Override
-    protected void read(CompoundTag tag) {
-        this.debug.read(tag);
-        this.camera_distance.read(tag);
-        this.camera_offset.read(tag);
-        this.converge_pitch_angle.read(tag);
-        this.converge_yaw_angle.read(tag);
-        this.hover_animation.read(tag);
-        this.toggle_descending.read(tag);
-        this.toggle_breathing.read(tag);
+    public ConfigSource getSource() {
+        return this.local;
     }
 
     @Override
-    protected CompoundTag write(CompoundTag tag) {
-        this.debug.save(tag);
-        this.camera_distance.save(tag);
-        this.camera_offset.save(tag);
-        this.converge_pitch_angle.save(tag);
-        this.converge_yaw_angle.save(tag);
-        this.hover_animation.save(tag);
-        this.toggle_descending.save(tag);
-        this.toggle_breathing.save(tag);
-        return tag;
+    public Collection<ConfigEntry<?>> getEntries() {
+        return this.entries;
     }
+
+    @Override
+    public void save() {
+        this.local.save(this);
+    }
+
+    @Override
+    public void broadcast(ConfigEntry<?> entry) {}
 
     public static void init() {}
 }

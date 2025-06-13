@@ -1,59 +1,36 @@
 package net.dragonmounts.plus.config;
 
-import com.mojang.logging.LogUtils;
-import net.minecraft.Util;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.NbtAccounter;
-import net.minecraft.nbt.NbtIo;
-import org.slf4j.Logger;
+import com.mojang.brigadier.builder.ArgumentBuilder;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import com.mojang.brigadier.builder.RequiredArgumentBuilder;
+import net.fabricmc.loader.api.FabricLoader;
 
-import java.nio.file.Files;
-import java.nio.file.Path;
+import java.util.Collection;
 
 public abstract class ConfigHolder {
-    private static final Logger LOGGER = LogUtils.getLogger();
-    private final Path source;
-    public final BooleanEntry debug;
+    public final LocalSource local;
 
-    public ConfigHolder(Path source, boolean debug) {
-        this.source = source;
-        this.debug = new BooleanEntry("Debug", debug);
+    public ConfigHolder(String mod, String file) {
+        this.local = new LocalSource(FabricLoader.getInstance().getConfigDir().resolve(mod).resolve(file));
     }
 
-    public final void load() {
-        Util.ioPool().execute(this::loadSync);
-    }
+    public abstract ConfigSource getSource();
 
-    public final void save() {
-        Util.ioPool().execute(this::saveSync);
-    }
+    public abstract Collection<ConfigEntry<?>> getEntries();
 
-    public final synchronized void loadSync() {
-        var source = this.source;
-        try {
-            if (Files.isRegularFile(source)) {
-                this.read(NbtIo.readCompressed(source, NbtAccounter.unlimitedHeap()));
-            }
-        } catch (Exception exception) {
-            LOGGER.error("Exception reading {}", source, exception);
+    public abstract void save();
+
+    public abstract void broadcast(ConfigEntry<?> entry);
+
+    public <S, T extends ArgumentBuilder<S, T>> ArgumentBuilder<S, T> appendCommands(ArgumentBuilder<S, T> command) {
+        for (var entry : this.getEntries()) {
+            command.then(buildCommand(entry));
         }
+        return command;
     }
 
-    public final synchronized void saveSync() {
-        var source = this.source;
-        try {
-            if (Files.isRegularFile(source)) {
-                NbtIo.writeCompressed(this.write(NbtIo.readCompressed(source, NbtAccounter.unlimitedHeap())), source);
-            } else if (Files.notExists(source)) {
-                Files.createDirectories(source.getParent());
-                NbtIo.writeCompressed(this.write(new CompoundTag()), source);
-            }
-        } catch (Exception exception) {
-            LOGGER.error("Exception writing {}", source, exception);
-        }
+    static <S, T> ArgumentBuilder<S, ?> buildCommand(ConfigEntry<T> entry) {
+        return LiteralArgumentBuilder.<S>literal(entry.key).executes(entry::query)
+                .then(RequiredArgumentBuilder.<S, T>argument("value", entry.getArgument()).executes(entry::modify));
     }
-
-    protected abstract void read(CompoundTag tag);
-
-    protected abstract CompoundTag write(CompoundTag tag);
 }

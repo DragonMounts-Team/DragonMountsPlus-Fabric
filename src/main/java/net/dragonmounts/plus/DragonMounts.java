@@ -7,16 +7,19 @@ import net.dragonmounts.plus.common.init.*;
 import net.dragonmounts.plus.common.network.c2s.*;
 import net.dragonmounts.plus.common.network.s2c.*;
 import net.dragonmounts.plus.compat.platform.DMAttachments;
-import net.dragonmounts.plus.compat.platform.DMGameRules;
 import net.dragonmounts.plus.compat.platform.DMScreenHandlers;
 import net.dragonmounts.plus.compat.platform.ServerNetworkHandler;
 import net.dragonmounts.plus.compat.registry.DragonType;
 import net.dragonmounts.plus.compat.registry.DragonVariant;
 import net.dragonmounts.plus.config.ClientConfig;
 import net.dragonmounts.plus.config.ServerConfig;
+import net.dragonmounts.plus.config.network.S2CBooleanConfigPayload;
+import net.dragonmounts.plus.config.network.S2CDoubleConfigPayload;
+import net.dragonmounts.plus.config.network.S2CSyncConfigPayload;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.player.AttackEntityCallback;
 import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup;
 import net.fabricmc.fabric.api.networking.v1.PacketSender;
@@ -29,12 +32,18 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerGamePacketListenerImpl;
+import org.jetbrains.annotations.Nullable;
 
 import static net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking.registerGlobalReceiver;
 
-public class DragonMounts implements ModInitializer, ServerPlayConnectionEvents.Join {
+public class DragonMounts implements ModInitializer, ServerPlayConnectionEvents.Join, ServerLifecycleEvents.ServerStarting, ServerLifecycleEvents.ServerStopped {
+    private static MinecraftServer RUNNING_SERVER;
+
+    public static @Nullable MinecraftServer getRunningServer() {
+        return RUNNING_SERVER;
+    }
+
     public void onInitialize() {
-        DMGameRules.init();
         ClientConfig.init();
         ServerConfig.init();
         DMDataComponents.init();
@@ -67,6 +76,8 @@ public class DragonMounts implements ModInitializer, ServerPlayConnectionEvents.
         ServerPlayerEvents.COPY_FROM.register((player, priorPlayer, $) -> ArmorEffectManagerImpl.onPlayerClone(player, priorPlayer));
         AttackEntityCallback.EVENT.register(DMArmorEffects::meleeChanneling);
         ServerPlayConnectionEvents.JOIN.register(this);
+        ServerLifecycleEvents.SERVER_STARTING.register(this);
+        ServerLifecycleEvents.SERVER_STOPPED.register(this);
     }
 
     static void initNetwork() {
@@ -83,7 +94,6 @@ public class DragonMounts implements ModInitializer, ServerPlayConnectionEvents.
 
     static void registerPayloads(PayloadTypeRegistry<RegistryFriendlyByteBuf> registry) {
         registry.register(ArmorRipostePayload.TYPE, ArmorRipostePayload.CODEC);
-        registry.register(EggPushablePayload.TYPE, EggPushablePayload.CODEC);
         registry.register(FeedDragonPayload.TYPE, FeedDragonPayload.CODEC);
         registry.register(InitCooldownPayload.TYPE, InitCooldownPayload.CODEC);
         registry.register(ControlDragonPayload.TYPE, ControlDragonPayload.CODEC);
@@ -97,12 +107,26 @@ public class DragonMounts implements ModInitializer, ServerPlayConnectionEvents.
         registry.register(ToggleTrustPayload.TYPE, ToggleTrustPayload.CODEC);
         registry.register(ToggleFollowingPayload.TYPE, ToggleFollowingPayload.CODEC);
         registry.register(RenameWhistlePayload.TYPE, RenameWhistlePayload.CODEC);
+        registry.register(S2CSyncConfigPayload.TYPE, S2CSyncConfigPayload.CODEC);
+        registry.register(S2CBooleanConfigPayload.TYPE, S2CBooleanConfigPayload.CODEC);
+        registry.register(S2CDoubleConfigPayload.TYPE, S2CDoubleConfigPayload.CODEC);
     }
 
     @Override
     public void onPlayReady(ServerGamePacketListenerImpl handler, PacketSender sender, MinecraftServer server) {
         var player = handler.player;
         ((ArmorEffectManager.Provider) player).dragonmounts$plus$getManager().sendInitPacket();
-        DMGameRules.sendInitPacket(player);
+        ServerConfig.INSTANCE.sync(player);
+    }
+
+    @Override
+    public void onServerStarting(MinecraftServer server) {
+        RUNNING_SERVER = server;
+        ServerConfig.INSTANCE.setSource(null);
+    }
+
+    @Override
+    public void onServerStopped(MinecraftServer server) {
+        RUNNING_SERVER = null;
     }
 }

@@ -23,7 +23,7 @@ public enum DragonLifeStage implements StringRepresentable {
     FLEDGLING(32 * TICKS_PER_GAME_HOUR, 0.19F, 0.60F, BreathPower.SMALL),
     JUVENILE(60 * TICKS_PER_GAME_HOUR, 0.61F, 0.99F, BreathPower.MEDIUM),
     ADULT(0, 1.00F, 1.00F, BreathPower.LARGE);
-    private static final IntFunction<DragonLifeStage> BY_ID = ByIdMap.continuous(DragonLifeStage::ordinal, values(), ByIdMap.OutOfBoundsStrategy.ZERO);
+    private static final IntFunction<DragonLifeStage> BY_ID = ByIdMap.continuous(DragonLifeStage::ordinal, values(), ByIdMap.OutOfBoundsStrategy.CLAMP);
     public static final ResourceLocation MODIFIER_ID = makeId("life_stage_bonus");
     public static final @SuppressWarnings("deprecation") EnumCodec<DragonLifeStage> CODEC = StringRepresentable.fromEnum(DragonLifeStage::values);
     public static final StreamCodec<ByteBuf, DragonLifeStage> STREAM_CODEC = ByteBufCodecs.idMapper(BY_ID, DragonLifeStage::ordinal);

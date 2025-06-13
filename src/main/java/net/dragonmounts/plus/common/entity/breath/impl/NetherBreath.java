@@ -3,7 +3,7 @@ package net.dragonmounts.plus.common.entity.breath.impl;
 import net.dragonmounts.plus.common.entity.breath.BreathAffectedBlock;
 import net.dragonmounts.plus.common.entity.breath.BreathAffectedEntity;
 import net.dragonmounts.plus.common.entity.dragon.TameableDragonEntity;
-import net.dragonmounts.plus.compat.platform.DMGameRules;
+import net.dragonmounts.plus.config.ServerConfig;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
@@ -16,7 +16,6 @@ public class NetherBreath extends FireBreath {
 
     @Override
     public BreathAffectedBlock affectBlock(ServerLevel level, long location, BreathAffectedBlock hit) {
-        var gamerules = level.getGameRules();
         // Flammable blocks: set fire to them once they have been exposed enough.  After sufficient exposure, destroy the
         //   block (otherwise -if it's raining, the burning block will keep going out)
         // Non-flammable blocks:
@@ -27,8 +26,8 @@ public class NetherBreath extends FireBreath {
         var state = level.getBlockState(pos);
         if (this.litBlock(level, pos, state)) return new BreathAffectedBlock();
         boolean consume = false;
-        boolean disableIgniting = !gamerules.getBoolean(DMGameRules.IGNITING_BREATH);
-        boolean enableSmelting = gamerules.getBoolean(DMGameRules.SMELTING_BREATH);
+        boolean disableIgniting = !ServerConfig.INSTANCE.ignitingBreath.get();
+        boolean enableSmelting = ServerConfig.INSTANCE.smeltingBreath.get();
         if (enableSmelting || !disableIgniting) {
             var random = level.random;
             float max = 0.0F;

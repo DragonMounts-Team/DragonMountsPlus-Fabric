@@ -13,6 +13,7 @@ import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.syncher.EntityDataSerializer;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -100,7 +101,8 @@ public class DragonVariant implements DragonTypified {
             return true;
         }
 
-        public DragonVariant draw(RandomSource random, @Nullable DragonVariant current, boolean acceptSelf) {
+        @Contract("!null, !null, _ -> !null")
+        public @Nullable DragonVariant draw(RandomSource random, @Nullable DragonVariant current, boolean acceptSelf) {
             switch (this.size) {
                 case 0:
                     return current;

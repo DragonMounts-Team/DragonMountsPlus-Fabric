@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "dragonmounts.plus:sculk_dragon_scale_block"
+  ],
+  "result": {
+    "count": 9,
+    "id": "dragonmounts.plus:sculk_dragon_scales"
+  }
+}

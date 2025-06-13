@@ -16,8 +16,9 @@ public class ControlledByPlayer extends GoalBehavior<ServerDragonEntity> {
     }
 
     @Override
-    public void doStop(ServerLevel level, ServerDragonEntity entity, long time) {
-        super.doStop(level, entity, time);
-        entity.getBrain().eraseMemory(DMMemories.IS_CONTROLLED);
+    public void doStop(ServerLevel level, ServerDragonEntity dragon, long time) {
+        super.doStop(level, dragon, time);
+        dragon.getBrain().eraseMemory(DMMemories.IS_CONTROLLED);
+        dragon.setBreathing(false);
     }
 }

@@ -1,8 +1,8 @@
 package net.dragonmounts.plus.mixin;
 
 import net.dragonmounts.plus.common.init.DragonTypes;
+import net.dragonmounts.plus.config.ServerConfig;
 import net.minecraft.core.BlockPos;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
@@ -17,13 +17,12 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import static net.dragonmounts.plus.common.block.HatchableDragonEggBlock.spawn;
-import static net.dragonmounts.plus.compat.platform.DMGameRules.IS_EGG_OVERRIDDEN;
 
 @Mixin(DragonEggBlock.class)
 public abstract class DragonEggBlockMixin extends FallingBlock {
     @Inject(method = "useWithoutItem", at = @At("HEAD"), cancellable = true)
     public void tryHatchDragonEgg(BlockState state, Level level, BlockPos pos, Player d, BlockHitResult e, CallbackInfoReturnable<InteractionResult> info) {
-        if (this == Blocks.DRAGON_EGG && level instanceof ServerLevel server && !level.dimension().equals(Level.END) && server.getGameRules().getBoolean(IS_EGG_OVERRIDDEN)) {
+        if (this == Blocks.DRAGON_EGG && !level.isClientSide && !level.dimension().equals(Level.END) && ServerConfig.INSTANCE.isEggOverridden.get()) {
             info.setReturnValue(spawn(level, pos, DragonTypes.ENDER, true));
         }
     }

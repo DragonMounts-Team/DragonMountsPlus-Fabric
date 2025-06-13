@@ -11,7 +11,9 @@ import net.dragonmounts.plus.common.item.DragonArmorItem;
 import net.dragonmounts.plus.common.tag.DMItemTags;
 import net.dragonmounts.plus.common.util.math.MathUtil;
 import net.dragonmounts.plus.compat.platform.PlatformItemTags;
+import net.dragonmounts.plus.compat.registry.DragonType;
 import net.minecraft.core.Holder;
+import net.minecraft.network.protocol.game.ClientboundAddEntityPacket;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -104,6 +106,17 @@ public class ClientDragonEntity extends TameableDragonEntity {
         }
     }
 
+    @Override
+    protected void applyType(DragonType type) {
+        if (this.lastType == type) return;
+        if (this.lastType != null) {
+            this.getAttributes().removeAttributeModifiers(this.lastType.attributes);
+        }
+        this.getAttributes().addTransientAttributeModifiers(type.attributes);
+        this.breathHelper.onTypeChange(type);
+        this.lastType = type;
+    }
+
     @SuppressWarnings("deprecation")
     @Override
     public @NotNull InteractionResult mobInteract(Player player, InteractionHand hand) {
@@ -154,6 +167,14 @@ public class ClientDragonEntity extends TameableDragonEntity {
     @Override
     public void setAge(int age) {
         this.age = age;
+    }
+
+    @Override
+    public void recreateFromPacket(ClientboundAddEntityPacket packet) {
+        super.recreateFromPacket(packet);
+        int data = packet.getData();
+        this.setLifeStage(DragonLifeStage.byId(data & 0b111), false, false);
+        this.setAge(data >>> 3);
     }
 
     public void refreshForcedAgeTimer() {

@@ -22,7 +22,7 @@ public abstract class CameraMixin {
     @Inject(method = "setup", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/Camera;getMaxZoom(F)F"), cancellable = true)
     public void detachedCameraOffset(BlockGetter a, Entity host, boolean c, boolean d, float e, CallbackInfo info) {
         if (host.getVehicle() instanceof TameableDragonEntity) {
-            this.move(-this.getMaxZoom(ClientConfig.INSTANCE.camera_distance.get()), 0.0F, -ClientConfig.INSTANCE.camera_offset.get());
+            this.move(-this.getMaxZoom(ClientConfig.INSTANCE.cameraDistance.getAsFloat()), 0.0F, -ClientConfig.INSTANCE.cameraOffset.getAsFloat());
             info.cancel();
         }
     }

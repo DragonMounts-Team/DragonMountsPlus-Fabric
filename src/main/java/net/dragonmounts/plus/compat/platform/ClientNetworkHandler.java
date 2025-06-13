@@ -114,10 +114,6 @@ public class ClientNetworkHandler {
         }
     }
 
-    public static void handleEggPushable(EggPushablePayload payload, ClientPlayNetworking.Context context) {
-        HatchableDragonEggEntity.IS_PUSHABLE = payload.value();
-    }
-
     public static void initClient() {
         registerGlobalReceiver(SyncCooldownPayload.TYPE, ClientNetworkHandler::handleCooldownSync);
         registerGlobalReceiver(ArmorRipostePayload.TYPE, ClientNetworkHandler::handleArmorRiposte);
@@ -126,6 +122,5 @@ public class ClientNetworkHandler {
         registerGlobalReceiver(SyncDragonAgePayload.TYPE, ClientNetworkHandler::handleDragonSync);
         registerGlobalReceiver(FeedDragonPayload.TYPE, ClientNetworkHandler::handleFeedDragon);
         registerGlobalReceiver(SyncEggAgePayload.TYPE, ClientNetworkHandler::handleEggSync);
-        registerGlobalReceiver(EggPushablePayload.TYPE, ClientNetworkHandler::handleEggPushable);
     }
 }

@@ -5,6 +5,7 @@ import net.dragonmounts.plus.common.network.c2s.TeleportDragonPayload;
 import net.dragonmounts.plus.common.network.c2s.ToggleFollowingPayload;
 import net.dragonmounts.plus.common.network.c2s.ToggleSittingByUUIDPayload;
 import net.dragonmounts.plus.compat.platform.ClientNetworkHandler;
+import net.dragonmounts.plus.config.ClientConfig;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.layouts.HeaderAndFooterLayout;
 import net.minecraft.client.gui.layouts.LinearLayout;
@@ -61,6 +62,11 @@ public class DragonWhistleScreen extends Screen {
     @Override
     protected void repositionElements() {
         this.layout.arrangeElements();
+    }
+
+    @Override
+    public boolean isPauseScreen() {
+        return ClientConfig.INSTANCE.pauseOnWhistle.get();
     }
 
     public void teleportDragon(@Nullable Button ignored) {
