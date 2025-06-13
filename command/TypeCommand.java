@@ -4,6 +4,7 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.builder.RequiredArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import com.mojang.brigadier.suggestion.SuggestionProvider;
 import it.unimi.dsi.fastutil.objects.Reference2ObjectOpenHashMap;
 import net.dragonmounts.plus.common.DragonMountsShared;
 import net.dragonmounts.plus.common.api.DragonTypified;
@@ -28,10 +29,12 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.state.BlockState;
 
+import java.util.Locale;
 import java.util.function.Predicate;
 
 import static net.dragonmounts.plus.common.command.DMCommand.createClassCastException;
 import static net.dragonmounts.plus.common.init.DragonVariants.ENDER_FEMALE;
+import static net.minecraft.commands.SharedSuggestionProvider.matchesSubStr;
 import static net.minecraft.world.level.block.state.properties.BlockStateProperties.HORIZONTAL_FACING;
 import static net.minecraft.world.level.block.state.properties.BlockStateProperties.ROTATION_16;
 
@@ -45,14 +48,18 @@ public class TypeCommand {
 
         protected abstract int getType(CommandContext<CommandSourceStack> context, A argument);
 
-        public RequiredArgumentBuilder<CommandSourceStack, ?> generateCommand(ResourceArgument<DragonType> argument, Predicate<CommandSourceStack> permission) {
+        public RequiredArgumentBuilder<CommandSourceStack, ?> generateCommand(
+                ResourceArgument<DragonType> argument,
+                SuggestionProvider<CommandSourceStack> suggestions,
+                Predicate<CommandSourceStack> permission
+        ) {
             return this.input()
                     .executes(context -> this.getType(context, this.parse(context)))
                     .then(Commands.argument("type", argument).executes(context -> this.setType(
                             context,
                             this.parse(context),
                             ResourceArgument.getResource(context, "type", DragonMountsShared.DRAGON_TYPE).value()
-                    )).requires(permission));
+                    )).suggests(suggestions).requires(permission));
         }
     }
 
@@ -195,8 +202,26 @@ public class TypeCommand {
 
     public static LiteralArgumentBuilder<CommandSourceStack> register(CommandBuildContext context, Predicate<CommandSourceStack> permission) {
         var argument = ResourceArgument.resource(context, DragonMountsShared.DRAGON_TYPE);
+        var registry = context.lookupOrThrow(DragonMountsShared.DRAGON_TYPE);
+        SuggestionProvider<CommandSourceStack> suggestions = ((context1, builder) -> {
+            var input = builder.getRemaining().toLowerCase(Locale.ROOT);
+            boolean hasNamespace = input.indexOf(58) > -1;
+            for (var iterator = registry.listElements().iterator(); iterator.hasNext(); ) {
+                var type = iterator.next().value();
+                var id = type.getId();
+                if (hasNamespace) {
+                    var string = id.toString();
+                    if (matchesSubStr(input, string)) {
+                        builder.suggest(string, type.getName());
+                    }
+                } else if (matchesSubStr(input, id.getNamespace()) || DragonMountsShared.NAMESPACE.equals(id.getNamespace()) && matchesSubStr(input, id.getPath())) {
+                    builder.suggest(id.toString(), type.getName());
+                }
+            }
+            return builder.buildFuture();
+        });
         return Commands.literal("type")
-                .then(Commands.literal("block").then(BLOCK_HANDLER.generateCommand(argument, permission)))
-                .then(Commands.literal("entity").then(ENTITY_HANDLER.generateCommand(argument, permission)));
+                .then(Commands.literal("block").then(BLOCK_HANDLER.generateCommand(argument, suggestions, permission)))
+                .then(Commands.literal("entity").then(ENTITY_HANDLER.generateCommand(argument, suggestions, permission)));
     }
 }

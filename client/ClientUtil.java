@@ -69,4 +69,9 @@ public class ClientUtil {
         part.yScale = takeIfValid(segment.scaleY, part.yScale);
         part.zScale = takeIfValid(segment.scaleZ, part.zScale);
     }
+
+    public static boolean isRemoteServer() {
+        var minecraft = Minecraft.getInstance();
+        return minecraft.getCurrentServer() != null && !minecraft.isSingleplayer();
+    }
 }

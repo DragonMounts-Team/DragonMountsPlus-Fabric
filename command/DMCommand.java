@@ -25,13 +25,15 @@ public class DMCommand {
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher, CommandBuildContext context, Commands.CommandSelection ignored) {
         Predicate<CommandSourceStack> hasPermissionLevel2 = source -> source.hasPermission(2);
         dispatcher.register(Commands.literal(DragonMountsShared.NAMESPACE)
-                .then(ServerConfig.buildCommand(source -> source.hasPermission(3)))
                 .then(CooldownCommand.register(context, hasPermissionLevel2))
                 .then(FreeCommand.register(hasPermissionLevel2))
                 .then(SaveCommand.register(context, hasPermissionLevel2))
                 .then(StageCommand.register(hasPermissionLevel2))
                 .then(TameCommand.register(hasPermissionLevel2))
                 .then(TypeCommand.register(context, hasPermissionLevel2))
+                .then(ServerConfig.INSTANCE.appendCommands(
+                        Commands.literal("config").requires(source -> source.hasPermission(3))
+                ))
         );
     }
 

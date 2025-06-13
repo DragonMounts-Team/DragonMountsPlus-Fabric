@@ -6,7 +6,7 @@ import net.dragonmounts.plus.common.entity.breath.DragonBreath;
 import net.dragonmounts.plus.common.entity.dragon.DragonLifeStage;
 import net.dragonmounts.plus.common.entity.dragon.TameableDragonEntity;
 import net.dragonmounts.plus.common.init.DMSounds;
-import net.dragonmounts.plus.compat.platform.DMGameRules;
+import net.dragonmounts.plus.config.ServerConfig;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
@@ -19,7 +19,6 @@ import net.minecraft.world.level.block.AbstractCandleBlock;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.CampfireBlock;
 import net.minecraft.world.level.block.FarmBlock;
-import net.minecraft.world.level.material.Fluids;
 
 import static net.minecraft.world.level.block.state.properties.BlockStateProperties.MOISTURE;
 
@@ -30,20 +29,14 @@ public class WaterBreath extends DragonBreath {
 
     @Override
     public BreathAffectedBlock affectBlock(ServerLevel level, long location, BreathAffectedBlock hit) {
-        var gamerules = level.getGameRules();
         var pos = BlockPos.of(location);
         var state = level.getBlockState(pos);
         if (state.is(Blocks.LAVA)) {
-            if (!gamerules.getBoolean(DMGameRules.QUENCHING_BREATH)) return hit;
+            if (!ServerConfig.INSTANCE.quenchingBreath.get()) return hit;
             level.setBlockAndUpdate(pos, (
                     level.getFluidState(pos).isSource() ? Blocks.OBSIDIAN : Blocks.COBBLESTONE
             ).defaultBlockState());
             level.levelEvent(1501, pos, 0);
-        } else if (state.is(Blocks.WATER)) {
-            if (!level.getFluidState(pos).is(Fluids.WATER)) return hit; // requires full water block
-            level.setBlockAndUpdate(pos, (
-                    gamerules.getBoolean(DMGameRules.FROSTY_BREATH) ? Blocks.ICE : Blocks.FROSTED_ICE
-            ).defaultBlockState());
         } else if (AbstractCandleBlock.isLit(state)) {
             AbstractCandleBlock.extinguish(null, state, level, pos);
         } else if (CampfireBlock.isLitCampfire(state)) {

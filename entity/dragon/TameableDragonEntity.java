@@ -23,6 +23,7 @@ import net.dragonmounts.plus.common.util.math.MathUtil;
 import net.dragonmounts.plus.compat.platform.MenuProvider;
 import net.dragonmounts.plus.compat.registry.DragonType;
 import net.dragonmounts.plus.compat.registry.DragonVariant;
+import net.dragonmounts.plus.config.ServerConfig;
 import net.dragonmounts.plus.mixin.MobAccessor;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -66,8 +67,6 @@ import org.slf4j.Logger;
 
 import java.util.Optional;
 
-import static net.dragonmounts.plus.compat.platform.DMGameRules.*;
-
 /**
  * @see Mule
  * @see Horse
@@ -89,22 +88,23 @@ public abstract class TameableDragonEntity extends TamableAnimal implements
     }
 
     public static AttributeSupplier.Builder createAttributes() {
+        var config = ServerConfig.INSTANCE;
         return LivingEntity.createLivingAttributes()
-                .add(Attributes.MAX_HEALTH, DEFAULT_DRAGON_BASE_HEALTH)
+                .add(Attributes.MAX_HEALTH, config.baseHealth.get())
                 .add(Attributes.KNOCKBACK_RESISTANCE, 1.0)
                 .add(Attributes.FLYING_SPEED, BASE_AIR_SPEED)
                 .add(Attributes.MOVEMENT_SPEED, BASE_GROUND_SPEED)
-                .add(Attributes.ATTACK_DAMAGE, DEFAULT_DRAGON_BASE_DAMAGE)
+                .add(Attributes.ATTACK_DAMAGE, config.baseDamage.get())
                 .add(Attributes.ATTACK_KNOCKBACK)
                 .add(Attributes.SCALE, 1.0)
                 .add(Attributes.FOLLOW_RANGE, BASE_FOLLOW_RANGE)
-                .add(Attributes.ARMOR, DEFAULT_DRAGON_BASE_ARMOR)
+                .add(Attributes.ARMOR, config.baseArmor.get())
                 .add(Attributes.ARMOR_TOUGHNESS, BASE_TOUGHNESS)
                 .add(Attributes.JUMP_STRENGTH, 1.0)
                 .add(Attributes.TEMPT_RANGE, 16.0);
     }
 
-    // base attributes
+    // base attributes TODO config
     public static final double BASE_GROUND_SPEED = 0.4;
     public static final double BASE_AIR_SPEED = 0.25;
     public static final double BASE_TOUGHNESS = 30.0D;
@@ -133,7 +133,7 @@ public abstract class TameableDragonEntity extends TamableAnimal implements
     public static final String FLYING_DATA_PARAMETER_KEY = "Flying";
     public static final String SADDLE_DATA_PARAMETER_KEY = "Saddle";
     public static final String SHEARED_DATA_PARAMETER_KEY = "ShearCooldown";
-    private DragonType lastType;
+    protected DragonType lastType;
     protected EndCrystal nearestCrystal;
     protected DragonLifeStage stage;
     protected boolean hasChest;
@@ -251,19 +251,9 @@ public abstract class TameableDragonEntity extends TamableAnimal implements
         return result;
     }
 
-    //----------Entity----------
+    protected abstract void applyType(DragonType type);
 
-    protected final void applyType(DragonType type) {
-        if (this.lastType == type) return;
-        float health = this.getHealth() / this.getMaxHealth();
-        if (this.lastType != null) {
-            this.getAttributes().removeAttributeModifiers(this.lastType.attributes);
-        }
-        this.getAttributes().addTransientAttributeModifiers(type.attributes);
-        this.setHealth(health * this.getMaxHealth());
-        this.breathHelper.onTypeChange(type);
-        this.lastType = type;
-    }
+    //----------Entity----------
 
     @Override
     protected void defineSynchedData(SynchedEntityData.Builder builder) {

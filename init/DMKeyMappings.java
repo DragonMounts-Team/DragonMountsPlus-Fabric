@@ -13,13 +13,13 @@ public class DMKeyMappings {
             "key.dragonmounts.plus.descend",
             InputConstants.KEY_Z,
             KEY_CATEGORY,
-            ClientConfig.INSTANCE.toggle_descending::get
+            ClientConfig.INSTANCE.toggleDescending::get
     );
     public static final ToggleKeyMapping BREATHE = new ToggleKeyMapping(
             "key.dragonmounts.plus.breathe",
             InputConstants.KEY_R,
             KEY_CATEGORY,
-            ClientConfig.INSTANCE.toggle_breathing::get
+            ClientConfig.INSTANCE.toggleBreathing::get
     );
 
     public static void register(Consumer<KeyMapping> registry) {

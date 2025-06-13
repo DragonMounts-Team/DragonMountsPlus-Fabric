@@ -10,20 +10,22 @@ import net.dragonmounts.plus.common.init.DragonTypes;
 import net.dragonmounts.plus.common.item.DragonScalesItem;
 import net.dragonmounts.plus.common.network.s2c.ShakeEggPayload;
 import net.dragonmounts.plus.common.network.s2c.SyncEggAgePayload;
-import net.dragonmounts.plus.compat.platform.DMGameRules;
 import net.dragonmounts.plus.compat.platform.ServerNetworkHandler;
 import net.dragonmounts.plus.compat.registry.DragonType;
 import net.dragonmounts.plus.compat.registry.DragonVariant;
+import net.dragonmounts.plus.config.ServerConfig;
 import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientGamePacketListener;
+import net.minecraft.network.protocol.game.ClientboundAddEntityPacket;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.server.level.ServerEntity;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.players.OldUsersConverter;
 import net.minecraft.sounds.SoundEvent;
-import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.util.Mth;
@@ -31,7 +33,6 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.DamageTypes;
-import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
@@ -49,10 +50,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Collections;
 import java.util.UUID;
 
-import static net.dragonmounts.plus.common.util.EntityUtil.addOrMergeEffect;
 import static net.dragonmounts.plus.common.util.math.MathUtil.TO_RAD_FACTOR;
-import static net.dragonmounts.plus.compat.platform.DMGameRules.DEFAULT_DRAGON_BASE_HEALTH;
-import static net.dragonmounts.plus.compat.platform.DMGameRules.DRAGON_BASE_HEALTH;
 import static net.minecraft.resources.ResourceLocation.tryParse;
 
 public class HatchableDragonEggEntity extends LivingEntity implements DragonTypified.Mutable {
@@ -77,7 +75,6 @@ public class HatchableDragonEggEntity extends LivingEntity implements DragonTypi
     public static final int EGG_CRACK_THRESHOLD = (int) (EGG_CRACK_PROCESS_THRESHOLD * MIN_HATCHING_TIME);
     public static final int EGG_SHAKE_THRESHOLD = (int) (EGG_SHAKE_PROCESS_THRESHOLD * MIN_HATCHING_TIME);
     public static final String VANILLA_DATA_PARAMETER_KEY = "IsVanilla";
-    public static boolean IS_PUSHABLE = false;
     protected String variant;
     protected UUID owner;
     protected boolean hatched;
@@ -94,10 +91,8 @@ public class HatchableDragonEggEntity extends LivingEntity implements DragonTypi
 
     public HatchableDragonEggEntity(EntityType<? extends HatchableDragonEggEntity> type, Level level) {
         super(type, level);
-        if (level instanceof ServerLevel server) {
-            //noinspection DataFlowIssue
-            this.getAttribute(Attributes.MAX_HEALTH).setBaseValue(server.getGameRules().getRule(DRAGON_BASE_HEALTH).get());
-        }
+        //noinspection DataFlowIssue
+        this.getAttribute(Attributes.MAX_HEALTH).setBaseValue(ServerConfig.INSTANCE.baseHealth.get());
     }
 
     public HatchableDragonEggEntity(Level level) {
@@ -106,7 +101,7 @@ public class HatchableDragonEggEntity extends LivingEntity implements DragonTypi
 
     public static AttributeSupplier.Builder createAttributes() {
         return LivingEntity.createLivingAttributes()
-                .add(Attributes.MAX_HEALTH, DEFAULT_DRAGON_BASE_HEALTH)
+                .add(Attributes.MAX_HEALTH, ServerConfig.INSTANCE.baseHealth.get())
                 .add(Attributes.KNOCKBACK_RESISTANCE, 1.0);
     }
 
@@ -240,7 +235,7 @@ public class HatchableDragonEggEntity extends LivingEntity implements DragonTypi
                     }
                 }
             }
-            if (server.getGameRules().getBoolean(DMGameRules.IS_EGG_PUSHABLE)) {
+            if (ServerConfig.INSTANCE.isEggPushable.get()) {
                 var list = server.getEntities(this, this.getBoundingBox().inflate(0.125F, -0.01F, 0.125F), this::isPushable);
                 if (!list.isEmpty()) {
                     for (var entity : list) {
@@ -320,12 +315,12 @@ public class HatchableDragonEggEntity extends LivingEntity implements DragonTypi
 
     @Override
     public boolean isPushable() {
-        return IS_PUSHABLE && super.isPushable();
+        return ServerConfig.INSTANCE.isEggPushable.get() && super.isPushable();
     }
 
     @Override
     public void push(Entity entity) {
-        if (IS_PUSHABLE) {
+        if (ServerConfig.INSTANCE.isEggPushable.get()) {
             super.push(entity);
         }
     }
@@ -343,20 +338,18 @@ public class HatchableDragonEggEntity extends LivingEntity implements DragonTypi
     @Override
     public void thunderHit(ServerLevel level, LightningBolt bolt) {
         super.thunderHit(level, bolt);
-        addOrMergeEffect(this, MobEffects.DAMAGE_BOOST, 700, 0, false, true, true);//35s
-        var current = this.getDragonType();
-        if (current == DragonTypes.SKELETON) {
-            this.setDragonType(DragonTypes.WITHER, false);
-        } else if (current == DragonTypes.WATER) {
-            this.setDragonType(DragonTypes.STORM, false);
-        } else return;
-        this.playSound(SoundEvents.END_PORTAL_SPAWN, 2, 1);
-        this.playSound(SoundEvents.PORTAL_TRIGGER, 2, 1);
+        this.getDragonType().onThunderHit(this, bolt);
     }
 
     @Override
-    public void startSeenByPlayer(ServerPlayer player) {
-        ServerNetworkHandler.sendTo(player, new SyncEggAgePayload(this.getId(), this.age));
+    public Packet<ClientGamePacketListener> getAddEntityPacket(ServerEntity entity) {
+        return new ClientboundAddEntityPacket(this, entity, this.age);
+    }
+
+    @Override
+    public void recreateFromPacket(ClientboundAddEntityPacket packet) {
+        super.recreateFromPacket(packet);
+        this.age = packet.getData();
     }
 
     public void setAge(int age, boolean lazySync) {

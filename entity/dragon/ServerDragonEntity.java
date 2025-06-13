@@ -19,13 +19,17 @@ import net.dragonmounts.plus.common.util.Segment;
 import net.dragonmounts.plus.compat.platform.ServerNetworkHandler;
 import net.dragonmounts.plus.compat.registry.DragonType;
 import net.dragonmounts.plus.compat.registry.DragonVariant;
+import net.dragonmounts.plus.config.ServerConfig;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.core.component.DataComponentPatch;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientGamePacketListener;
+import net.minecraft.network.protocol.game.ClientboundAddEntityPacket;
 import net.minecraft.network.protocol.game.DebugPackets;
+import net.minecraft.server.level.ServerEntity;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.stats.Stats;
 import net.minecraft.util.Unit;
 import net.minecraft.world.InteractionHand;
@@ -52,7 +56,6 @@ import java.util.function.BiConsumer;
 import static net.dragonmounts.plus.common.entity.dragon.DragonModelContracts.NECK_SEGMENTS;
 import static net.dragonmounts.plus.common.util.EntityUtil.addOrResetEffect;
 import static net.dragonmounts.plus.common.util.EntityUtil.addOrUpdateTransientModifier;
-import static net.dragonmounts.plus.compat.platform.DMGameRules.*;
 import static net.minecraft.resources.ResourceLocation.tryParse;
 import static net.minecraft.world.level.block.state.properties.BlockStateProperties.HORIZONTAL_FACING;
 
@@ -62,13 +65,13 @@ public class ServerDragonEntity extends TameableDragonEntity {
 
     public ServerDragonEntity(EntityType<? extends TameableDragonEntity> type, ServerLevel level) {
         super(type, level);
-        this.resetAttributes(level);
+        this.resetAttributes();
         this.setLifeStage(DragonLifeStage.ADULT, true, false);
     }
 
     public ServerDragonEntity(ServerLevel level, BiConsumer<ServerLevel, ServerDragonEntity> init) {
         super(DMEntities.TAMEABLE_DRAGON.get(), level);
-        this.resetAttributes(level);
+        this.resetAttributes();
         init.accept(level, this);
         if (this.stage != null) return;
         this.setLifeStage(DragonLifeStage.ADULT, true, false);
@@ -85,12 +88,12 @@ public class ServerDragonEntity extends TameableDragonEntity {
     }
 
     @SuppressWarnings("DataFlowIssue")
-    public void resetAttributes(ServerLevel level) {
-        GameRules rules = level.getGameRules();
+    public void resetAttributes() {
+        var config = ServerConfig.INSTANCE;
         AttributeMap map = this.getAttributes();
-        map.getInstance(Attributes.MAX_HEALTH).setBaseValue(rules.getRule(DRAGON_BASE_HEALTH).get());
-        map.getInstance(Attributes.ATTACK_DAMAGE).setBaseValue(rules.getRule(DRAGON_BASE_DAMAGE).get());
-        map.getInstance(Attributes.ARMOR).setBaseValue(rules.getRule(DRAGON_BASE_ARMOR).get());
+        map.getInstance(Attributes.MAX_HEALTH).setBaseValue(config.baseHealth.get());
+        map.getInstance(Attributes.ATTACK_DAMAGE).setBaseValue(config.baseDamage.get());
+        map.getInstance(Attributes.ARMOR).setBaseValue(config.baseArmor.get());
     }
 
     @Override
@@ -128,6 +131,8 @@ public class ServerDragonEntity extends TameableDragonEntity {
             this.setVariant(DragonVariant.REGISTRY.getValue(tryParse(tag.getString(DragonVariant.DATA_PARAMETER_KEY))));
         } else if (tag.contains(DragonType.DATA_PARAMETER_KEY)) {
             this.setVariant(DragonType.REGISTRY.getValue(tryParse(tag.getString(DragonType.DATA_PARAMETER_KEY))).variants.draw(this.random, DragonVariants.ENDER_FEMALE, true));
+        } else {
+            this.applyType(this.getDragonType());
         }
         if (tag.contains(SADDLE_DATA_PARAMETER_KEY)) {
             this.inventory.saddle.setLocal(ItemStack.parseOptional(this.registryAccess(), tag.getCompound(SADDLE_DATA_PARAMETER_KEY)), true);
@@ -141,7 +146,6 @@ public class ServerDragonEntity extends TameableDragonEntity {
         if (tag.contains(DragonInventory.DATA_PARAMETER_KEY)) {
             this.inventory.loadItems(tag.getList(DragonInventory.DATA_PARAMETER_KEY, 10), this.registryAccess());
         }
-        this.applyType(this.getDragonType());
     }
 
     public void spawnEssence(ItemStack stack) {
@@ -174,6 +178,19 @@ public class ServerDragonEntity extends TameableDragonEntity {
         } else {
             this.nearestCrystal = this.random.nextInt(10) == 0 ? this.findCrystal() : null;
         }
+    }
+
+    @Override
+    protected void applyType(DragonType type) {
+        if (this.lastType == type) return;
+        float health = this.getHealth() / this.getMaxHealth();
+        if (this.lastType != null) {
+            this.getAttributes().removeAttributeModifiers(this.lastType.attributes);
+        }
+        this.getAttributes().addTransientAttributeModifiers(type.attributes);
+        this.setHealth(health * this.getMaxHealth());
+        this.breathHelper.onTypeChange(type);
+        this.lastType = type;
     }
 
     @Override
@@ -348,8 +365,8 @@ public class ServerDragonEntity extends TameableDragonEntity {
     }
 
     @Override
-    public void startSeenByPlayer(ServerPlayer player) {
-        ServerNetworkHandler.sendTo(player, new SyncDragonAgePayload(this.getId(), this.age, this.stage));
+    public Packet<ClientGamePacketListener> getAddEntityPacket(ServerEntity entity) {
+        return new ClientboundAddEntityPacket(this, entity, (this.age << 3) | this.stage.ordinal());
     }
 
     @Override
@@ -359,8 +376,7 @@ public class ServerDragonEntity extends TameableDragonEntity {
         float health = this.getHealth() / this.getMaxHealth();
         addOrUpdateTransientModifier(attributes, Attributes.MAX_HEALTH, modifier);
         addOrUpdateTransientModifier(attributes, Attributes.ATTACK_DAMAGE, modifier);
-        // TODO: use config
-        addOrUpdateTransientModifier(attributes, Attributes.ARMOR, stage.makeModifier(DEFAULT_DRAGON_BASE_ARMOR, AttributeModifier.Operation.ADD_VALUE));
+        addOrUpdateTransientModifier(attributes, Attributes.ARMOR, stage.makeModifier(ServerConfig.INSTANCE.baseArmor.get(), AttributeModifier.Operation.ADD_VALUE));
         this.setHealth(health * this.getMaxHealth());
         if (this.stage == stage) return;
         this.stage = stage;
