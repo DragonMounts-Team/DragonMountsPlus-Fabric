@@ -71,20 +71,13 @@ public class DefaultedDispatchCodec<K, V> extends MapCodec<V> {
 
     @Override
     public <T> RecordBuilder<T> encode(final V input, final DynamicOps<T> ops, final RecordBuilder<T> prefix) {
-        final DataResult<? extends MapEncoder<V>> encoderResult = encoder.apply(input);
-        final RecordBuilder<T> builder = prefix.withErrorsFrom(encoderResult);
-        if (encoderResult.isError()) {
-            return builder;
-        }
-
-        final MapEncoder<V> elementEncoder = encoderResult.result().get();
-        if (ops.compressMaps()) {
-            return prefix
-                    .add(typeKey, type.apply(input).flatMap(t -> keyCodec.encodeStart(ops, t)))
-                    .add(COMPRESSED_VALUE_KEY, elementEncoder.encoder().encodeStart(ops, input));
-        }
-
-        return elementEncoder.encode(input, ops, prefix)
+        var result = encoder.apply(input);
+        var builder = prefix.withErrorsFrom(result);
+        if (result.isError()) return builder;
+        return ops.compressMaps()
+                ? prefix.add(typeKey, type.apply(input).flatMap(t -> keyCodec.encodeStart(ops, t)))
+                .add(COMPRESSED_VALUE_KEY, result.result().get().encoder().encodeStart(ops, input))
+                : result.result().get().encode(input, ops, prefix)
                 .add(typeKey, type.apply(input).flatMap(t -> keyCodec.encodeStart(ops, t)));
     }
 

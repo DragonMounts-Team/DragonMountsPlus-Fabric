@@ -111,7 +111,7 @@ public class BreathNode {
      *
      * @return the width and height of the breathnode collision AABB, in blocks
      */
-    public float getCurrentAABBcollisionSize() {
+    public float getCurrentCollisionSize() {
         return getCurrentDiameterOfEffect() * RATIO_OF_COLLISION_DIAMETER_TO_EFFECT_DIAMETER;
     }
 

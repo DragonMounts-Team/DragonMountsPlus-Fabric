@@ -249,8 +249,8 @@ public class DragonInventory implements Container, StackedContentsCompatible {
         public final SynchedEntityData data = DragonInventory.this.dragon.getEntityData();
         public final Predicate<ItemStack> predicate;
         protected final EntityDataAccessor<ItemStack> key;
+        protected final BooleanConsumer callback;
         protected ItemStack stack = ItemStack.EMPTY;
-        protected BooleanConsumer callback;
 
         public Slot(EntityDataAccessor<ItemStack> key, Predicate<ItemStack> predicate, BooleanConsumer callback) {
             this.key = key;

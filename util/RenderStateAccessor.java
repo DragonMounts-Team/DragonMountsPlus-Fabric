@@ -11,7 +11,7 @@ import net.minecraft.util.TriState;
 import java.util.function.Function;
 
 public abstract class RenderStateAccessor extends RenderStateShard {
-    public static Function<ResourceLocation, RenderType> ENTITY_TRANSLUCENT_EMISSIVE_DECAL = Util.memoize((location) -> RenderType.create("entity_decal", DefaultVertexFormat.NEW_ENTITY, VertexFormat.Mode.QUADS, 1536, RenderType.CompositeState.builder()
+    public static final Function<ResourceLocation, RenderType> ENTITY_TRANSLUCENT_EMISSIVE_DECAL = Util.memoize((location) -> RenderType.create("entity_decal", DefaultVertexFormat.NEW_ENTITY, VertexFormat.Mode.QUADS, 1536, RenderType.CompositeState.builder()
             .setShaderState(RENDERTYPE_ENTITY_DECAL_SHADER)
             .setTextureState(new RenderStateShard.TextureStateShard(location, TriState.FALSE, false))
             .setDepthTestState(EQUAL_DEPTH_TEST)

@@ -48,6 +48,7 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Collections;
+import java.util.Objects;
 import java.util.UUID;
 
 import static net.dragonmounts.plus.common.util.math.MathUtil.TO_RAD_FACTOR;
@@ -143,7 +144,7 @@ public class HatchableDragonEggEntity extends LivingEntity implements DragonTypi
         if (tag.hasUUID("Owner")) {
             this.owner = tag.getUUID("Owner");
         } else {
-            this.owner = OldUsersConverter.convertMobOwnerIfNecessary(this.getServer(), tag.getString("Owner"));
+            this.owner = OldUsersConverter.convertMobOwnerIfNecessary(Objects.requireNonNull(this.getServer()), tag.getString("Owner"));
         }
     }
 

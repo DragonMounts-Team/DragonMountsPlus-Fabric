@@ -2,6 +2,7 @@ package net.dragonmounts.plus.common.client.renderer.dragon;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.dragonmounts.plus.common.client.ClientDragonEntity;
+import net.dragonmounts.plus.common.client.model.dragon.BuiltinFactory;
 import net.dragonmounts.plus.common.client.model.dragon.DragonModel;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
@@ -16,7 +17,7 @@ import static net.minecraft.client.renderer.entity.EnderDragonRenderer.renderCry
 
 public class TameableDragonRenderer extends MobRenderer<ClientDragonEntity, DragonRenderState, DragonModel> {
     public TameableDragonRenderer(EntityRendererProvider.Context context) {
-        super(context, null, 0);
+        super(context, new DragonModel(context.getModelSet().bakeLayer(BuiltinFactory.NORMAL.location)), 0);
         this.addLayer(new TameableDragonLayer(this));
     }
 
