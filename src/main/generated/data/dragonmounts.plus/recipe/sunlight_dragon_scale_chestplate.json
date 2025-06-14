@@ -1,6 +1,7 @@
 {
   "type": "minecraft:crafting_shaped",
   "category": "equipment",
+  "group": "dragonmounts.plus.dragon_scale_chestplate",
   "key": {
     "X": "dragonmounts.plus:sunlight_dragon_scales"
   },

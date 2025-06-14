@@ -22,7 +22,7 @@ public abstract class ConfigHolder {
 
     public abstract void broadcast(ConfigEntry<?> entry);
 
-    public <S, T extends ArgumentBuilder<S, T>> ArgumentBuilder<S, T> appendCommands(ArgumentBuilder<S, T> command) {
+    public <S, T extends ArgumentBuilder<S, T>> T appendCommands(T command) {
         for (var entry : this.getEntries()) {
             command.then(buildCommand(entry));
         }

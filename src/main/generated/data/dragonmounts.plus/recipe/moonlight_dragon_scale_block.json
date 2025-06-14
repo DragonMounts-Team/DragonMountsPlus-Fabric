@@ -1,6 +1,7 @@
 {
   "type": "minecraft:crafting_shaped",
   "category": "building",
+  "group": "dragonmounts.plus.dragon_scale_block",
   "key": {
     "#": "dragonmounts.plus:moonlight_dragon_scales"
   },

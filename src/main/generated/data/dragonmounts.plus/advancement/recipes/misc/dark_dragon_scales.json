@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "minecraft:dark_dragon_scales"
+        "recipe": "dragonmounts.plus:dark_dragon_scales"
       },
       "trigger": "minecraft:recipe_unlocked"
     }
@@ -26,7 +26,7 @@
   ],
   "rewards": {
     "recipes": [
-      "minecraft:dark_dragon_scales"
+      "dragonmounts.plus:dark_dragon_scales"
     ]
   }
 }

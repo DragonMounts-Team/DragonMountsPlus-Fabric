@@ -67,7 +67,7 @@ public class BreathNodeEntity extends Entity implements BreathNodeHost {
 
     @Override
     public EntityDimensions getDimensions(Pose pose) {
-        return super.getDimensions(pose).scale(this.node.getCurrentAABBcollisionSize());
+        return super.getDimensions(pose).scale(this.node.getCurrentCollisionSize());
     }
 
     /**

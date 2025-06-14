@@ -1,11 +1,11 @@
 {
   "parent": "minecraft:recipes/root",
   "criteria": {
-    "has_storm_dragon_scale_block": {
+    "has_netherite_ingot": {
       "conditions": {
         "items": [
           {
-            "items": "dragonmounts.plus:storm_dragon_scale_block"
+            "items": "#minecraft:netherite_tool_materials"
           }
         ]
       },
@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "dragonmounts.plus:storm_dragon_scales"
+        "recipe": "dragonmounts.plus:netherite_shears_from_smithing"
       },
       "trigger": "minecraft:recipe_unlocked"
     }
@@ -21,12 +21,12 @@
   "requirements": [
     [
       "has_the_recipe",
-      "has_storm_dragon_scale_block"
+      "has_netherite_ingot"
     ]
   ],
   "rewards": {
     "recipes": [
-      "dragonmounts.plus:storm_dragon_scales"
+      "dragonmounts.plus:netherite_shears_from_smithing"
     ]
   }
 }

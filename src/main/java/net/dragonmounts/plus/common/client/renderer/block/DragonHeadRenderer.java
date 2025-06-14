@@ -96,10 +96,9 @@ public enum DragonHeadRenderer implements BlockEntityRenderer<DragonHeadBlockEnt
             return CODEC;
         }
 
-        @Nullable
         @Override
-        public SpecialModelRenderer<?> bake(EntityModelSet models) {
-            return models == null ? null : new Special(this.animation, this.variant);
+        public SpecialModelRenderer<?> bake(@NotNull EntityModelSet models) {
+            return new Special(this.animation, this.variant);
         }
     }
 }

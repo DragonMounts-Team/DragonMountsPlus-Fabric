@@ -24,19 +24,13 @@ public class ClientConfig extends ConfigHolder {
         super(mod, file);
         var entries = new ObjectArrayList<ConfigEntry<?>>();
         entries.add(this.debug = config(this, "debug", false));
-        entries.add(this.cameraDistance = config(this, "cameraDistance")
-                .withTooltip("options.dragonmounts.plus.camera.tooltip")
-                .build(20.0)
-        );
-        entries.add(this.cameraOffset = config(this, "cameraOffset")
-                .withTooltip("options.dragonmounts.plus.camera.tooltip")
-                .build(0.0)
-        );
+        entries.add(this.cameraDistance = config(this, "cameraDistance", 20.0, 0.0, 64.0));
+        entries.add(this.cameraOffset = config(this, "cameraOffset", 0.0, -32.0, 32.0));
         entries.add(this.convergePitchAngle = config(this, "convergePitchAngle", true));
         entries.add(this.convergeYawAngle = config(this, "convergeYawAngle", true));
         entries.add(this.hoverState = config(this, "hoverState", true));
-        entries.add(this.toggleDescending = config(this, "toggleDescending").withName("key.dragonmounts.plus.descend").build(false));
-        entries.add(this.toggleBreathing = config(this, "toggleBreathing").withName("key.dragonmounts.plus.breathe").build(false));
+        entries.add(this.toggleDescending = config(this, "toggleDescending", "key.dragonmounts.plus.descend", false));
+        entries.add(this.toggleBreathing = config(this, "toggleBreathing", "key.dragonmounts.plus.breathe", false));
         entries.add(this.pauseOnWhistle = config(this, "pauseOnWhistle", true));
         this.entries = entries;
         this.local.load(this);

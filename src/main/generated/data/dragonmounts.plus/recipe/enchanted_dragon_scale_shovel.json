@@ -1,6 +1,7 @@
 {
   "type": "minecraft:crafting_shaped",
   "category": "equipment",
+  "group": "dragonmounts.plus.dragon_scale_shovel",
   "key": {
     "#": "#c:rods/wooden",
     "X": "dragonmounts.plus:enchanted_dragon_scales"

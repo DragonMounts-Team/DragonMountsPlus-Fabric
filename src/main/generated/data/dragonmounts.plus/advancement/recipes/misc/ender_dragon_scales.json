@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "minecraft:ender_dragon_scales"
+        "recipe": "dragonmounts.plus:ender_dragon_scales"
       },
       "trigger": "minecraft:recipe_unlocked"
     }
@@ -26,7 +26,7 @@
   ],
   "rewards": {
     "recipes": [
-      "minecraft:ender_dragon_scales"
+      "dragonmounts.plus:ender_dragon_scales"
     ]
   }
 }

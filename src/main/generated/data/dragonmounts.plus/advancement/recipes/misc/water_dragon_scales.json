@@ -3,7 +3,7 @@
   "criteria": {
     "has_the_recipe": {
       "conditions": {
-        "recipe": "minecraft:water_dragon_scales"
+        "recipe": "dragonmounts.plus:water_dragon_scales"
       },
       "trigger": "minecraft:recipe_unlocked"
     },
@@ -26,7 +26,7 @@
   ],
   "rewards": {
     "recipes": [
-      "minecraft:water_dragon_scales"
+      "dragonmounts.plus:water_dragon_scales"
     ]
   }
 }

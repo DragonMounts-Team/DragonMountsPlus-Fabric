@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "minecraft:sunlight_dragon_scale_block"
+        "recipe": "dragonmounts.plus:sunlight_dragon_scale_block"
       },
       "trigger": "minecraft:recipe_unlocked"
     }
@@ -26,7 +26,7 @@
   ],
   "rewards": {
     "recipes": [
-      "minecraft:sunlight_dragon_scale_block"
+      "dragonmounts.plus:sunlight_dragon_scale_block"
     ]
   }
 }

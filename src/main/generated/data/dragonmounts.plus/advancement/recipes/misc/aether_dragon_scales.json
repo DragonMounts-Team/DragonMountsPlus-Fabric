@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "minecraft:aether_dragon_scales"
+        "recipe": "dragonmounts.plus:aether_dragon_scales"
       },
       "trigger": "minecraft:recipe_unlocked"
     }
@@ -26,7 +26,7 @@
   ],
   "rewards": {
     "recipes": [
-      "minecraft:aether_dragon_scales"
+      "dragonmounts.plus:aether_dragon_scales"
     ]
   }
 }

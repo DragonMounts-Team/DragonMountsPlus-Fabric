@@ -1,6 +1,7 @@
 {
   "type": "minecraft:crafting_shaped",
   "category": "equipment",
+  "group": "dragonmounts.plus.dragon_scale_shield",
   "key": {
     "W": "dragonmounts.plus:water_dragon_scales",
     "X": "#c:ingots/iron"

@@ -108,12 +108,11 @@ public class DMEntityLootProvider extends SimpleFabricLootTableProvider {
         ).withPool(lootPool().setRolls(between(1.0F, 2.0F))
                 .add(lootTableItem(Items.BONE).apply(setCount(between(3.0F, 7.0F))))
         ));
-        this.makeLoot(output, DragonTypes.ZOMBIE, builder -> {
-            builder.withPool(lootPool().add(lootTableItem(Items.ROTTEN_FLESH)
-                    .apply(setCount(between(8.0F, 18.0F)))
-                    .apply(lootingMultiplier(this.future.join(), between(2.0F, 6.0F)))
-            ));
-        });
+        this.makeLoot(output, DragonTypes.ZOMBIE, builder -> builder.withPool(lootPool()
+                .add(lootTableItem(Items.ROTTEN_FLESH)
+                        .apply(setCount(between(8.0F, 18.0F)))
+                        .apply(lootingMultiplier(this.future.join(), between(2.0F, 6.0F)))))
+        );
         if (this.types.isEmpty()) return;
         for (var type : this.types) {
             LOGGER.error("Dragon with type {} has no loot table!", type.getId());

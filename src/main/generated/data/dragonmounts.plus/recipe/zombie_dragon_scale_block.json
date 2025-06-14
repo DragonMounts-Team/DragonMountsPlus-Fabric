@@ -1,6 +1,7 @@
 {
   "type": "minecraft:crafting_shaped",
   "category": "building",
+  "group": "dragonmounts.plus.dragon_scale_block",
   "key": {
     "#": "dragonmounts.plus:zombie_dragon_scales"
   },

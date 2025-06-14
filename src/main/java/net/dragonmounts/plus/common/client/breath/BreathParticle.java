@@ -86,7 +86,7 @@ public class BreathParticle extends TextureSheetParticle implements BreathNodeHo
         this.zo = this.z;
         this.lastQuadSize = this.quadSize;
         this.quadSize = this.getRenderSize();
-        float size = this.node.getCurrentAABBcollisionSize() * 0.2F;
+        float size = this.node.getCurrentCollisionSize() * 0.2F;
         this.setSize(size, size);
         if (this.removed) return;
         this.move(this.xd, this.yd, this.zd);

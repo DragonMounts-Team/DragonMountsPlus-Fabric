@@ -5,9 +5,9 @@ import static net.dragonmounts.plus.common.entity.breath.DragonBreathHelper.BREA
 
 public enum MouthState {
     IDLE(0.0F, 0),
-    ATTACKING(0.72F, 5),
+    ATTACKING(0.72F, 3),
     BREATHING(0.58F, BREATH_START_DURATION + BREATH_STOP_DURATION, BREATH_START_DURATION),
-    ROARING(0.67F, 4),
+    ROARING(0.67F, 5),
     EATING(0.25F, 2);
 
     public final float amplitude;

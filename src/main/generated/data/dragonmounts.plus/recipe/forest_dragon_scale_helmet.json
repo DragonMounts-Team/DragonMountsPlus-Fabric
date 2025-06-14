@@ -1,6 +1,7 @@
 {
   "type": "minecraft:crafting_shaped",
   "category": "equipment",
+  "group": "dragonmounts.plus.dragon_scale_helmet",
   "key": {
     "X": "dragonmounts.plus:forest_dragon_scales"
   },

@@ -52,6 +52,7 @@ import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Objects;
 import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -220,6 +221,18 @@ public class DragonType implements TooltipProvider, DragonTypified {
     @Override
     public void addToTooltip(Item.TooltipContext context, Consumer<Component> consumer, TooltipFlag flag) {
         consumer.accept(this.getName());
+    }
+
+    @Override
+    public boolean equals(Object other) {
+        return this == other || (
+                other instanceof DragonType that && Objects.equals(this.identifier, that.identifier)
+        );
+    }
+
+    @Override
+    public int hashCode() {
+        return this.identifier.hashCode();
     }
 
     @Override
