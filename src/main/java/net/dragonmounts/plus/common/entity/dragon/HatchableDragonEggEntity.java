@@ -1,6 +1,7 @@
 package net.dragonmounts.plus.common.entity.dragon;
 
 import net.dragonmounts.plus.common.api.DragonTypified;
+import net.dragonmounts.plus.common.api.DynamicAttributeEntity;
 import net.dragonmounts.plus.common.api.ScoreboardAccessor;
 import net.dragonmounts.plus.common.block.HatchableDragonEggBlock;
 import net.dragonmounts.plus.common.init.DMBlocks;
@@ -54,7 +55,7 @@ import java.util.UUID;
 import static net.dragonmounts.plus.common.util.math.MathUtil.TO_RAD_FACTOR;
 import static net.minecraft.resources.ResourceLocation.tryParse;
 
-public class HatchableDragonEggEntity extends LivingEntity implements DragonTypified.Mutable {
+public class HatchableDragonEggEntity extends LivingEntity implements DynamicAttributeEntity, DragonTypified.Mutable {
     public static ServerDragonEntity hatch(ServerLevel world, HatchableDragonEggEntity egg, DragonLifeStage stage) {
         return new ServerDragonEntity(world, (level, dragon) -> {
             CompoundTag data = egg.saveWithoutId(new CompoundTag());
@@ -92,8 +93,6 @@ public class HatchableDragonEggEntity extends LivingEntity implements DragonTypi
 
     public HatchableDragonEggEntity(EntityType<? extends HatchableDragonEggEntity> type, Level level) {
         super(type, level);
-        //noinspection DataFlowIssue
-        this.getAttribute(Attributes.MAX_HEALTH).setBaseValue(ServerConfig.INSTANCE.baseHealth.get());
     }
 
     public HatchableDragonEggEntity(Level level) {
@@ -424,5 +423,10 @@ public class HatchableDragonEggEntity extends LivingEntity implements DragonTypi
     @Override
     public final DragonType getDragonType() {
         return this.entityData.get(DATA_DRAGON_TYPE);
+    }
+
+    @Override
+    public AttributeSupplier getDynamicAttributes() {
+        return ServerConfig.INSTANCE.getDragonEggAttributes();
     }
 }

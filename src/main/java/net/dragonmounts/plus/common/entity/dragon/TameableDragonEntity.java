@@ -4,6 +4,7 @@ import com.mojang.logging.LogUtils;
 import net.dragonmounts.plus.common.api.AutoJumpRideable;
 import net.dragonmounts.plus.common.api.ConditionalShearable;
 import net.dragonmounts.plus.common.api.DragonTypified;
+import net.dragonmounts.plus.common.api.DynamicAttributeEntity;
 import net.dragonmounts.plus.common.client.ClientDragonEntity;
 import net.dragonmounts.plus.common.component.DragonFood;
 import net.dragonmounts.plus.common.entity.ai.control.DragonBodyControl;
@@ -78,6 +79,7 @@ public abstract class TameableDragonEntity extends TamableAnimal implements
         AutoJumpRideable,
         FlyingAnimal,
         Saddleable,
+        DynamicAttributeEntity,
         DragonTypified.Mutable {
     public static TameableDragonEntity construct(EntityType<? extends TameableDragonEntity> type, Level level) {
         return level instanceof ServerLevel server ? new ServerDragonEntity(type, server) : new ClientDragonEntity(type, level);
@@ -90,27 +92,21 @@ public abstract class TameableDragonEntity extends TamableAnimal implements
     public static AttributeSupplier.Builder createAttributes() {
         var config = ServerConfig.INSTANCE;
         return LivingEntity.createLivingAttributes()
-                .add(Attributes.MAX_HEALTH, config.baseHealth.get())
-                .add(Attributes.KNOCKBACK_RESISTANCE, 1.0)
-                .add(Attributes.FLYING_SPEED, BASE_AIR_SPEED)
-                .add(Attributes.MOVEMENT_SPEED, BASE_GROUND_SPEED)
-                .add(Attributes.ATTACK_DAMAGE, config.baseDamage.get())
-                .add(Attributes.ATTACK_KNOCKBACK)
-                .add(Attributes.SCALE, 1.0)
-                .add(Attributes.FOLLOW_RANGE, BASE_FOLLOW_RANGE)
                 .add(Attributes.ARMOR, config.baseArmor.get())
-                .add(Attributes.ARMOR_TOUGHNESS, BASE_TOUGHNESS)
-                .add(Attributes.JUMP_STRENGTH, 1.0)
-                .add(Attributes.TEMPT_RANGE, 16.0);
+                .add(Attributes.ARMOR_TOUGHNESS, config.baseArmorToughness.get())
+                .add(Attributes.ATTACK_DAMAGE, config.baseDamage.get())
+                .add(Attributes.MAX_HEALTH, config.baseHealth.get())
+                .add(Attributes.ATTACK_KNOCKBACK, config.baseKnockback.get())
+                .add(Attributes.KNOCKBACK_RESISTANCE, config.baseKnockbackResistance.get())
+                .add(Attributes.FOLLOW_RANGE, config.baseFollowRange.get())
+                .add(Attributes.MOVEMENT_SPEED, config.baseMovementSpeed.get())
+                .add(Attributes.FLYING_SPEED, config.baseFlyingSpeed.get())
+                .add(Attributes.SCALE, config.baseBodySize.get())
+                .add(Attributes.JUMP_STRENGTH, config.baseJumpStrength.get())
+                .add(Attributes.TEMPT_RANGE, config.baseTemptRange.get())
+                .add(Attributes.WATER_MOVEMENT_EFFICIENCY, config.baseWaterMovementEfficiency.get());
     }
 
-    // base attributes TODO config
-    public static final double BASE_GROUND_SPEED = 0.4;
-    public static final double BASE_AIR_SPEED = 0.25;
-    public static final double BASE_TOUGHNESS = 30.0D;
-    public static final double BASE_FOLLOW_RANGE = 64;
-    public static final double BASE_FOLLOW_RANGE_FLYING = BASE_FOLLOW_RANGE * 2;
-    public static final int HOME_RADIUS = 64;
     public static final double LIFTOFF_THRESHOLD = 10;
     protected static final Logger LOGGER = LogUtils.getLogger();
     // flags
@@ -120,7 +116,6 @@ public abstract class TameableDragonEntity extends TamableAnimal implements
     public static final byte ON_TAMING_FAIL = 6;
     // data value IDs
     private static final EntityDataAccessor<Boolean> DATA_FLYING = SynchedEntityData.defineId(TameableDragonEntity.class, EntityDataSerializers.BOOLEAN);
-    private static final EntityDataAccessor<Boolean> DATA_BOOSTING = SynchedEntityData.defineId(TameableDragonEntity.class, EntityDataSerializers.BOOLEAN);
     private static final EntityDataAccessor<Boolean> DATA_AGE_LOCKED = SynchedEntityData.defineId(TameableDragonEntity.class, EntityDataSerializers.BOOLEAN);
     private static final EntityDataAccessor<Boolean> DATA_HOVER_DISABLED = SynchedEntityData.defineId(TameableDragonEntity.class, EntityDataSerializers.BOOLEAN);
     private static final EntityDataAccessor<Boolean> DATA_BREATHING = SynchedEntityData.defineId(TameableDragonEntity.class, EntityDataSerializers.BOOLEAN);
@@ -212,12 +207,8 @@ public abstract class TameableDragonEntity extends TamableAnimal implements
         return this.entityData.get(DATA_FLYING);
     }
 
-    public final void setBoosting(boolean boosting) {
-        this.entityData.set(DATA_BOOSTING, boosting);
-    }
-
     public final float adjustSpeed(float speed) {
-        return this.entityData.get(DATA_BOOSTING) ? speed * 1.5F + 0.25F : speed;
+        return this.isSprinting() ? speed * 1.5F + 0.25F : speed;
     }
 
     public final void setHoverDisabled(boolean disabled) {
@@ -259,7 +250,6 @@ public abstract class TameableDragonEntity extends TamableAnimal implements
     protected void defineSynchedData(SynchedEntityData.Builder builder) {
         super.defineSynchedData(builder);
         builder.define(DATA_FLYING, false);
-        builder.define(DATA_BOOSTING, false);
         builder.define(DATA_SHEARED, false);
         builder.define(DATA_AGE_LOCKED, false);
         builder.define(DATA_HOVER_DISABLED, false);
@@ -364,7 +354,7 @@ public abstract class TameableDragonEntity extends TamableAnimal implements
         return this.getDragonType().locatePassenger(
                 this.getPassengers().indexOf(entity),
                 this.isInSittingPose()
-        ).scale(scale).yRot(-MathUtil.TO_RAD_FACTOR * this.yBodyRot);
+        ).scale(scale * MathUtil.MOJANG_MODEL_SCALE).yRot(-MathUtil.TO_RAD_FACTOR * this.yBodyRot);
     }
 
     @Override
@@ -685,5 +675,10 @@ public abstract class TameableDragonEntity extends TamableAnimal implements
     @Override
     public void writeClientSideData(AbstractContainerMenu menu, RegistryFriendlyByteBuf buffer) {
         buffer.writeVarInt(this.getId());
+    }
+
+    @Override
+    public AttributeSupplier getDynamicAttributes() {
+        return ServerConfig.INSTANCE.getDragonAttributes();
     }
 }

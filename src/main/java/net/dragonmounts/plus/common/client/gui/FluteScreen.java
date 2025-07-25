@@ -18,17 +18,17 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.UUID;
 
-public class DragonWhistleScreen extends Screen {
+public class FluteScreen extends Screen {
     private static final int BUTTON_SPACING = 8;
     private static final int BUTTON_WIDTH = 210;
-    private static final Component TITLE = Component.translatable("gui.dragonmounts.plus.dragon_whistle");
+    private static final Component TITLE = Component.translatable("gui.dragonmounts.plus.flute");
     private static final Component TELEPORT_TO_PLAYER = Component.translatable("button.dragonmounts.plus.teleport_to_player");
     private static final Component TOGGLE_SITING = Component.translatable("button.dragonmounts.plus.toggle_siting");
     private static final Component TOGGLE_FOLLOWING = Component.translatable("button.dragonmounts.plus.toggle_following");
     private final HeaderAndFooterLayout layout = new HeaderAndFooterLayout(this);
     public final UUID uuid;
 
-    public DragonWhistleScreen(UUID uuid) {
+    public FluteScreen(UUID uuid) {
         super(TITLE);
         this.uuid = uuid;
     }
@@ -66,7 +66,7 @@ public class DragonWhistleScreen extends Screen {
 
     @Override
     public boolean isPauseScreen() {
-        return ClientConfig.INSTANCE.pauseOnWhistle.get();
+        return ClientConfig.INSTANCE.pauseOnFluting.get();
     }
 
     public void teleportDragon(@Nullable Button ignored) {
@@ -74,10 +74,10 @@ public class DragonWhistleScreen extends Screen {
         if (this.minecraft.hitResult instanceof BlockHitResult hit) {
             ClientNetworkHandler.send(new TeleportDragonPayload(this.uuid, hit.getBlockPos()));
         } else {
-            this.minecraft.gui.setOverlayMessage(Component.translatable("message.dragonmounts.plus.whistle.invalid_pos"), false);
+            this.minecraft.gui.setOverlayMessage(Component.translatable("message.dragonmounts.plus.flute.invalid_pos"), false);
             var player = this.minecraft.player;
             if (player != null) {
-                player.clientLevel.playLocalSound(player, DMSounds.WHISTLE_BLOW_LONG, SoundSource.PLAYERS, 1.0F, 1.0F);
+                player.clientLevel.playLocalSound(player, DMSounds.FLUTE_BLOW_LONG, SoundSource.PLAYERS, 1.0F, 1.0F);
             }
         }
         this.onClose();

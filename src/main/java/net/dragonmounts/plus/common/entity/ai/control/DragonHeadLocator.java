@@ -81,12 +81,13 @@ public class DragonHeadLocator<T extends TameableDragonEntity> {
                 * Mth.lerp(this.sit, 1.0F, 0.2F)
                 // reduce rotation when on ground
                 * clampedSmoothLinear(1.0F, 0.5F, this.walk);
-        if (dragon.isBreathing()) {
+        if (!dragon.isBreathing()) {
             rotXFactor *= Mth.lerp(this.flutter, 0.2F, 1.0F);
         }
         float healthFactor = this.relativeHealth * this.ground;
         float speed = this.speed;
         float rotYFactor = lookRotY * MathUtil.TO_RAD_FACTOR * speed;
+        float speedFactor = 1.0F - speed;
         float base = this.animBase;
         for (int i = 0; i < NECK_SEGMENTS; ) {
             float posX = segment.posX, posY = segment.posY, posZ = segment.posZ;
@@ -94,7 +95,7 @@ public class DragonHeadLocator<T extends TameableDragonEntity> {
             float rotX = segment.rotX = Mth.cos(i * 0.45F + base)
                     * rotXFactor
                     // flex neck down when hovering
-                    + (1 - speed) * vertMulti
+                    + speedFactor * vertMulti
                     // lower neck on low health
                     - Mth.lerp(healthFactor, 0.0F, Mth.sin(vertMulti * MathUtil.PI * 0.9F) * 0.63F);
             // use looking yaw
@@ -111,7 +112,7 @@ public class DragonHeadLocator<T extends TameableDragonEntity> {
             segment.posZ = posZ - Mth.cos(lastRotY) * factor;
         }
         //final float HEAD_TILT_DURING_BREATH = -0.1F;
-        head.rotX = lookRotX * MathUtil.TO_RAD_FACTOR + (1 - speed); // + breath * HEAD_TILT_DURING_BREATH
+        head.rotX = lookRotX * MathUtil.TO_RAD_FACTOR + speedFactor; // + breath * HEAD_TILT_DURING_BREATH
         head.rotY = lastRotY;
         head.rotZ = 0.0F;
     }

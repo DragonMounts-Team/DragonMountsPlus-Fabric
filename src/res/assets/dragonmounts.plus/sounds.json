@@ -255,17 +255,17 @@
     ],
     "subtitle": "subtitles.entity.dragonmounts.plus.dragon_egg.crack"
   },
-  "item.whistle.blow.short": {
+  "item.flute.blow.short": {
     "sounds": [
-      "dragonmounts.plus:item/whistle_short"
+      "dragonmounts.plus:item/flute_short"
     ],
-    "subtitle": "subtitles.item.dragonmounts.plus.whistle.blow"
+    "subtitle": "subtitles.item.dragonmounts.plus.flute.blow"
   },
-  "item.whistle.blow.long": {
+  "item.flute.blow.long": {
     "sounds": [
-      "dragonmounts.plus:item/whistle_long"
+      "dragonmounts.plus:item/flute_long"
     ],
-    "subtitle": "subtitles.item.dragonmounts.plus.whistle.blow"
+    "subtitle": "subtitles.item.dragonmounts.plus.flute.blow"
   },
   "item.variation_orb.activate": {
     "sounds": [

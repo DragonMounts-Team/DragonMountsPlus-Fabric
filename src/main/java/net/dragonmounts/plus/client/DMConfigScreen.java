@@ -21,21 +21,21 @@ public class DMConfigScreen extends OptionsSubScreen {
             Options.genericValueLabel(component, Component.literal(String.format("%.2f", config)));
     public static final OptionInstance.CaptionBasedToString<Boolean> TOGGLE_STRINGIFIER;
 
-    public static <T> OptionInstance.TooltipSupplier<T> tooltip(ConfigEntry<T> entry) {
+    public static <T> OptionInstance.TooltipSupplier<T> tooltip(ConfigEntry entry) {
         var tooltip = Tooltip.create(Component.translatable(entry.tooltip));
         return ignored -> tooltip;
     }
 
     public static OptionInstance<Boolean> option(BooleanEntry entry) {
-        return new OptionInstance<>(entry.name, tooltip(entry), BOOLEAN_TO_STRING, BOOLEAN_VALUES, entry.get(), entry::modify);
+        return new OptionInstance<>(entry.name, tooltip(entry), BOOLEAN_TO_STRING, BOOLEAN_VALUES, entry.get(), entry::set);
     }
 
     public static OptionInstance<Boolean> toggle(BooleanEntry entry) {
-        return new OptionInstance<>(entry.name, tooltip(entry), TOGGLE_STRINGIFIER, BOOLEAN_VALUES, entry.get(), entry::modify);
+        return new OptionInstance<>(entry.name, tooltip(entry), TOGGLE_STRINGIFIER, BOOLEAN_VALUES, entry.get(), entry::set);
     }
 
     public static OptionInstance<Double> slider(DoubleEntry entry, DoubleRange range) {
-        return new OptionInstance<>(entry.name, tooltip(entry), X_2F_STRINGIFIER, range, entry.get(), entry::modify);
+        return new OptionInstance<>(entry.name, tooltip(entry), X_2F_STRINGIFIER, range, entry.get(), entry::set);
     }
 
     public DMConfigScreen(Screen lastScreen) {
@@ -50,7 +50,7 @@ public class DMConfigScreen extends OptionsSubScreen {
         this.list.addBig(slider(client.cameraOffset, new DoubleRange(-16.0F, 16.0F, 0.25F)));
         this.list.addSmall(
                 option(client.debug),
-                option(client.pauseOnWhistle),
+                option(client.pauseOnFluting),
                 toggle(client.toggleDescending),
                 //option(client.convergePitchAngle),
                 toggle(client.toggleBreathing)

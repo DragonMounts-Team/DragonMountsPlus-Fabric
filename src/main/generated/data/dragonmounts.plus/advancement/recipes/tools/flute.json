@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "dragonmounts.plus:whistle"
+        "recipe": "dragonmounts.plus:flute"
       },
       "trigger": "minecraft:recipe_unlocked"
     }
@@ -26,7 +26,7 @@
   ],
   "rewards": {
     "recipes": [
-      "dragonmounts.plus:whistle"
+      "dragonmounts.plus:flute"
     ]
   }
 }

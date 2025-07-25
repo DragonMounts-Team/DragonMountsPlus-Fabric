@@ -12,41 +12,64 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemUseAnimation;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.UUID;
 
-public class WhistleItem extends Item {
+public class FluteItem extends Item {
     public static @Nullable ServerDragonEntity getOrDeny(ServerPlayer player, UUID uuid) {
         if (player.serverLevel().getEntity(uuid) instanceof ServerDragonEntity dragon
                 && Relation.checkRelation(dragon, player).isTrusted
         ) return dragon;
-        player.sendSystemMessage(Component.translatable("message.dragonmounts.plus.whistle.failed"), true);
+        player.sendSystemMessage(Component.translatable("message.dragonmounts.plus.flute.failed"), true);
         return null;
     }
 
-    public WhistleItem(Properties props) {
+    public FluteItem(Properties props) {
         super(props);
     }
 
     @Override
+    public int getUseDuration(ItemStack stack, LivingEntity entity) {
+        return 1200;
+    }
+
+    @Override
     public InteractionResult interactLivingEntity(ItemStack stack, Player player, LivingEntity entity, InteractionHand hand) {
-        return player.isShiftKeyDown() ? InteractionResult.PASS : useWhistle(player, hand);
+        return player.isShiftKeyDown() ? InteractionResult.PASS : useFlute(player, hand);
     }
 
     @Override
     public InteractionResult use(Level level, Player player, InteractionHand hand) {
-        return useWhistle(player, hand);
+        return useFlute(player, hand);
     }
 
-    public static InteractionResult useWhistle(Player player, InteractionHand hand) {
+    /// @see net.minecraft.world.item.ItemUtils#startUsingInstantly(Level, Player, InteractionHand)
+    public static InteractionResult useFlute(Player player, InteractionHand hand) {
         var stack = player.getItemInHand(hand);
-        var sound = stack.get(DMDataComponents.WHISTLE_SOUND);
+        var sound = stack.get(DMDataComponents.FLUTE_SOUND);
         if (sound == null) return InteractionResult.PASS;
         if (player.isLocalPlayer()) {
-            ClientUtil.openWhistleScreen(sound.dragon());
+            ClientUtil.openFluteScreen(sound.dragon());
         }
-        return InteractionResult.SUCCESS;
+        player.startUsingItem(hand);
+        return InteractionResult.CONSUME;
+    }
+
+    @Override
+    public ItemStack finishUsingItem(ItemStack stack, Level level, LivingEntity entity) {
+        return stack;
+    }
+
+    @Override
+    public boolean releaseUsing(ItemStack stack, Level level, LivingEntity entity, int time) {
+        return true;
+    }
+
+    @Override
+    public ItemUseAnimation getUseAnimation(ItemStack stack) {
+        return stack.has(DMDataComponents.FLUTE_SOUND) ? ItemUseAnimation.TOOT_HORN : ItemUseAnimation.NONE;
     }
 }

@@ -21,7 +21,7 @@ public class DragonInventoryHandler extends AbstractContainerMenu {
     protected static final int PLAYER_HOTBAR_SIZE = PLAYER_INVENTORY_SIZE + 9;
     protected final DragonInventory inventory;
     public final TameableDragonEntity dragon;
-    public final WhistleSlot whistle;
+    public final FluteSlot flute;
     public final Player player;
 
     public DragonInventoryHandler(int id, Inventory playerInventory, TameableDragonEntity dragon) {
@@ -30,7 +30,7 @@ public class DragonInventoryHandler extends AbstractContainerMenu {
         this.dragon = dragon;
         this.player = playerInventory.player;
         dragonInventory.startOpen(this.player);
-        this.addSlot(this.whistle = new WhistleSlot(this, 8, 8));
+        this.addSlot(this.flute = new FluteSlot(this, 8, 8));
         this.addSlot(new ArmorSlot(SLOT_ARMOR_INDEX, 156, 36));
         this.addSlot(new ChestSlot(SLOT_CHEST_INDEX, 156, 54));
         this.addSlot(new SaddleSlot(SLOT_SADDLE_INDEX, 156, 18));
@@ -106,6 +106,11 @@ public class DragonInventoryHandler extends AbstractContainerMenu {
         }
 
         @Override
+        public boolean mayPickup(Player player) {
+            return !DragonInventoryHandler.this.dragon.hasControllingPassenger();
+        }
+
+        @Override
         public int getMaxStackSize() {
             return 1;
         }
@@ -175,7 +180,7 @@ public class DragonInventoryHandler extends AbstractContainerMenu {
 
         @Override
         public boolean isActive() {
-            return DragonInventoryHandler.this.dragon.hasChest();
+            return this.hasItem() || DragonInventoryHandler.this.dragon.hasChest();
         }
     }
 

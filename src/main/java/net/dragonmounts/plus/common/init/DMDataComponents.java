@@ -2,8 +2,8 @@ package net.dragonmounts.plus.common.init;
 
 import net.dragonmounts.plus.common.api.ArmorEffectSource;
 import net.dragonmounts.plus.common.component.DragonFood;
+import net.dragonmounts.plus.common.component.FluteSound;
 import net.dragonmounts.plus.common.component.ScoreboardInfo;
-import net.dragonmounts.plus.common.component.WhistleSound;
 import net.dragonmounts.plus.compat.registry.DragonType;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.network.chat.Component;
@@ -34,11 +34,11 @@ public class DMDataComponents {
             "scores",
             builder -> builder.persistent(ScoreboardInfo.CODEC)
     );
-    public static final DataComponentType<WhistleSound> WHISTLE_SOUND = registerComponent(
-            "whistle_sound",
+    public static final DataComponentType<FluteSound> FLUTE_SOUND = registerComponent(
+            "flute_sound",
             builder -> builder.cacheEncoding()
-                    .persistent(WhistleSound.CODEC)
-                    .networkSynchronized(WhistleSound.STREAM_CODEC)
+                    .persistent(FluteSound.CODEC)
+                    .networkSynchronized(FluteSound.STREAM_CODEC)
     );
 
     public static void init() {}

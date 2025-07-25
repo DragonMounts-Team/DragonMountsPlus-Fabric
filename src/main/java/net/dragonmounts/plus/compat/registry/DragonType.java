@@ -171,17 +171,12 @@ public class DragonType implements TooltipProvider, DragonTypified {
     }
 
     public Vec3 locatePassenger(int index, boolean sitting) {
-        double yOffset = sitting ? 2.125 : 2.875;
-        double yOffset2 = sitting ? 1.3125 : 1.5625; // maybe not needed
-        // dragon position is the middle of the model, and the saddle is on
-        // the shoulders, so move player forwards on Z axis relative to the
-        // dragon's rotation to fix that
         return switch (index) {
-            case 1 -> new Vec3(0.375, yOffset, 0.0625);
-            case 2 -> new Vec3(-0.375, yOffset, 0.0625);
-            case 3 -> new Vec3(1.0, yOffset2, 0.125);
-            case 4 -> new Vec3(-1.0, yOffset2, 0.125);
-            default -> new Vec3(0, yOffset, 1.375);
+            case 1 -> new Vec3(6.5, sitting ? 26.5 : 44.0, -10);
+            case 2 -> new Vec3(-6.5, sitting ? 26.5 : 44.0, -10);
+            case 3 -> new Vec3(12.0, sitting ? 10.5 : 28.0, -6.0);
+            case 4 -> new Vec3(-12.0, sitting ? 10.5 : 28.0, -6.0);
+            default -> new Vec3(0.0, sitting ? 29.0 : 46.5, 20.0);
         };
     }
 

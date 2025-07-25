@@ -12,6 +12,7 @@ import net.dragonmounts.plus.compat.platform.ServerNetworkHandler;
 import net.dragonmounts.plus.compat.registry.DragonType;
 import net.dragonmounts.plus.compat.registry.DragonVariant;
 import net.dragonmounts.plus.config.ClientConfig;
+import net.dragonmounts.plus.config.ConfigValue;
 import net.dragonmounts.plus.config.ServerConfig;
 import net.dragonmounts.plus.config.network.S2CBooleanConfigPayload;
 import net.dragonmounts.plus.config.network.S2CDoubleConfigPayload;
@@ -89,7 +90,7 @@ public class DragonMounts implements ModInitializer, ServerPlayConnectionEvents.
         registerGlobalReceiver(ToggleSittingByIDPayload.TYPE, ServerNetworkHandler::handleToggleSitting);
         registerGlobalReceiver(ToggleTrustPayload.TYPE, ServerNetworkHandler::handleToggleTrust);
         registerGlobalReceiver(ToggleFollowingPayload.TYPE, ServerNetworkHandler::handleToggleFollowing);
-        registerGlobalReceiver(RenameWhistlePayload.TYPE, ServerNetworkHandler::handleRenameWhistle);
+        registerGlobalReceiver(RenameFlutePayload.TYPE, ServerNetworkHandler::handleRenameFlute);
     }
 
     static void registerPayloads(PayloadTypeRegistry<RegistryFriendlyByteBuf> registry) {
@@ -106,7 +107,7 @@ public class DragonMounts implements ModInitializer, ServerPlayConnectionEvents.
         registry.register(ToggleSittingByIDPayload.TYPE, ToggleSittingByIDPayload.CODEC);
         registry.register(ToggleTrustPayload.TYPE, ToggleTrustPayload.CODEC);
         registry.register(ToggleFollowingPayload.TYPE, ToggleFollowingPayload.CODEC);
-        registry.register(RenameWhistlePayload.TYPE, RenameWhistlePayload.CODEC);
+        registry.register(RenameFlutePayload.TYPE, RenameFlutePayload.CODEC);
         registry.register(S2CSyncConfigPayload.TYPE, S2CSyncConfigPayload.CODEC);
         registry.register(S2CBooleanConfigPayload.TYPE, S2CBooleanConfigPayload.CODEC);
         registry.register(S2CDoubleConfigPayload.TYPE, S2CDoubleConfigPayload.CODEC);
@@ -122,7 +123,7 @@ public class DragonMounts implements ModInitializer, ServerPlayConnectionEvents.
     @Override
     public void onServerStarting(MinecraftServer server) {
         RUNNING_SERVER = server;
-        ServerConfig.INSTANCE.setSource(null);
+        ServerConfig.INSTANCE.getValues().forEach(ConfigValue::reset);
     }
 
     @Override

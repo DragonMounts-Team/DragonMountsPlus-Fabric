@@ -9,7 +9,7 @@ import static net.dragonmounts.plus.config.EntryBuilder.config;
 
 public class ClientConfig extends ConfigHolder {
     public static final ClientConfig INSTANCE = new ClientConfig(DragonMountsShared.NAMESPACE, "client.dat");
-    protected final ObjectArrayList<ConfigEntry<?>> entries;
+    protected final ObjectArrayList<ConfigValue<?>> values;
     public final BooleanEntry debug;
     public final DoubleEntry cameraDistance;
     public final DoubleEntry cameraOffset;
@@ -18,41 +18,31 @@ public class ClientConfig extends ConfigHolder {
     public final BooleanEntry hoverState;
     public final BooleanEntry toggleDescending;
     public final BooleanEntry toggleBreathing;
-    public final BooleanEntry pauseOnWhistle;
+    public final BooleanEntry pauseOnFluting;
 
     protected ClientConfig(String mod, String file) {
         super(mod, file);
-        var entries = new ObjectArrayList<ConfigEntry<?>>();
-        entries.add(this.debug = config(this, "debug", false));
-        entries.add(this.cameraDistance = config(this, "cameraDistance", 20.0, 0.0, 64.0));
-        entries.add(this.cameraOffset = config(this, "cameraOffset", 0.0, -32.0, 32.0));
-        entries.add(this.convergePitchAngle = config(this, "convergePitchAngle", true));
-        entries.add(this.convergeYawAngle = config(this, "convergeYawAngle", true));
-        entries.add(this.hoverState = config(this, "hoverState", true));
-        entries.add(this.toggleDescending = config(this, "toggleDescending", "key.dragonmounts.plus.descend", false));
-        entries.add(this.toggleBreathing = config(this, "toggleBreathing", "key.dragonmounts.plus.breathe", false));
-        entries.add(this.pauseOnWhistle = config(this, "pauseOnWhistle", true));
-        this.entries = entries;
-        this.local.load(this);
+        var values = new ObjectArrayList<ConfigValue<?>>();
+        values.add(this.debug = config("debug", false));
+        values.add(this.cameraDistance = config("cameraDistance", 20.0, 0.0, 64.0));
+        values.add(this.cameraOffset = config("cameraOffset", 0.0, -32.0, 32.0));
+        values.add(this.convergePitchAngle = config("convergePitchAngle", true));
+        values.add(this.convergeYawAngle = config("convergeYawAngle", true));
+        values.add(this.hoverState = config("hoverState", true));
+        values.add(this.toggleDescending = config("toggleDescending", "key.dragonmounts.plus.descend", false));
+        values.add(this.toggleBreathing = config("toggleBreathing", "key.dragonmounts.plus.breathe", false));
+        values.add(this.pauseOnFluting = config("pauseOnFluting", true));
+        this.values = values;
+        this.load();
     }
 
     @Override
-    public ConfigSource getSource() {
-        return this.local;
+    public Collection<ConfigValue<?>> getValues() {
+        return this.values;
     }
 
     @Override
-    public Collection<ConfigEntry<?>> getEntries() {
-        return this.entries;
-    }
-
-    @Override
-    public void save() {
-        this.local.save(this);
-    }
-
-    @Override
-    public void broadcast(ConfigEntry<?> entry) {}
+    public void broadcast(ConfigValue<?> entry) {}
 
     public static void init() {}
 }

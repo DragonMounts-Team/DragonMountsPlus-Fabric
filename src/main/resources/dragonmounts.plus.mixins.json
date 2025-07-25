@@ -4,6 +4,7 @@
   "package": "net.dragonmounts.plus.mixin",
   "compatibilityLevel": "JAVA_21",
   "mixins": [
+    "AxeItemMixin",
     "BredAnimalsTriggerMixin",
     "DebugPacketsMixin",
     "DragonEggBlockMixin",

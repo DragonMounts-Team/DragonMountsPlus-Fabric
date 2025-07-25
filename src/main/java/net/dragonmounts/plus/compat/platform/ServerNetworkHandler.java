@@ -5,7 +5,7 @@ import net.dragonmounts.plus.common.entity.dragon.ServerDragonEntity;
 import net.dragonmounts.plus.common.init.DMMemories;
 import net.dragonmounts.plus.common.init.DMSounds;
 import net.dragonmounts.plus.common.inventory.DragonInventoryHandler;
-import net.dragonmounts.plus.common.item.WhistleItem;
+import net.dragonmounts.plus.common.item.FluteItem;
 import net.dragonmounts.plus.common.network.c2s.*;
 import net.dragonmounts.plus.common.util.ArrayUtil;
 import net.dragonmounts.plus.common.util.EntityUtil;
@@ -42,29 +42,29 @@ public class ServerNetworkHandler {
         if (context.player().level().getEntity(payload.id()) instanceof ServerDragonEntity dragon) {
             boolean[] flags = ArrayUtil.readFlags(payload.flags());
             dragon.setShiftKeyDown(flags[0]);
-            dragon.setBoosting(flags[1]);
+            dragon.setSprinting(flags[1]);
             dragon.setBreathing(flags[2]);
         }
     }
 
     public static void handleTeleportDragon(TeleportDragonPayload payload, ServerPlayNetworking.Context context) {
         var player = context.player();
-        var dragon = WhistleItem.getOrDeny(player, payload.dragon());
+        var dragon = FluteItem.getOrDeny(player, payload.dragon());
         if (dragon == null) return;
         dragon.getBrain().eraseMemory(MemoryModuleType.ATTACK_TARGET);
         var pos = payload.pos();
         if (!EntityUtil.teleportToAround(dragon, pos.getX(), pos.getY(), pos.getZ())) {
-            player.sendSystemMessage(Component.translatable("message.dragonmounts.plus.whistle.invalid_pos"), true);
+            player.sendSystemMessage(Component.translatable("message.dragonmounts.plus.flute.invalid_pos"), true);
         }
-        player.level().playSound(null, player, DMSounds.WHISTLE_BLOW_LONG, SoundSource.PLAYERS, 1.0F, 1.0F);
+        player.level().playSound(null, player, DMSounds.FLUTE_BLOW_LONG, SoundSource.PLAYERS, 1.0F, 1.0F);
     }
 
     public static void handleToggleSitting(ToggleSittingByUUIDPayload payload, ServerPlayNetworking.Context context) {
         var player = context.player();
-        var dragon = WhistleItem.getOrDeny(player, payload.dragon());
+        var dragon = FluteItem.getOrDeny(player, payload.dragon());
         if (dragon == null) return;
         dragon.setOrderedToSit(!dragon.isOrderedToSit());
-        player.level().playSound(null, player, DMSounds.WHISTLE_BLOW_SHORT, SoundSource.PLAYERS, 1.0F, 1.0F);
+        player.level().playSound(null, player, DMSounds.FLUTE_BLOW_SHORT, SoundSource.PLAYERS, 1.0F, 1.0F);
     }
 
     public static void handleToggleSitting(ToggleSittingByIDPayload payload, ServerPlayNetworking.Context context) {
@@ -83,7 +83,7 @@ public class ServerNetworkHandler {
 
     public static void handleToggleFollowing(ToggleFollowingPayload payload, ServerPlayNetworking.Context context) {
         var player = context.player();
-        var dragon = WhistleItem.getOrDeny(player, payload.dragon());
+        var dragon = FluteItem.getOrDeny(player, payload.dragon());
         if (dragon == null) return;
         var brain = dragon.getBrain();
         if (brain.hasMemoryValue(DMMemories.DISABLED_FOLLOWING_OWNER)) {
@@ -95,12 +95,12 @@ public class ServerNetworkHandler {
                 brain.eraseMemory(MemoryModuleType.WALK_TARGET);
             }
         }
-        player.level().playSound(null, player, DMSounds.WHISTLE_BLOW_SHORT, SoundSource.PLAYERS, 1.0F, 1.0F);
+        player.level().playSound(null, player, DMSounds.FLUTE_BLOW_SHORT, SoundSource.PLAYERS, 1.0F, 1.0F);
     }
 
-    public static void handleRenameWhistle(RenameWhistlePayload payload, ServerPlayNetworking.Context context) {
+    public static void handleRenameFlute(RenameFlutePayload payload, ServerPlayNetworking.Context context) {
         if (context.player().containerMenu instanceof DragonInventoryHandler handler) {
-            handler.whistle.applyName(payload.name());
+            handler.flute.applyName(payload.name());
         }
     }
 }

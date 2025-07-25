@@ -39,7 +39,6 @@ import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.Brain;
-import net.minecraft.world.entity.ai.attributes.AttributeMap;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.navigation.PathNavigation;
@@ -65,13 +64,11 @@ public class ServerDragonEntity extends TameableDragonEntity {
 
     public ServerDragonEntity(EntityType<? extends TameableDragonEntity> type, ServerLevel level) {
         super(type, level);
-        this.resetAttributes();
         this.setLifeStage(DragonLifeStage.ADULT, true, false);
     }
 
     public ServerDragonEntity(ServerLevel level, BiConsumer<ServerLevel, ServerDragonEntity> init) {
         super(DMEntities.TAMEABLE_DRAGON.get(), level);
-        this.resetAttributes();
         init.accept(level, this);
         if (this.stage != null) return;
         this.setLifeStage(DragonLifeStage.ADULT, true, false);
@@ -85,15 +82,6 @@ public class ServerDragonEntity extends TameableDragonEntity {
     @Override
     public final Vec3 getHeadRelativeOffset(float x, float y, float z) {
         return this.headLocator.getHeadRelativeOffset(x, y, z);
-    }
-
-    @SuppressWarnings("DataFlowIssue")
-    public void resetAttributes() {
-        var config = ServerConfig.INSTANCE;
-        AttributeMap map = this.getAttributes();
-        map.getInstance(Attributes.MAX_HEALTH).setBaseValue(config.baseHealth.get());
-        map.getInstance(Attributes.ATTACK_DAMAGE).setBaseValue(config.baseDamage.get());
-        map.getInstance(Attributes.ARMOR).setBaseValue(config.baseArmor.get());
     }
 
     @Override
@@ -377,6 +365,7 @@ public class ServerDragonEntity extends TameableDragonEntity {
         addOrUpdateTransientModifier(attributes, Attributes.MAX_HEALTH, modifier);
         addOrUpdateTransientModifier(attributes, Attributes.ATTACK_DAMAGE, modifier);
         addOrUpdateTransientModifier(attributes, Attributes.ARMOR, stage.makeModifier(ServerConfig.INSTANCE.baseArmor.get(), AttributeModifier.Operation.ADD_VALUE));
+        addOrUpdateTransientModifier(attributes, Attributes.STEP_HEIGHT, stage.makeModifier(ServerConfig.INSTANCE.baseStepHeight.get(), AttributeModifier.Operation.ADD_VALUE));
         this.setHealth(health * this.getMaxHealth());
         if (this.stage == stage) return;
         this.stage = stage;

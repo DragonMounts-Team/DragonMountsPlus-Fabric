@@ -10,6 +10,7 @@ import net.dragonmounts.plus.compat.registry.*;
 import net.fabricmc.fabric.api.client.datagen.v1.provider.FabricModelProvider;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.minecraft.client.color.item.Dye;
+import net.minecraft.client.color.item.ItemTintSource;
 import net.minecraft.client.data.models.BlockModelGenerators;
 import net.minecraft.client.data.models.ItemModelGenerators;
 import net.minecraft.client.data.models.model.*;
@@ -71,7 +72,7 @@ public class DMModelProvider extends FabricModelProvider {
 
     @Override
     public void generateItemModels(ItemModelGenerators gen) {
-        gen.generateItemWithTintedOverlay(DMItems.WHISTLE.get(), "_string", new Dye(-1));
+        generateFlute(gen, DMItems.FLUTE.get());
         generateFlatItem(gen, DMItems.AMULET);
         generateFlatItem(gen, DMItems.IRON_DRAGON_ARMOR);
         generateFlatItem(gen, DMItems.GOLDEN_DRAGON_ARMOR);
@@ -121,6 +122,16 @@ public class DMModelProvider extends FabricModelProvider {
 
     public static void generateSpawnEgg(ItemModelGenerators gen, ItemHolder<?> item, int primaryColor, int secondaryColor) {
         gen.generateSpawnEgg(item.get(), primaryColor, secondaryColor);
+    }
+
+    public static void generateFlute(ItemModelGenerators gen, Item flute) {
+        var tints = new ItemTintSource[]{constantTint(-1), new Dye(-1)};
+        gen.generateBooleanDispatch(
+                flute,
+                isUsingItem(),
+                tintedModel(getModelLocation(flute, "_playing"), tints),
+                tintedModel(gen.generateLayeredItem(flute, getItemTexture(flute), getItemTexture(flute, "_string")), tints)
+        );
     }
 
     /**

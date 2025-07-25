@@ -19,32 +19,32 @@ import net.minecraft.world.item.component.DyedItemColor;
 import java.util.Optional;
 import java.util.UUID;
 
-public record WhistleSound(
+public record FluteSound(
         UUID dragon,
         Component name,
         Optional<UUID> owner,
         Optional<DragonLifeStage> stage
 ) {
-    public static final Codec<WhistleSound> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-            UUIDUtil.CODEC.fieldOf("Dragon").forGetter(WhistleSound::dragon),
-            ComponentSerialization.CODEC.optionalFieldOf("Name", Component.empty()).forGetter(WhistleSound::name),
-            UUIDUtil.CODEC.optionalFieldOf("Owner").forGetter(WhistleSound::owner),
-            DragonLifeStage.CODEC.optionalFieldOf("Stage").forGetter(WhistleSound::stage)
-    ).apply(instance, WhistleSound::new));
-    public static final StreamCodec<RegistryFriendlyByteBuf, WhistleSound> STREAM_CODEC = StreamCodec.composite(
+    public static final Codec<FluteSound> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+            UUIDUtil.CODEC.fieldOf("Dragon").forGetter(FluteSound::dragon),
+            ComponentSerialization.CODEC.optionalFieldOf("Name", Component.empty()).forGetter(FluteSound::name),
+            UUIDUtil.CODEC.optionalFieldOf("Owner").forGetter(FluteSound::owner),
+            DragonLifeStage.CODEC.optionalFieldOf("Stage").forGetter(FluteSound::stage)
+    ).apply(instance, FluteSound::new));
+    public static final StreamCodec<RegistryFriendlyByteBuf, FluteSound> STREAM_CODEC = StreamCodec.composite(
             UUIDUtil.STREAM_CODEC,
-            WhistleSound::dragon,
+            FluteSound::dragon,
             ComponentSerialization.STREAM_CODEC,
-            WhistleSound::name,
+            FluteSound::name,
             UUIDUtil.STREAM_CODEC.apply(ByteBufCodecs::optional),
-            WhistleSound::owner,
+            FluteSound::owner,
             DragonLifeStage.STREAM_CODEC.apply(ByteBufCodecs::optional),
-            WhistleSound::stage,
-            WhistleSound::new
+            FluteSound::stage,
+            FluteSound::new
     );
 
-    public static void bindWhistle(ItemStack stack, TameableDragonEntity dragon, Player player) {
-        stack.set(DMDataComponents.WHISTLE_SOUND, new WhistleSound(
+    public static void bindFlute(ItemStack stack, TameableDragonEntity dragon, Player player) {
+        stack.set(DMDataComponents.FLUTE_SOUND, new FluteSound(
                 dragon.getUUID(),
                 dragon.getName(),
                 Optional.of(player.getUUID()),

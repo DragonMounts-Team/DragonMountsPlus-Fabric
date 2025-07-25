@@ -8,6 +8,7 @@ import static net.dragonmounts.plus.common.DragonMountsShared.makeId;
 
 public interface DMItemTags {
     TagKey<Item> DRAGON_EGGS = create("dragon_eggs");
+    TagKey<Item> DRAGON_HEADS = create("dragon_heads");
     TagKey<Item> DRAGON_SCALE_BLOCKS = create("dragon_scale_blocks");
     TagKey<Item> DRAGON_SCALE_BOWS = create("dragon_scale_bows");
     TagKey<Item> DRAGON_SCALE_SHIELDS = create("dragon_scale_shields");

@@ -1,6 +1,6 @@
 package net.dragonmounts.plus.common.client;
 
-import net.dragonmounts.plus.common.client.gui.DragonWhistleScreen;
+import net.dragonmounts.plus.common.client.gui.FluteScreen;
 import net.dragonmounts.plus.common.entity.dragon.DragonModelContracts;
 import net.dragonmounts.plus.common.util.Segment;
 import net.minecraft.client.Minecraft;
@@ -27,8 +27,8 @@ public class ClientUtil {
         return Minecraft.getInstance().level;
     }
 
-    public static void openWhistleScreen(UUID uuid) {
-        Minecraft.getInstance().setScreen(new DragonWhistleScreen(uuid));
+    public static void openFluteScreen(UUID uuid) {
+        Minecraft.getInstance().setScreen(new FluteScreen(uuid));
     }
 
     public static PartPose scaledPose(float scaleX, float scaleY, float scaleZ) {

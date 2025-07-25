@@ -194,8 +194,8 @@ public class DMArmorEffects {
         @Override
         public List<Component> getDescription() {
             var tooltips = new ObjectArrayList<Component>();
-            tooltips.add(this.description);
             tooltips.add(FISHING_LUCK);
+            tooltips.add(this.description);
             return tooltips;
         }
     });
@@ -257,8 +257,8 @@ public class DMArmorEffects {
         @Override
         public List<Component> getDescription() {
             var tooltips = new ObjectArrayList<Component>();
-            tooltips.add(this.description);
             tooltips.add(FISHING_LUCK);
+            tooltips.add(this.description);
             return tooltips;
         }
     });

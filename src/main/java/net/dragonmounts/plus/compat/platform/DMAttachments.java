@@ -1,7 +1,7 @@
 package net.dragonmounts.plus.compat.platform;
 
-import net.dragonmounts.plus.common.capability.WhistleHolder;
-import net.dragonmounts.plus.common.inventory.WhistleHolderImpl;
+import net.dragonmounts.plus.common.capability.FluteHolder;
+import net.dragonmounts.plus.common.inventory.FluteHolderImpl;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentRegistry;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentTarget;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
@@ -11,11 +11,11 @@ import static net.dragonmounts.plus.common.DragonMountsShared.makeId;
 
 @SuppressWarnings("UnstableApiUsage")
 public class DMAttachments {
-    public static final AttachmentType<WhistleHolder> WHISTLE_HOLDER = AttachmentRegistry.create(
-            makeId("whistle_holder"),
+    public static final AttachmentType<FluteHolder> FLUTE_HOLDER = AttachmentRegistry.create(
+            makeId("flute_holder"),
             builder -> builder.copyOnDeath()
-                    .initializer(WhistleHolderImpl::new)
-                    .persistent(ItemStack.OPTIONAL_CODEC.xmap(WhistleHolderImpl::of, WhistleHolder::getWhistle))
+                    .initializer(FluteHolderImpl::new)
+                    .persistent(ItemStack.OPTIONAL_CODEC.xmap(FluteHolderImpl::of, FluteHolder::getFlute))
     );
 
     public static <T> boolean has(AttachmentTarget host, AttachmentType<T> type) {

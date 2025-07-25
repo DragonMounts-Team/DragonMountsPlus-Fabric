@@ -1,20 +1,17 @@
 package net.dragonmounts.plus.mixin;
 
+import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import net.dragonmounts.plus.common.capability.ArmorEffectManager.Provider;
 import net.dragonmounts.plus.common.capability.ArmorEffectManagerImpl;
 import net.dragonmounts.plus.common.init.DMArmorEffects;
 import net.dragonmounts.plus.common.item.DragonScaleShieldItem;
 import net.dragonmounts.plus.common.network.s2c.ArmorRipostePayload;
-import net.dragonmounts.plus.common.util.EntityUtil;
 import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.sounds.SoundEvents;
 import net.minecraft.stats.Stat;
-import net.minecraft.stats.Stats;
-import net.minecraft.util.Mth;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.EntitySelector;
@@ -54,7 +51,7 @@ public abstract class PlayerEntityMixin extends LivingEntity implements Provider
         this.dragonmounts$plus$manager.tick();
     }
 
-    @Inject(method = "readAdditionalSaveData", at = @At("TAIL"))
+    @Inject(method = "addAdditionalSaveData", at = @At("TAIL"))
     public void saveCooldown(CompoundTag tag, CallbackInfo info) {
         var data = this.dragonmounts$plus$manager.saveNBT();
         if (data.isEmpty()) return;
@@ -68,35 +65,16 @@ public abstract class PlayerEntityMixin extends LivingEntity implements Provider
         this.dragonmounts$plus$manager.readNBT(tag.getCompound("ForgeCaps").getCompound(DATA_PARAMETER_KEY));
     }
 
-    @Inject(method = "hurtCurrentlyUsedShield", at = @At("HEAD"))
-    public void hurtDragonScaleShield(float amount, CallbackInfo info) {
-        if (this.useItem.getItem() instanceof DragonScaleShieldItem shield) {
-            if (!this.level().isClientSide) {
-                this.awardStat(Stats.ITEM_USED.get(shield));
-            }
-            if (amount >= 3.0F) {
-                var slot = EntityUtil.getSlotForHand(this.getUsedItemHand());
-                this.useItem.hurtAndBreak(1 + Mth.floor(amount), this, slot);
-                if (this.useItem.isEmpty()) {
-                    this.setItemSlot(slot, ItemStack.EMPTY);
-                    this.useItem = ItemStack.EMPTY;
-                    this.playSound(SoundEvents.SHIELD_BREAK, 0.8F, 0.8F + this.level().random.nextFloat() * 0.4F);
-                }
-            }
-        }
+    @ModifyExpressionValue(method = "hurtCurrentlyUsedShield", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/item/ItemStack;is(Lnet/minecraft/world/item/Item;)Z"))
+    public boolean isShield(boolean original) {
+        return original || this.useItem.getItem() instanceof DragonScaleShieldItem;
     }
 
-    @Inject(method = "disableShield", at = @At("HEAD"), cancellable = true)
-    public void disableDragonScaleShield(CallbackInfo info) {
-        if (this.useItem.getItem() instanceof DragonScaleShieldItem) {
-            this.getCooldowns().addCooldown(this.useItem, 100);
-            this.stopUsingItem();
-            this.level().broadcastEntityEvent(this, (byte) 30);
-            info.cancel();
-        }
-    }
-
-    @Inject(method = "actuallyHurt", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/player/Player;setHealth(F)V"))
+    @Inject(method = "actuallyHurt", at = @At(
+            value = "INVOKE",
+            target = "Lnet/minecraft/world/entity/player/Player;setHealth(F)V",
+            shift = At.Shift.AFTER
+    ))
     public void riposte(ServerLevel level, DamageSource damageSource, float amount, CallbackInfo info) {
         var ice = DMArmorEffects.ICE;
         var nether = DMArmorEffects.NETHER;

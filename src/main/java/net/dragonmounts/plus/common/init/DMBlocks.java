@@ -16,12 +16,9 @@ import net.minecraft.world.level.block.state.properties.NoteBlockInstrument;
 import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.level.material.PushReaction;
 
-import java.util.function.ToIntFunction;
-
 import static net.dragonmounts.plus.compat.registry.BlockHolder.registerBlock;
 
 public class DMBlocks {
-    private static final ToIntFunction<BlockState> DRAGON_EGG_LUMINANCE = state -> 1;
     public static final ImmutableList<BlockHolder<HatchableDragonEggBlock>> BUILTIN_DRAGON_EGGS;
     public static final ImmutableList<BlockHolder<DragonScaleBlock>> BUILTIN_DRAGON_SCALE_BLOCKS;
     public static final BlockHolder<DragonCoreBlock> DRAGON_CORE = registerBlock("dragon_core", props -> {
@@ -95,7 +92,6 @@ public class DMBlocks {
     static HatchableDragonEggBlock makeDragonEgg(DragonType type, BlockBehaviour.Properties props) {
         var block = new HatchableDragonEggBlock(type, props.strength(0.0F, 9.0F)
                 .mapColor(type.scaleColor)
-                .lightLevel(DRAGON_EGG_LUMINANCE)
                 .noOcclusion()
         );
         type.bindInstance(HatchableDragonEggBlock.class, block);
@@ -106,8 +102,7 @@ public class DMBlocks {
         var block = new DragonScaleBlock(type, props.strength(4.0F, 20.0F)
                 .mapColor(type.scaleColor)
                 .sound(SoundType.METAL)
-                .lightLevel(DRAGON_EGG_LUMINANCE)
-                .noOcclusion()
+                .requiresCorrectToolForDrops()
         );
         type.bindInstance(DragonScaleBlock.class, block);
         return block;
@@ -115,23 +110,57 @@ public class DMBlocks {
 
     static {
         var eggs = ImmutableList.<BlockHolder<HatchableDragonEggBlock>>builderWithExpectedSize(17);
-        eggs.add(AETHER_DRAGON_EGG = registerBlock("aether_dragon_egg", props -> makeDragonEgg(DragonTypes.AETHER, props)));
-        eggs.add(DARK_DRAGON_EGG = registerBlock("dark_dragon_egg", props -> makeDragonEgg(DragonTypes.DARK, props)));
-        eggs.add(ENCHANTED_DRAGON_EGG = registerBlock("enchanted_dragon_egg", props -> makeDragonEgg(DragonTypes.ENCHANTED, props)));
-        eggs.add(ENDER_DRAGON_EGG = registerBlock("ender_dragon_egg", props -> makeDragonEgg(DragonTypes.ENDER, props)));
-        eggs.add(FIRE_DRAGON_EGG = registerBlock("fire_dragon_egg", props -> makeDragonEgg(DragonTypes.FIRE, props)));
-        eggs.add(FOREST_DRAGON_EGG = registerBlock("forest_dragon_egg", props -> makeDragonEgg(DragonTypes.FOREST, props)));
-        eggs.add(ICE_DRAGON_EGG = registerBlock("ice_dragon_egg", props -> makeDragonEgg(DragonTypes.ICE, props)));
-        eggs.add(MOONLIGHT_DRAGON_EGG = registerBlock("moonlight_dragon_egg", props -> makeDragonEgg(DragonTypes.MOONLIGHT, props)));
-        eggs.add(NETHER_DRAGON_EGG = registerBlock("nether_dragon_egg", props -> makeDragonEgg(DragonTypes.NETHER, props)));
-        eggs.add(SCULK_DRAGON_EGG = registerBlock("sculk_dragon_egg", props -> makeDragonEgg(DragonTypes.SCULK, props)));
-        eggs.add(SKELETON_DRAGON_EGG = registerBlock("skeleton_dragon_egg", props -> makeDragonEgg(DragonTypes.SKELETON, props)));
-        eggs.add(STORM_DRAGON_EGG = registerBlock("storm_dragon_egg", props -> makeDragonEgg(DragonTypes.STORM, props)));
-        eggs.add(SUNLIGHT_DRAGON_EGG = registerBlock("sunlight_dragon_egg", props -> makeDragonEgg(DragonTypes.SUNLIGHT, props)));
-        eggs.add(TERRA_DRAGON_EGG = registerBlock("terra_dragon_egg", props -> makeDragonEgg(DragonTypes.TERRA, props)));
-        eggs.add(WATER_DRAGON_EGG = registerBlock("water_dragon_egg", props -> makeDragonEgg(DragonTypes.WATER, props)));
-        eggs.add(WITHER_DRAGON_EGG = registerBlock("wither_dragon_egg", props -> makeDragonEgg(DragonTypes.WITHER, props)));
-        eggs.add(ZOMBIE_DRAGON_EGG = registerBlock("zombie_dragon_egg", props -> makeDragonEgg(DragonTypes.ZOMBIE, props)));
+        eggs.add(AETHER_DRAGON_EGG = registerBlock("aether_dragon_egg", props ->
+                makeDragonEgg(DragonTypes.AETHER, props.lightLevel(DMBlocks::defaultEggLuminance))
+        ));
+        eggs.add(DARK_DRAGON_EGG = registerBlock("dark_dragon_egg", props ->
+                makeDragonEgg(DragonTypes.DARK, props.lightLevel(DMBlocks::defaultEggLuminance))
+        ));
+        eggs.add(ENCHANTED_DRAGON_EGG = registerBlock("enchanted_dragon_egg", props ->
+                makeDragonEgg(DragonTypes.ENCHANTED, props.lightLevel(DMBlocks::defaultEggLuminance))
+        ));
+        eggs.add(ENDER_DRAGON_EGG = registerBlock("ender_dragon_egg", props ->
+                makeDragonEgg(DragonTypes.ENDER, props.lightLevel(DMBlocks::defaultEggLuminance))
+        ));
+        eggs.add(FIRE_DRAGON_EGG = registerBlock("fire_dragon_egg", props ->
+                makeDragonEgg(DragonTypes.FIRE, props.lightLevel(DMBlocks::defaultEggLuminance))
+        ));
+        eggs.add(FOREST_DRAGON_EGG = registerBlock("forest_dragon_egg", props ->
+                makeDragonEgg(DragonTypes.FOREST, props.lightLevel(DMBlocks::defaultEggLuminance))
+        ));
+        eggs.add(ICE_DRAGON_EGG = registerBlock("ice_dragon_egg", props ->
+                makeDragonEgg(DragonTypes.ICE, props.lightLevel(DMBlocks::defaultEggLuminance))
+        ));
+        eggs.add(MOONLIGHT_DRAGON_EGG = registerBlock("moonlight_dragon_egg", props ->
+                makeDragonEgg(DragonTypes.MOONLIGHT, props.lightLevel(DMBlocks::defaultEggLuminance))
+        ));
+        eggs.add(NETHER_DRAGON_EGG = registerBlock("nether_dragon_egg", props ->
+                makeDragonEgg(DragonTypes.NETHER, props.lightLevel(state -> 3))
+        ));
+        eggs.add(SCULK_DRAGON_EGG = registerBlock("sculk_dragon_egg", props ->
+                makeDragonEgg(DragonTypes.SCULK, props.lightLevel(DMBlocks::defaultEggLuminance))
+        ));
+        eggs.add(SKELETON_DRAGON_EGG = registerBlock("skeleton_dragon_egg", props ->
+                makeDragonEgg(DragonTypes.SKELETON, props.lightLevel(DMBlocks::defaultEggLuminance))
+        ));
+        eggs.add(STORM_DRAGON_EGG = registerBlock("storm_dragon_egg", props ->
+                makeDragonEgg(DragonTypes.STORM, props.lightLevel(DMBlocks::defaultEggLuminance))
+        ));
+        eggs.add(SUNLIGHT_DRAGON_EGG = registerBlock("sunlight_dragon_egg", props ->
+                makeDragonEgg(DragonTypes.SUNLIGHT, props.lightLevel(DMBlocks::defaultEggLuminance))
+        ));
+        eggs.add(TERRA_DRAGON_EGG = registerBlock("terra_dragon_egg", props ->
+                makeDragonEgg(DragonTypes.TERRA, props.lightLevel(DMBlocks::defaultEggLuminance))
+        ));
+        eggs.add(WATER_DRAGON_EGG = registerBlock("water_dragon_egg", props ->
+                makeDragonEgg(DragonTypes.WATER, props.lightLevel(DMBlocks::defaultEggLuminance))
+        ));
+        eggs.add(WITHER_DRAGON_EGG = registerBlock("wither_dragon_egg", props ->
+                makeDragonEgg(DragonTypes.WITHER, props.lightLevel(DMBlocks::defaultEggLuminance))
+        ));
+        eggs.add(ZOMBIE_DRAGON_EGG = registerBlock("zombie_dragon_egg", props ->
+                makeDragonEgg(DragonTypes.ZOMBIE, props.lightLevel(DMBlocks::defaultEggLuminance))
+        ));
         BUILTIN_DRAGON_EGGS = eggs.build();
     }
 
@@ -153,6 +182,10 @@ public class DMBlocks {
         blocks.add(WATER_DRAGON_SCALE_BLOCK = registerBlock("water_dragon_scale_block", props -> makeDragonScaleBlock(DragonTypes.WATER, props)));
         blocks.add(ZOMBIE_DRAGON_SCALE_BLOCK = registerBlock("zombie_dragon_scale_block", props -> makeDragonScaleBlock(DragonTypes.ZOMBIE, props)));
         BUILTIN_DRAGON_SCALE_BLOCKS = blocks.build();
+    }
+
+    public static int defaultEggLuminance(BlockState ignored) {
+        return 1;
     }
 
     public static void init() {}

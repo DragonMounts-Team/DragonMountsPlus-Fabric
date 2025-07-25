@@ -473,8 +473,8 @@ public class DMItems {
             makeTieredShears(ToolMaterial.NETHERITE, props.fireResistant())
     );
     // Misc
-    public static final ItemHolder<WhistleItem> WHISTLE = ITEM_TAB.register("whistle", props ->
-            new WhistleItem(props.stacksTo(1))
+    public static final ItemHolder<FluteItem> FLUTE = ITEM_TAB.register("flute", props ->
+            new FluteItem(props.stacksTo(1))
     );
     public static final ItemHolder<VariationOrbItem> VARIATION_ORB = ITEM_TAB.register("variation_orb", props ->
             new VariationOrbItem(props.stacksTo(16))

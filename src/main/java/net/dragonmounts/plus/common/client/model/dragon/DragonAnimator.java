@@ -209,11 +209,10 @@ public class DragonAnimator extends DragonHeadLocator<ClientDragonEntity> {
         float speedMax = 0.05F;
         var motion = this.dragon.getDeltaMovement();
         float speedEnt = (float) (motion.x * motion.x + motion.z * motion.z);
-        float speedMulti = MathUtil.clamp(speedEnt / speedMax);
 
         // update main animation timer and depend timing speed on movement
         animTimer.add(flying
-                ? 0.070F - speedMulti * 0.035F // (2 - speedMulti) * 0.035F
+                ? 0.070F - MathUtil.clamp(speedEnt / speedMax) * 0.035F // (2 - speedMulti) * 0.035F
                 : 0.035F
         );
 
@@ -363,6 +362,9 @@ public class DragonAnimator extends DragonHeadLocator<ClientDragonEntity> {
         float flutterFactor = 0.04F * Mth.lerp(this.flutter, 0.3F, 1.0F);
         float ground = this.ground;
         float speedFactor = 2.0F - 2.0F * this.speed;
+        float rotXFactor = 1.0F - 0.2F * sit;
+        float magicSinFactor = Mth.sin(base * 0.2F) * Mth.sin(base * 0.37F) * 0.4F;// sit = 0.8 * stand
+        float sitFactor = 1.0F - sit;
         float rotYStand = 0;
         float rotXAir = 0;
         for (int i = 0; i < TAIL_SEGMENTS; ) {
@@ -372,16 +374,6 @@ public class DragonAnimator extends DragonHeadLocator<ClientDragonEntity> {
             float amp = 0.1F + i * 0.5F / TAIL_SEGMENTS;
 
             rotYStand = (rotYStand + Mth.sin(i * 0.45F + base * 0.5F)) * amp * 0.4F;
-            float rotX = ((
-                    i - TAIL_SEGMENTS * 0.6F) * -amp * 0.4F +
-                    (Mth.sin(base * 0.2F) * Mth.sin(base * 0.37F) * 0.4F * amp - 0.1F) * (1 - sit)
-            ) * (sit * -0.2F + 1.0F); // sit = 0.8 * stand
-            // interpolate between sitting and standing
-            float rotY = Mth.lerp(
-                    sit,
-                    rotYStand,
-                    Mth.sin(vertMulti * MathUtil.PI) * MathUtil.PI * 1.2F - 0.5F // curl to the left
-            );
             rotXAir -= Mth.sin(i * 0.45F + base) * flutterFactor;
 
             // body movement
@@ -390,10 +382,14 @@ public class DragonAnimator extends DragonHeadLocator<ClientDragonEntity> {
             float pitchOfs = pitchTrail.getClamped(partialTicks, 0, i + 1, limit) * 2;
 
             // interpolate between flying and grounded
-            rotX = segment.rotX = Mth.lerp(ground, rotXAir, rotX)
-                    + pitchOfs * MathUtil.TO_RAD_FACTOR
-                    - speedFactor * vertMulti;
-            rotY = segment.rotY = Mth.lerp(ground, 0.0F, rotY) + MathUtil.PI + yawOfs * MathUtil.TO_RAD_FACTOR;
+            float rotX = segment.rotX = Mth.lerp(ground, rotXAir, (
+                    (i - TAIL_SEGMENTS * 0.6F) * -amp * 0.4F + (magicSinFactor * amp - 0.1F) * sitFactor
+            ) * rotXFactor) + pitchOfs * MathUtil.TO_RAD_FACTOR - speedFactor * vertMulti;
+            float rotY = segment.rotY = Mth.lerp(ground, 0.0F, Mth.lerp(// interpolate between sitting and standing
+                    sit,
+                    rotYStand,
+                    Mth.sin(vertMulti * MathUtil.PI) * MathUtil.PI * 1.2F - 0.5F // curl to the left
+            )) + MathUtil.PI + yawOfs * MathUtil.TO_RAD_FACTOR;
 
             // update scale
             float scale = segment.scaleX = segment.scaleY = segment.scaleZ = Mth.lerp(vertMulti, 1.5F, 0.3F);

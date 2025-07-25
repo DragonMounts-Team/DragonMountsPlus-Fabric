@@ -44,8 +44,8 @@ public class DMSounds {
     public static final SoundEvent DRAGON_BREATH_STOP_WATER = create("entity.dragon.breath_stop.water");
     public static final SoundEvent DRAGON_EGG_CRACK = create("entity.dragon_egg.crack");
     public static final SoundEvent DRAGON_EGG_SHATTER = create("entity.dragon_egg.shatter");
-    public static final SoundEvent WHISTLE_BLOW_SHORT = create("item.whistle.blow.short");
-    public static final SoundEvent WHISTLE_BLOW_LONG = create("item.whistle.blow.long");
+    public static final SoundEvent FLUTE_BLOW_SHORT = create("item.flute.blow.short");
+    public static final SoundEvent FLUTE_BLOW_LONG = create("item.flute.blow.long");
     public static final SoundEvent VARIATION_ORB_ACTIVATE = create("item.variation_orb.activate");
 
     static SoundEvent create(final String name) {

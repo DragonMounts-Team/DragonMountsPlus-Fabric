@@ -11,68 +11,61 @@ import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.util.Mth;
 import org.jetbrains.annotations.Nullable;
 
-public class DoubleEntry extends ConfigEntry<Double> {
+import java.util.function.DoubleConsumer;
+
+public class DoubleEntry extends ConfigEntry implements ConfigValue<Double> {
     public static final double MIN_DOUBLE = -Double.MAX_VALUE;
     public final double fallback;
     public final double min;
     public final double max;
+    protected final DoubleConsumer onChanged;
     protected double saved;
     protected double value;
+    protected double effective;
 
     public DoubleEntry(
-            ConfigHolder holder,
             String key,
             String name,
             String tooltip,
             double fallback,
             double min,
-            double max
+            double max,
+            DoubleConsumer onChanged
     ) {
-        super(holder, key, name, tooltip);
+        super(key, name, tooltip);
         this.min = min;
         this.max = max;
-        this.value = this.saved = this.fallback = Mth.clamp(fallback, min, max);
+        this.onChanged = onChanged;
+        this.set(this.saved = this.fallback = fallback);
     }
 
     public double get() {
-        return this.value;
+        return this.effective;
     }
 
     public float getAsFloat() {
-        return (float) this.value;
+        return (float) this.effective;
+    }
+
+    public void override(double value) {
+        if (value == this.effective) return;
+        this.effective = value;
+        if (this.onChanged == null) return;
+        this.onChanged.accept(value);
     }
 
     @Override
-    public boolean modify(Double wrapped) {
+    public void override(Double value) {
+        this.override(value.doubleValue());
+    }
+
+    @Override
+    public boolean set(Double wrapped) {
         double value = Mth.clamp(wrapped, this.min, this.max);
+        this.override(value);
         if (this.value == value) return false;
         this.value = value;
         return true;
-    }
-
-    @Override
-    public boolean isChanged() {
-        return this.get() != this.saved;
-    }
-
-    @Override
-    public void setSaved() {
-        this.saved = this.value;
-    }
-
-    @Override
-    public boolean isDefault() {
-        return this.get() == this.fallback;
-    }
-
-    @Override
-    public Double parse(CommandContext<?> context, String name) {
-        return DoubleArgumentType.getDouble(context, name);
-    }
-
-    @Override
-    public ArgumentType<Double> getArgument() {
-        return DoubleArgumentType.doubleArg(this.min, this.max);
     }
 
     @Override
@@ -86,14 +79,52 @@ public class DoubleEntry extends ConfigEntry<Double> {
     }
 
     @Override
-    public void load(@Nullable Tag data) {
-        if (data instanceof NumericTag tag) {
-            this.modify(tag.getAsDouble());
-        }
+    public Double load(@Nullable Tag data) {
+        return data instanceof NumericTag ? ((NumericTag) data).getAsDouble() : this.fallback;
+    }
+
+    @Override
+    public boolean isChanged() {
+        return this.value != this.saved;
+    }
+
+    @Override
+    public boolean isDefault() {
+        return this.value == this.fallback;
+    }
+
+    @Override
+    public void reset() {
+        this.set(this.fallback);
+    }
+
+    @Override
+    public void revert() {
+        this.set(this.saved);
+    }
+
+    @Override
+    public void setSaved() {
+        this.saved = this.value;
     }
 
     @Override
     public CustomPacketPayload wrap(int id) {
         return new S2CDoubleConfigPayload(id, this.get());
+    }
+
+    @Override
+    public ArgumentType<Double> getArgument() {
+        return DoubleArgumentType.doubleArg(this.min, this.max);
+    }
+
+    @Override
+    public Double parse(CommandContext<?> context, String name) {
+        return DoubleArgumentType.getDouble(context, name);
+    }
+
+    @Override
+    public ConfigEntry getEntry() {
+        return this;
     }
 }

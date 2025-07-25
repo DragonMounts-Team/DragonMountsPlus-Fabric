@@ -1,27 +1,27 @@
 package net.dragonmounts.plus.common.inventory;
 
-import net.dragonmounts.plus.common.capability.WhistleHolder;
+import net.dragonmounts.plus.common.capability.FluteHolder;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
-public class WhistleHolderImpl implements WhistleHolder {
-    public static WhistleHolderImpl of(@NotNull ItemStack whistle) {
-        var holder = new WhistleHolderImpl();
-        holder.setWhistle(whistle);
+public class FluteHolderImpl implements FluteHolder {
+    public static FluteHolderImpl of(@NotNull ItemStack flute) {
+        var holder = new FluteHolderImpl();
+        holder.setFlute(flute);
         return holder;
     }
 
-    private @NotNull ItemStack whistle = ItemStack.EMPTY;
+    private @NotNull ItemStack flute = ItemStack.EMPTY;
 
     @Override
-    public ItemStack getWhistle() {
-        return this.whistle;
+    public ItemStack getFlute() {
+        return this.flute;
     }
 
     @Override
-    public void setWhistle(@NotNull ItemStack whistle) {
-        this.whistle = whistle;
+    public void setFlute(@NotNull ItemStack flute) {
+        this.flute = flute;
     }
 
     @Override
@@ -31,18 +31,18 @@ public class WhistleHolderImpl implements WhistleHolder {
 
     @Override
     public boolean isEmpty() {
-        return this.whistle.isEmpty();
+        return this.flute.isEmpty();
     }
 
     @Override
     public ItemStack getItem(int slot) {
-        return this.whistle;
+        return this.flute;
     }
 
     @Override
     public ItemStack removeItem(int slot, int amount) {
-        if (this.whistle.isEmpty()) return ItemStack.EMPTY;
-        ItemStack result = this.whistle.split(amount);
+        if (this.flute.isEmpty()) return ItemStack.EMPTY;
+        ItemStack result = this.flute.split(amount);
         if (!result.isEmpty()) {
             this.setChanged();
         }
@@ -51,14 +51,14 @@ public class WhistleHolderImpl implements WhistleHolder {
 
     @Override
     public ItemStack removeItemNoUpdate(int slot) {
-        ItemStack stack = this.whistle;
-        this.whistle = ItemStack.EMPTY;
+        ItemStack stack = this.flute;
+        this.flute = ItemStack.EMPTY;
         return stack;
     }
 
     @Override
     public void setItem(int slot, ItemStack stack) {
-        this.whistle = stack;
+        this.flute = stack;
     }
 
     @Override
@@ -76,15 +76,15 @@ public class WhistleHolderImpl implements WhistleHolder {
 
     @Override
     public void stopOpen(Player player) {
-        if (this.whistle.isEmpty()) return;
-        if (!player.addItem(this.whistle)) {
-            player.drop(this.whistle, false);
+        if (this.flute.isEmpty()) return;
+        if (!player.addItem(this.flute)) {
+            player.drop(this.flute, false);
         }
-        this.whistle = ItemStack.EMPTY;
+        this.flute = ItemStack.EMPTY;
     }
 
     @Override
     public void clearContent() {
-        this.setWhistle(ItemStack.EMPTY);
+        this.setFlute(ItemStack.EMPTY);
     }
 }

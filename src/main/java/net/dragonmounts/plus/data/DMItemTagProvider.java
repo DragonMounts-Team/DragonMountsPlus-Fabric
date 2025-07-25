@@ -2,6 +2,7 @@ package net.dragonmounts.plus.data;
 
 import net.dragonmounts.plus.common.init.DMBlocks;
 import net.dragonmounts.plus.common.init.DMItems;
+import net.dragonmounts.plus.common.init.DragonVariants;
 import net.dragonmounts.plus.common.item.*;
 import net.dragonmounts.plus.common.tag.DMBlockTags;
 import net.dragonmounts.plus.common.tag.DMItemTags;
@@ -28,9 +29,9 @@ public class DMItemTagProvider extends FabricTagProvider.ItemTagProvider {
         super(output, provider, block);
     }
 
-    protected FabricTagBuilder addToParent(FabricTagBuilder parent, TagKey<Item> child) {
+    protected TagAppender<Item> addToParent(FabricTagBuilder parent, TagKey<Item> child) {
         parent.addTag(child);
-        return this.getOrCreateTagBuilder(child);
+        return this.tag(child);
     }
 
     @Override
@@ -66,10 +67,10 @@ public class DMItemTagProvider extends FabricTagProvider.ItemTagProvider {
                 .add(Items.DEBUG_STICK)
                 .add(Items.BONE)
                 .add(Items.BAMBOO);
-        var head = this.getOrCreateTagBuilder(ItemTags.HEAD_ARMOR);
-        var chest = this.getOrCreateTagBuilder(ItemTags.CHEST_ARMOR);
-        var leg = this.getOrCreateTagBuilder(ItemTags.LEG_ARMOR);
-        var foot = this.getOrCreateTagBuilder(ItemTags.FOOT_ARMOR);
+        var head = this.tag(ItemTags.HEAD_ARMOR);
+        var chest = this.tag(ItemTags.CHEST_ARMOR);
+        var leg = this.tag(ItemTags.LEG_ARMOR);
+        var foot = this.tag(ItemTags.FOOT_ARMOR);
         Consumer<DragonScaleArmorSuit> addScaleSuit = suit -> {
             var info = suit.info;
             head.add(info.helmet());
@@ -122,6 +123,12 @@ public class DMItemTagProvider extends FabricTagProvider.ItemTagProvider {
         this.copy(DMBlockTags.DRAGON_EGGS, DMItemTags.DRAGON_EGGS);
         this.copy(DMBlockTags.DRAGON_SCALE_BLOCKS, DMItemTags.DRAGON_SCALE_BLOCKS);
         this.getOrCreateTagBuilder(ItemTags.PIGLIN_REPELLENTS).add(DMBlocks.DRAGON_CORE.asItem());
-        this.getOrCreateTagBuilder(ItemTags.PIGLIN_LOVED).add(DMItems.GOLDEN_DRAGON_ARMOR.key);
+        this.tag(ItemTags.PIGLIN_LOVED).add(DMItems.GOLDEN_DRAGON_ARMOR.key);
+        var skulls = this.getOrCreateTagBuilder(DMItemTags.DRAGON_HEADS).add(Items.DRAGON_HEAD);
+        for (var variant : DragonVariants.BUILTIN_VALUES) {
+            skulls.add(variant.head.asItem());
+        }
+        this.tag(ItemTags.SKULLS).addTag(DMItemTags.DRAGON_HEADS);
+        this.tag(ItemTags.NOTE_BLOCK_TOP_INSTRUMENTS).addTag(DMItemTags.DRAGON_HEADS);
     }
 }

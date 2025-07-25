@@ -1,17 +1,5 @@
 {
   "values": [
-    "#minecraft:leaves",
-    "#minecraft:flowers",
-    "#minecraft:saplings",
-    "#minecraft:crops",
-    "#minecraft:cave_vines",
-    "#minecraft:fire",
-    "#minecraft:smelts_to_glass",
-    "#minecraft:concrete_powder",
-    "#minecraft:snow",
-    "#c:glass_panes",
-    "#c:sands",
-    "#c:torches",
     "minecraft:short_grass",
     "minecraft:fern",
     "minecraft:dead_bush",
@@ -45,6 +33,18 @@
     "minecraft:chorus_plant",
     "minecraft:cobweb",
     "minecraft:sponge",
-    "minecraft:wet_sponge"
+    "minecraft:wet_sponge",
+    "#c:torches",
+    "#minecraft:leaves",
+    "#minecraft:flowers",
+    "#minecraft:saplings",
+    "#minecraft:crops",
+    "#minecraft:cave_vines",
+    "#minecraft:fire",
+    "#minecraft:smelts_to_glass",
+    "#minecraft:concrete_powder",
+    "#minecraft:snow",
+    "#c:glass_panes",
+    "#c:sands"
   ]
 }

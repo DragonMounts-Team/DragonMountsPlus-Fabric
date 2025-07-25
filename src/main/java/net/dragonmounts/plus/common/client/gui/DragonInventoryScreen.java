@@ -2,9 +2,9 @@ package net.dragonmounts.plus.common.client.gui;
 
 import net.dragonmounts.plus.common.client.ClientDragonEntity;
 import net.dragonmounts.plus.common.inventory.DragonInventoryHandler;
+import net.dragonmounts.plus.common.inventory.FluteSlot;
 import net.dragonmounts.plus.common.inventory.SlotListener;
-import net.dragonmounts.plus.common.inventory.WhistleSlot;
-import net.dragonmounts.plus.common.network.c2s.RenameWhistlePayload;
+import net.dragonmounts.plus.common.network.c2s.RenameFlutePayload;
 import net.dragonmounts.plus.common.network.c2s.ToggleSittingByIDPayload;
 import net.dragonmounts.plus.common.network.c2s.ToggleTrustPayload;
 import net.dragonmounts.plus.compat.platform.ClientNetworkHandler;
@@ -26,13 +26,13 @@ import net.minecraft.world.item.ItemStack;
 import java.util.function.Function;
 
 import static net.dragonmounts.plus.common.DragonMountsShared.makeId;
-import static net.dragonmounts.plus.common.inventory.WhistleSlot.getItemName;
+import static net.dragonmounts.plus.common.inventory.FluteSlot.getItemName;
 import static net.minecraft.client.gui.components.AbstractWidget.wrapDefaultNarrationMessage;
 
 /**
  * @see net.minecraft.client.gui.screens.inventory.HorseInventoryScreen
  */
-public class DragonInventoryScreen extends AbstractContainerScreen<DragonInventoryHandler> implements SlotListener<WhistleSlot> {
+public class DragonInventoryScreen extends AbstractContainerScreen<DragonInventoryHandler> implements SlotListener<FluteSlot> {
     private static final ResourceLocation TEXT_FIELD_SPRITE = ResourceLocation.withDefaultNamespace("container/anvil/text_field");
     private static final ResourceLocation INVENTORY = makeId("textures/gui/dragon_inventory.png");
     private static final ResourceLocation PANEL = makeId("textures/gui/dragon_panel.png");
@@ -61,7 +61,7 @@ public class DragonInventoryScreen extends AbstractContainerScreen<DragonInvento
     @Override
     protected void init() {
         super.init();
-        var whistle = this.menu.whistle;
+        var flute = this.menu.flute;
         int x = this.leftPos + 10, y = this.topPos;
         var name = this.name = new EditBox(this.font, x + 22, y + 12, 104, 12, MESSAGE);
         name.setCanLoseFocus(false);
@@ -72,8 +72,8 @@ public class DragonInventoryScreen extends AbstractContainerScreen<DragonInvento
         name.setResponder(this::onNameChanged);
         name.setValue("");
         this.addWidget(name);
-        name.setEditable(whistle.hasItem());
-        whistle.listener = this;
+        name.setEditable(flute.hasItem());
+        flute.listener = this;
         this.addWidget(this.trustToggle = new IconToggleButton(x, y + 194, TRUST_STATE, this::handleToggleTrust, toggle ->
                 wrapDefaultNarrationMessage(toggle.getState() ? CommonComponents.OPTION_ON : CommonComponents.OPTION_OFF)
         ));
@@ -123,19 +123,19 @@ public class DragonInventoryScreen extends AbstractContainerScreen<DragonInvento
     }
 
     private void onNameChanged(String name) {
-        var slot = this.menu.whistle;
+        var slot = this.menu.flute;
         var stack = slot.getItem();
         if (stack.isEmpty()) return;
         if (!stack.has(DataComponents.CUSTOM_NAME) && name.equals(stack.getHoverName().getString())) {
             name = "";
         }
         if (slot.applyName(name)) {
-            ClientNetworkHandler.send(new RenameWhistlePayload(name));
+            ClientNetworkHandler.send(new RenameFlutePayload(name));
         }
     }
 
     @Override
-    public void beforePlaceItem(WhistleSlot slot, ItemStack stack) {
+    public void beforePlaceItem(FluteSlot slot, ItemStack stack) {
         this.setFocused(this.name);
         if (stack.isEmpty()) {
             this.name.setEditable(false);
@@ -150,7 +150,7 @@ public class DragonInventoryScreen extends AbstractContainerScreen<DragonInvento
     }
 
     @Override
-    public void afterTakeItem(WhistleSlot slot, ItemStack stack) {
+    public void afterTakeItem(FluteSlot slot, ItemStack stack) {
         this.name.setValue("");
         this.name.setEditable(false);
     }
@@ -180,7 +180,7 @@ public class DragonInventoryScreen extends AbstractContainerScreen<DragonInvento
             graphics.blit(renderer, INVENTORY, left + 148, top + 73, 0, 140, 170, 55, 256, 256);
         }
         graphics.blit(renderer, PANEL, left, top, 0, 0, 147, this.imageHeight, 256, 256);
-        if (this.menu.whistle.hasItem()) {
+        if (this.menu.flute.hasItem()) {
             graphics.blitSprite(renderer, TEXT_FIELD_SPRITE, left + 29, top + 8, 110, 16);
         }
         left += 10;
