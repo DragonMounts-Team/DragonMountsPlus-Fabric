@@ -8,9 +8,12 @@ import net.dragonmounts.plus.config.DoubleEntry;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.OptionInstance;
 import net.minecraft.client.Options;
+import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.Tooltip;
+import net.minecraft.client.gui.layouts.LinearLayout;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.options.OptionsSubScreen;
+import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 
 import static net.minecraft.client.OptionInstance.BOOLEAN_TO_STRING;
@@ -21,7 +24,7 @@ public class DMConfigScreen extends OptionsSubScreen {
             Options.genericValueLabel(component, Component.literal(String.format("%.2f", config)));
     public static final OptionInstance.CaptionBasedToString<Boolean> TOGGLE_STRINGIFIER;
 
-    public static <T> OptionInstance.TooltipSupplier<T> tooltip(ConfigEntry entry) {
+    public static <T> OptionInstance.TooltipSupplier<T> tooltip(ConfigEntry<?> entry) {
         var tooltip = Tooltip.create(Component.translatable(entry.tooltip));
         return ignored -> tooltip;
     }
@@ -68,6 +71,16 @@ public class DMConfigScreen extends OptionsSubScreen {
     @Override
     public void removed() {
         ClientConfig.INSTANCE.save();
+    }
+
+    @Override
+    protected void addFooter() {
+        var layout = this.layout.addToFooter(LinearLayout.horizontal().spacing(8));
+        layout.addChild(Button.builder(CommonComponents.GUI_CANCEL, button -> {
+            ClientConfig.INSTANCE.getEntries().forEach(ConfigEntry::revert);
+            this.onClose();
+        }).build());
+        layout.addChild(Button.builder(CommonComponents.GUI_DONE, button -> this.onClose()).build());
     }
 
     @Override

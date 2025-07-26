@@ -15,10 +15,7 @@ import net.dragonmounts.plus.common.util.ArrayUtil;
 import net.dragonmounts.plus.compat.platform.ClientNetworkHandler;
 import net.dragonmounts.plus.compat.platform.DMScreenHandlers;
 import net.dragonmounts.plus.compat.registry.DragonVariant;
-import net.dragonmounts.plus.config.network.ConfigNetworkHandler;
-import net.dragonmounts.plus.config.network.S2CBooleanConfigPayload;
-import net.dragonmounts.plus.config.network.S2CDoubleConfigPayload;
-import net.dragonmounts.plus.config.network.S2CSyncConfigPayload;
+import net.dragonmounts.plus.config.ClientConfig;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -47,7 +44,6 @@ import net.minecraft.world.item.CreativeModeTabs;
 import org.jetbrains.annotations.Nullable;
 
 import static net.dragonmounts.plus.common.DragonMountsShared.makeId;
-import static net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking.registerGlobalReceiver;
 
 @Environment(EnvType.CLIENT)
 public class DragonMountsClient implements
@@ -59,10 +55,8 @@ public class DragonMountsClient implements
 
     @Override
     public void onInitializeClient() {
+        ClientConfig.init();
         ClientNetworkHandler.initClient();
-        registerGlobalReceiver(S2CSyncConfigPayload.TYPE, ConfigNetworkHandler::handleSyncConfig);
-        registerGlobalReceiver(S2CBooleanConfigPayload.TYPE, ConfigNetworkHandler::handleBooleanConfig);
-        registerGlobalReceiver(S2CDoubleConfigPayload.TYPE, ConfigNetworkHandler::handleDoubleConfig);
         DMKeyMappings.register(KeyBindingHelper::registerKeyBinding);
         TooltipComponentCallback.EVENT.register(this);
         ItemGroupEvents.modifyEntriesEvent(CreativeModeTabs.SPAWN_EGGS).register(entries ->

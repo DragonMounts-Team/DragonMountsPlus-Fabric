@@ -20,12 +20,14 @@ public class DMEntities {
             "dragon_egg",
             MobCategory.MISC,
             HatchableDragonEggEntity::construct,
+            null,
             builder -> builder.sized(0.875F, 1.0F).fireImmune()
     );
     public static final EntityHolder<TameableDragonEntity> TAMEABLE_DRAGON = registerLivingEntity(
             "dragon",
             MobCategory.CREATURE,
             TameableDragonEntity::construct,
+            null,
             builder -> builder.sized(3.0F, 2.5F).fireImmune()
     );
 

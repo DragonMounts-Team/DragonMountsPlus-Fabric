@@ -1,17 +1,13 @@
 package net.dragonmounts.plus.config;
 
 import com.mojang.brigadier.builder.ArgumentBuilder;
-import com.mojang.brigadier.builder.LiteralArgumentBuilder;
-import com.mojang.brigadier.builder.RequiredArgumentBuilder;
 import com.mojang.logging.LogUtils;
-import net.dragonmounts.plus.compat.platform.PlatformCompat;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.Util;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtAccounter;
 import net.minecraft.nbt.NbtIo;
 import net.minecraft.nbt.Tag;
-import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 
@@ -19,7 +15,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Collection;
 
-public abstract class ConfigHolder {
+public abstract class ConfigHolder<S> {
     private static final Logger LOGGER = LogUtils.getLogger();
     private final Path source;
 
@@ -32,8 +28,8 @@ public abstract class ConfigHolder {
         try {
             if (Files.isRegularFile(source)) {
                 var root = NbtIo.readCompressed(source, NbtAccounter.unlimitedHeap());
-                for (var value : this.getValues()) {
-                    read(value, root.get(value.getEntry().key));
+                for (var entry : this.getEntries()) {
+                    read(entry, root.get(entry.key));
                 }
             }
         } catch (Exception exception) {
@@ -67,50 +63,35 @@ public abstract class ConfigHolder {
         Util.ioPool().execute(this::loadSync);
     }
 
-    public abstract Collection<ConfigValue<?>> getValues();
+    public abstract Collection<ConfigEntry<?>> getEntries();
 
-    public abstract void broadcast(ConfigValue<?> entry);
+    protected abstract <T> ArgumentBuilder<S, ?> buildCommand(ConfigEntry<T> entry);
 
-    public <S, T extends ArgumentBuilder<S, T>> T appendCommands(T command) {
-        for (var entry : this.getValues()) {
+    public <T extends ArgumentBuilder<S, T>> T appendCommands(T command) {
+        for (var entry : this.getEntries()) {
             command.then(this.buildCommand(entry));
         }
         return command;
     }
 
-    <S, T> ArgumentBuilder<S, ?> buildCommand(ConfigValue<T> value) {
-        var entry = value.getEntry();
-        return LiteralArgumentBuilder.<S>literal(entry.key).executes(context -> PlatformCompat.sendSuccess(context.getSource(), () ->
-                Component.translatable("commands.dragonmounts.plus.config.query", value.getEntry().getDisplayName(), value.getAsString())
-        )).then(RequiredArgumentBuilder.<S, T>argument("value", value.getArgument()).executes(context -> {
-            if (value.set(value.parse(context, "value"))) {
-                this.save();
-                this.broadcast(value);
-            }
-            return PlatformCompat.sendSuccess(context.getSource(), () ->
-                    Component.translatable("commands.dragonmounts.plus.config.modify", value.getEntry().getDisplayName(), value.getAsString())
-            );
-        }));
+    public static <T> void read(ConfigEntry<T> entry, Tag data) {
+        entry.set(entry.load(data));
+        entry.setSaved();
     }
 
-    public static <T> void read(ConfigValue<T> value, Tag data) {
-        value.set(value.load(data));
-        value.setSaved();
-    }
-
-    public static @Nullable CompoundTag write(ConfigHolder holder, @Nullable CompoundTag exist) {
+    public static @Nullable CompoundTag write(ConfigHolder<?> holder, @Nullable CompoundTag exist) {
         boolean changed = false;
         boolean full = exist == null;
         var root = full ? new CompoundTag() : exist;
-        for (var value : holder.getValues()) {
-            if (full || value.isChanged()) {
+        for (var entry : holder.getEntries()) {
+            if (full || entry.isChanged()) {
                 changed = true;
-                if (value.isDefault()) {
-                    root.remove(value.getEntry().key);
+                if (entry.isDefault()) {
+                    root.remove(entry.key);
                 } else {
-                    root.put(value.getEntry().key, value.dump());
+                    root.put(entry.key, entry.dump());
                 }
-                value.setSaved();
+                entry.setSaved();
             }
         }
         return changed ? root : null;

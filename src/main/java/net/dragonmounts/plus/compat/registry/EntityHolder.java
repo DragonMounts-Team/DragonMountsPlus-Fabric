@@ -11,6 +11,7 @@ import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 
 import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 import static net.dragonmounts.plus.common.DragonMountsShared.makeKey;
 
@@ -31,9 +32,13 @@ public class EntityHolder<T extends Entity> extends ObjectHolder<EntityType<T>, 
             String name,
             MobCategory category,
             EntityType.EntityFactory<T> factory,
+            Supplier<AttributeSupplier.Builder> supplier,
             Consumer<EntityType.Builder<T>> init
     ) {
-        var builder = FabricEntityType.Builder.createLiving(factory, category, type -> type.defaultAttributes(AttributeSupplier::builder));
+        var builder = FabricEntityType.Builder.createLiving(factory, category, supplier == null
+                ? type -> type.defaultAttributes(AttributeSupplier::builder)
+                : type -> type.defaultAttributes(supplier)
+        );
         init.accept(builder);
         var key = makeKey(Registries.ENTITY_TYPE, name);
         return new EntityHolder<>(key, builder);

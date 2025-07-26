@@ -1,23 +1,27 @@
 package net.dragonmounts.plus.config;
 
 import com.google.common.collect.HashBiMap;
+import com.mojang.brigadier.builder.ArgumentBuilder;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.dragonmounts.plus.DragonMounts;
 import net.dragonmounts.plus.common.DragonMountsShared;
 import net.dragonmounts.plus.common.entity.dragon.HatchableDragonEggEntity;
 import net.dragonmounts.plus.common.entity.dragon.TameableDragonEntity;
 import net.dragonmounts.plus.compat.platform.ServerNetworkHandler;
-import net.dragonmounts.plus.config.network.S2CSyncConfigPayload;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.Commands;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 
 import java.util.Collection;
 
-import static net.dragonmounts.plus.config.EntryBuilder.config;
+import static net.dragonmounts.plus.config.EntryUtil.config;
+import static net.dragonmounts.plus.config.EntryUtil.register;
 
-public class ServerConfig extends ConfigHolder {
+public class ServerConfig extends ConfigHolder<CommandSourceStack> {
     public static final ServerConfig INSTANCE = new ServerConfig(DragonMountsShared.NAMESPACE, "server.dat");
-    protected final HashBiMap<ConfigValue<?>, Integer> entries;
+    protected final HashBiMap<ConfigEntry<?>, Integer> entries;
     public final BooleanEntry debug;
     public final BooleanEntry isEggPushable;
     public final BooleanEntry isEggOverridden;
@@ -43,25 +47,9 @@ public class ServerConfig extends ConfigHolder {
     private AttributeSupplier dragonAttributes;
     private AttributeSupplier dragonEggAttributes;
 
-    public AttributeSupplier getDragonAttributes() {
-        var attrs = this.dragonAttributes;
-        if (attrs == null) {
-            this.dragonAttributes = attrs = TameableDragonEntity.createAttributes().build();
-        }
-        return attrs;
-    }
-
-    public AttributeSupplier getDragonEggAttributes() {
-        var attrs = this.dragonEggAttributes;
-        if (attrs == null) {
-            this.dragonEggAttributes = attrs = HatchableDragonEggEntity.createAttributes().build();
-        }
-        return attrs;
-    }
-
     protected ServerConfig(String mod, String file) {
         super(mod, file);
-        var registry = HashBiMap.<ConfigValue<?>, Integer>create();
+        var registry = HashBiMap.<ConfigEntry<?>, Integer>create();
         register(registry, this.debug =
                 config("debug", false)
         );
@@ -132,12 +120,16 @@ public class ServerConfig extends ConfigHolder {
         this.load();
     }
 
-    public ConfigValue<?> getValue(int id) {
+    public ConfigEntry<?> getEntry(int id) {
         return this.entries.inverse().get(id);
     }
 
     @Override
-    public void broadcast(ConfigValue<?> entry) {
+    public Collection<ConfigEntry<?>> getEntries() {
+        return this.entries.keySet();
+    }
+
+    public void broadcast(ConfigEntry<?> entry) {
         var server = DragonMounts.getRunningServer();
         if (server == null) return;
         Integer id = this.entries.get(entry);
@@ -146,8 +138,34 @@ public class ServerConfig extends ConfigHolder {
     }
 
     @Override
-    public Collection<ConfigValue<?>> getValues() {
-        return this.entries.keySet();
+    protected <T> ArgumentBuilder<CommandSourceStack, ?> buildCommand(ConfigEntry<T> entry) {
+        return Commands.literal(entry.key).executes(context -> {
+            context.getSource().sendSuccess(() -> Component.translatable("commands.dragonmounts.plus.config.query", entry.getDisplayName(), entry.getAsString()), true);
+            return 1;
+        }).then(Commands.argument("value", entry.getArgument()).executes(context -> {
+            if (entry.set(entry.parse(context, "value"))) {
+                this.save();
+                this.broadcast(entry);
+            }
+            context.getSource().sendSuccess(() -> Component.translatable("commands.dragonmounts.plus.config.modify", entry.getDisplayName(), entry.getAsString()), true);
+            return 1;
+        }));
+    }
+
+    public AttributeSupplier getDragonAttributes() {
+        var attrs = this.dragonAttributes;
+        if (attrs == null) {
+            this.dragonAttributes = attrs = TameableDragonEntity.createAttributes().build();
+        }
+        return attrs;
+    }
+
+    public AttributeSupplier getDragonEggAttributes() {
+        var attrs = this.dragonEggAttributes;
+        if (attrs == null) {
+            this.dragonEggAttributes = attrs = HatchableDragonEggEntity.createAttributes().build();
+        }
+        return attrs;
     }
 
     public void sync(ServerPlayer player) {
@@ -156,10 +174,6 @@ public class ServerConfig extends ConfigHolder {
             entries.add(new S2CSyncConfigPayload.Entry(entry.getValue(), entry.getKey().dump()));
         }
         ServerNetworkHandler.sendTo(player, new S2CSyncConfigPayload(entries));
-    }
-
-    protected static void register(HashBiMap<ConfigValue<?>, Integer> registry, ConfigValue<?> value) {
-        registry.put(value, registry.size());
     }
 
     public void invalidateAttributes(double ignored) {

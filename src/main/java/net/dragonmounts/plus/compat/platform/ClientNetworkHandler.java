@@ -3,6 +3,7 @@ package net.dragonmounts.plus.compat.platform;
 import net.dragonmounts.plus.common.capability.ArmorEffectManager.Provider;
 import net.dragonmounts.plus.common.capability.ArmorEffectManagerImpl;
 import net.dragonmounts.plus.common.client.ClientDragonEntity;
+import net.dragonmounts.plus.common.client.ClientUtil;
 import net.dragonmounts.plus.common.client.model.dragon.MouthState;
 import net.dragonmounts.plus.common.component.DragonFood;
 import net.dragonmounts.plus.common.entity.dragon.DragonLifeStage;
@@ -10,14 +11,20 @@ import net.dragonmounts.plus.common.entity.dragon.HatchableDragonEggEntity;
 import net.dragonmounts.plus.common.network.s2c.*;
 import net.dragonmounts.plus.common.util.math.MathUtil;
 import net.dragonmounts.plus.compat.registry.CooldownCategory;
+import net.dragonmounts.plus.config.ConfigEntry;
+import net.dragonmounts.plus.config.S2CSyncConfigPayload;
+import net.dragonmounts.plus.config.ServerConfig;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.core.particles.ItemParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.nbt.ByteTag;
+import net.minecraft.nbt.DoubleTag;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 
+import static net.dragonmounts.plus.config.EntryUtil.override;
 import static net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking.registerGlobalReceiver;
 
 public class ClientNetworkHandler {
@@ -114,6 +121,30 @@ public class ClientNetworkHandler {
         }
     }
 
+    public static void handleSyncConfig(S2CSyncConfigPayload payload, ClientPlayNetworking.Context ignored) {
+        ServerConfig.INSTANCE.getEntries().forEach(ConfigEntry::reset);
+        if (ClientUtil.isRemoteServer()) {
+            for (var config : payload.entries()) {
+                var entry = ServerConfig.INSTANCE.getEntry(config.id());
+                if (entry == null) continue;
+                override(entry, config.value());
+            }
+        }
+    }
+
+    public static void handleBooleanConfig(BooleanConfigPayload payload, ClientPlayNetworking.Context ignored) {
+        var entry = ServerConfig.INSTANCE.getEntry(payload.id());
+        if (entry == null) return;
+        override(entry, ByteTag.valueOf(payload.value()));
+    }
+
+    public static void handleDoubleConfig(DoubleConfigPayload payload, ClientPlayNetworking.Context ignored) {
+        var entry = ServerConfig.INSTANCE.getEntry(payload.id());
+        if (entry == null) return;
+        override(entry, DoubleTag.valueOf(payload.value()));
+    }
+
+
     public static void initClient() {
         registerGlobalReceiver(SyncCooldownPayload.TYPE, ClientNetworkHandler::handleCooldownSync);
         registerGlobalReceiver(ArmorRipostePayload.TYPE, ClientNetworkHandler::handleArmorRiposte);
@@ -122,5 +153,8 @@ public class ClientNetworkHandler {
         registerGlobalReceiver(SyncDragonAgePayload.TYPE, ClientNetworkHandler::handleDragonSync);
         registerGlobalReceiver(FeedDragonPayload.TYPE, ClientNetworkHandler::handleFeedDragon);
         registerGlobalReceiver(SyncEggAgePayload.TYPE, ClientNetworkHandler::handleEggSync);
+        registerGlobalReceiver(S2CSyncConfigPayload.TYPE, ClientNetworkHandler::handleSyncConfig);
+        registerGlobalReceiver(BooleanConfigPayload.TYPE, ClientNetworkHandler::handleBooleanConfig);
+        registerGlobalReceiver(DoubleConfigPayload.TYPE, ClientNetworkHandler::handleDoubleConfig);
     }
 }

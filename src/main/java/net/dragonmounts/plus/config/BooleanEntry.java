@@ -3,14 +3,14 @@ package net.dragonmounts.plus.config;
 import com.mojang.brigadier.arguments.ArgumentType;
 import com.mojang.brigadier.arguments.BoolArgumentType;
 import com.mojang.brigadier.context.CommandContext;
-import net.dragonmounts.plus.config.network.S2CBooleanConfigPayload;
+import net.dragonmounts.plus.common.network.s2c.BooleanConfigPayload;
 import net.minecraft.nbt.ByteTag;
 import net.minecraft.nbt.NumericTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import org.jetbrains.annotations.Nullable;
 
-public class BooleanEntry extends ConfigEntry implements ConfigValue<Boolean> {
+public class BooleanEntry extends ConfigEntry<Boolean> {
     public final boolean fallback;
     protected boolean saved;
     protected boolean value;
@@ -46,7 +46,7 @@ public class BooleanEntry extends ConfigEntry implements ConfigValue<Boolean> {
 
     @Override
     public Tag dump() {
-        return ByteTag.valueOf(this.get());
+        return ByteTag.valueOf(this.value);
     }
 
     @Override
@@ -81,7 +81,7 @@ public class BooleanEntry extends ConfigEntry implements ConfigValue<Boolean> {
 
     @Override
     public CustomPacketPayload wrap(int id) {
-        return new S2CBooleanConfigPayload(id, this.get());
+        return new BooleanConfigPayload(id, this.get());
     }
 
     @Override
@@ -92,10 +92,5 @@ public class BooleanEntry extends ConfigEntry implements ConfigValue<Boolean> {
     @Override
     public Boolean parse(CommandContext<?> context, String name) {
         return BoolArgumentType.getBool(context, name);
-    }
-
-    @Override
-    public ConfigEntry getEntry() {
-        return this;
     }
 }

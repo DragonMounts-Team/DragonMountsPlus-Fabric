@@ -11,12 +11,9 @@ import net.dragonmounts.plus.compat.platform.DMScreenHandlers;
 import net.dragonmounts.plus.compat.platform.ServerNetworkHandler;
 import net.dragonmounts.plus.compat.registry.DragonType;
 import net.dragonmounts.plus.compat.registry.DragonVariant;
-import net.dragonmounts.plus.config.ClientConfig;
-import net.dragonmounts.plus.config.ConfigValue;
+import net.dragonmounts.plus.config.ConfigEntry;
+import net.dragonmounts.plus.config.S2CSyncConfigPayload;
 import net.dragonmounts.plus.config.ServerConfig;
-import net.dragonmounts.plus.config.network.S2CBooleanConfigPayload;
-import net.dragonmounts.plus.config.network.S2CDoubleConfigPayload;
-import net.dragonmounts.plus.config.network.S2CSyncConfigPayload;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
@@ -45,7 +42,6 @@ public class DragonMounts implements ModInitializer, ServerPlayConnectionEvents.
     }
 
     public void onInitialize() {
-        ClientConfig.init();
         ServerConfig.init();
         DMDataComponents.init();
         DMEntities.init();
@@ -109,8 +105,8 @@ public class DragonMounts implements ModInitializer, ServerPlayConnectionEvents.
         registry.register(ToggleFollowingPayload.TYPE, ToggleFollowingPayload.CODEC);
         registry.register(RenameFlutePayload.TYPE, RenameFlutePayload.CODEC);
         registry.register(S2CSyncConfigPayload.TYPE, S2CSyncConfigPayload.CODEC);
-        registry.register(S2CBooleanConfigPayload.TYPE, S2CBooleanConfigPayload.CODEC);
-        registry.register(S2CDoubleConfigPayload.TYPE, S2CDoubleConfigPayload.CODEC);
+        registry.register(BooleanConfigPayload.TYPE, BooleanConfigPayload.CODEC);
+        registry.register(DoubleConfigPayload.TYPE, DoubleConfigPayload.CODEC);
     }
 
     @Override
@@ -123,7 +119,7 @@ public class DragonMounts implements ModInitializer, ServerPlayConnectionEvents.
     @Override
     public void onServerStarting(MinecraftServer server) {
         RUNNING_SERVER = server;
-        ServerConfig.INSTANCE.getValues().forEach(ConfigValue::reset);
+        ServerConfig.INSTANCE.getEntries().forEach(ConfigEntry::reset);
     }
 
     @Override

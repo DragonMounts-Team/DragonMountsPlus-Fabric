@@ -3,7 +3,7 @@ package net.dragonmounts.plus.config;
 import com.mojang.brigadier.arguments.ArgumentType;
 import com.mojang.brigadier.arguments.DoubleArgumentType;
 import com.mojang.brigadier.context.CommandContext;
-import net.dragonmounts.plus.config.network.S2CDoubleConfigPayload;
+import net.dragonmounts.plus.common.network.s2c.DoubleConfigPayload;
 import net.minecraft.nbt.DoubleTag;
 import net.minecraft.nbt.NumericTag;
 import net.minecraft.nbt.Tag;
@@ -13,7 +13,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.function.DoubleConsumer;
 
-public class DoubleEntry extends ConfigEntry implements ConfigValue<Double> {
+public class DoubleEntry extends ConfigEntry<Double> {
     public static final double MIN_DOUBLE = -Double.MAX_VALUE;
     public final double fallback;
     public final double min;
@@ -47,7 +47,7 @@ public class DoubleEntry extends ConfigEntry implements ConfigValue<Double> {
         return (float) this.effective;
     }
 
-    public void override(double value) {
+    protected void overrideImpl(double value) {
         if (value == this.effective) return;
         this.effective = value;
         if (this.onChanged == null) return;
@@ -56,13 +56,13 @@ public class DoubleEntry extends ConfigEntry implements ConfigValue<Double> {
 
     @Override
     public void override(Double value) {
-        this.override(value.doubleValue());
+        this.overrideImpl(Mth.clamp(value, this.min, this.max));
     }
 
     @Override
     public boolean set(Double wrapped) {
         double value = Mth.clamp(wrapped, this.min, this.max);
-        this.override(value);
+        this.overrideImpl(value);
         if (this.value == value) return false;
         this.value = value;
         return true;
@@ -75,7 +75,7 @@ public class DoubleEntry extends ConfigEntry implements ConfigValue<Double> {
 
     @Override
     public Tag dump() {
-        return DoubleTag.valueOf(this.get());
+        return DoubleTag.valueOf(this.value);
     }
 
     @Override
@@ -110,7 +110,7 @@ public class DoubleEntry extends ConfigEntry implements ConfigValue<Double> {
 
     @Override
     public CustomPacketPayload wrap(int id) {
-        return new S2CDoubleConfigPayload(id, this.get());
+        return new DoubleConfigPayload(id, this.get());
     }
 
     @Override
@@ -121,10 +121,5 @@ public class DoubleEntry extends ConfigEntry implements ConfigValue<Double> {
     @Override
     public Double parse(CommandContext<?> context, String name) {
         return DoubleArgumentType.getDouble(context, name);
-    }
-
-    @Override
-    public ConfigEntry getEntry() {
-        return this;
     }
 }

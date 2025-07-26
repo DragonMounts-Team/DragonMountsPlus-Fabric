@@ -1,4 +1,4 @@
-package net.dragonmounts.plus.config.network;
+package net.dragonmounts.plus.config;
 
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.nbt.NbtAccounter;
@@ -23,7 +23,11 @@ public record S2CSyncConfigPayload(List<Entry> entries) implements CustomPacketP
         int size = buffer.readVarInt();
         var entries = new ObjectArrayList<Entry>(size);
         for (int i = 0; i < size; ++i) {
-            entries.add(new Entry(buffer.readVarInt(), readNbt(buffer, NbtAccounter.create(2097152L))));
+            if (readNbt(buffer, NbtAccounter.create(2097152L)) instanceof Tag tag) {
+                entries.add(new Entry(buffer.readVarInt(), tag));
+            } else {
+                buffer.readVarInt();
+            }
         }
         return new S2CSyncConfigPayload(entries);
     }
@@ -31,7 +35,7 @@ public record S2CSyncConfigPayload(List<Entry> entries) implements CustomPacketP
     public void encode(FriendlyByteBuf buffer) {
         buffer.writeVarInt(this.entries.size());
         for (var entry : this.entries) {
-            buffer.writeVarInt(entry.id).writeNbt(entry.value);
+            buffer.writeNbt(entry.value).writeVarInt(entry.id);
         }
     }
 
