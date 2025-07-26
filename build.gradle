@@ -58,17 +58,14 @@ allprojects {
 }
 
 processResources {
-    def config = new File("run", "build.json")
-    if (config.exists()) {
-        inputs.file config
-        doFirst {
-            def json = new JsonSlurper().parseText(config.text)
-            def suffix = json.suffix as String
-            if (json.weekly) {
-                project.version = "$project.version-${'%dw%02d'.formatted(Calendar.instance.get(Calendar.YEAR) % 100, Calendar.instance.get(Calendar.WEEK_OF_YEAR))}${suffix ?: 'a'}"
-            } else if (suffix != null && !suffix.isBlank()) {
-                project.version = "$project.version-$json.suffix"
-            }
+    var config = layout.projectDirectory.file("./run/build.json")
+    if (config.asFile.exists()) {
+        var json = new JsonSlurper().parseText(providers.fileContents(config).asText.get())
+        var suffix = json.suffix as String
+        if (json.weekly) {
+            project.version = "$project.version-${'%dw%02d'.formatted(Calendar.instance.get(Calendar.YEAR) % 100, Calendar.instance.get(Calendar.WEEK_OF_YEAR))}${suffix ?: 'a'}"
+        } else if (suffix != null && !suffix.isBlank()) {
+            project.version = "$project.version-$suffix"
         }
     }
     inputs.property "version", project.version

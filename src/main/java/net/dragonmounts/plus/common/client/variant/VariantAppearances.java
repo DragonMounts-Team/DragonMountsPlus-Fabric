@@ -40,6 +40,7 @@ public class VariantAppearances {
     public static final VariantAppearance MOONLIGHT_MALE;
     public static final VariantAppearance NETHER_FEMALE;
     public static final VariantAppearance NETHER_MALE;
+    public static final VariantAppearance NETHER_RARE;
     public static final VariantAppearance SKELETON;
     public static final VariantAppearance STORM_FEMALE;
     public static final VariantAppearance STORM_MALE;
@@ -118,6 +119,7 @@ public class VariantAppearances {
                 .withBreath(DMParticleSprites.NETHER_BREATH, NetherBreathParticle.FACTORY);
         NETHER_FEMALE = builder.build(makeId("nether/female"));
         NETHER_MALE = builder.build(makeId("nether/male"));
+        NETHER_RARE = builder.withBreath(DMParticleSprites.SOUL_BREATH).build(makeId("nether/rare"));
     }
 
     static {
@@ -193,6 +195,7 @@ public class VariantAppearances {
         map.put("moonlight_male", MOONLIGHT_MALE);
         map.put("nether_female", NETHER_FEMALE);
         map.put("nether_male", NETHER_MALE);
+        map.put("nether_rare", NETHER_RARE);
         map.put("sculk", SCULK);
         map.put("skeleton", SKELETON);
         map.put("storm_female", STORM_FEMALE);

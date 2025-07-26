@@ -160,7 +160,7 @@
   "options.dragonmounts.plus.isEggPushable": "Is Egg Pushable",
   "options.dragonmounts.plus.isEggPushable.tooltip": "Whether an egg is pushable on collision",
   "options.dragonmounts.plus.pauseOnFluting": "Pause On Fluting",
-  "options.dragonmounts.plus.pauseOnFluting.tooltip": "Whether to try to pause the game when using fluting",
+  "options.dragonmounts.plus.pauseOnFluting.tooltip": "Whether to try to pause the game when fluting",
   "options.dragonmounts.plus.quenchingBreath": "Quenching Breath",
   "options.dragonmounts.plus.quenchingBreath.tooltip": "Whether mist-like dragon breath can put out fire and solidify lava",
   "options.dragonmounts.plus.smeltingBreath": "Smelting Breath",
