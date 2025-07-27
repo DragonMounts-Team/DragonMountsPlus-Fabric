@@ -21,7 +21,8 @@ public class DragonModel extends EntityModel<DragonRenderState> implements Heade
     public static final int JAW_LENGTH = 16;
     public static final int HORN_THICK = 3;
     public static final float HORN_OFS = -0.5F * HORN_THICK;
-    public static final int HORN_LENGTH = 12;
+    public static final int HEAD_HORN_LENGTH = 12;
+    public static final int TAIL_HORN_LENGTH = 32;
     public static final int LEG_LENGTH = 26;
     public static final int FOOT_HEIGHT = 4;
     public final ModelPart head;

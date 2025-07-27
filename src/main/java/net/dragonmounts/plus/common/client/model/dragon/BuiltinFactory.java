@@ -1,10 +1,15 @@
 package net.dragonmounts.plus.common.client.model.dragon;
 
+import net.dragonmounts.plus.common.client.ClientUtil;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.CubeListBuilder;
 import net.minecraft.client.model.geom.builders.PartDefinition;
+import net.minecraft.core.Direction;
 import net.minecraft.util.Mth;
+
+import java.util.Collections;
+import java.util.Set;
 
 import static net.dragonmounts.plus.common.DragonMountsShared.makeId;
 import static net.dragonmounts.plus.common.client.ClientUtil.scaledPose;
@@ -31,13 +36,13 @@ public enum BuiltinFactory implements ModelFactory {
             var rotZ = 45F * TO_RAD_FACTOR;
             var scale = CubeListBuilder.create()
                     .texOffs(0, 0)
-                    .addBox(-1, -8, -3, 2, 4, 6)
+                    .addBox(-1, -8, -3, 2, 4, 6, ATTACHED_TO_BOTTOM)
                     .getCubes();
             var left = new PartDefinition(scale, PartPose.rotation(0.0F, 0.0F, rotZ));
             var right = new PartDefinition(scale, PartPose.rotation(0.0F, 0.0F, -rotZ));
             for (int i = 0; i < TAIL_SEGMENTS; ++i) {
                 var part = tail.addOrReplaceChild(
-                        Integer.toString(i),
+                        ClientUtil.toString(i),
                         new PartDefinition(segment, scaledPose(calcTailSize(i)))
                 );
                 part.addOrReplaceChild("left_scale", left);
@@ -65,6 +70,14 @@ public enum BuiltinFactory implements ModelFactory {
     };
     public static final int NORMAL_LEG_WIDTH = 9;
     public static final int SKELETON_LEG_WIDTH = 7;
+    public static final Set<Direction> WING_SURFACE = Collections.singleton(Direction.DOWN);
+    public static final Set<Direction> EAST_STRAP_SURFACE = Set.of(Direction.DOWN, Direction.NORTH, Direction.SOUTH, Direction.EAST);
+    public static final Set<Direction> WEST_STRAP_SURFACE = Set.of(Direction.DOWN, Direction.NORTH, Direction.SOUTH, Direction.WEST);
+    public static final Set<Direction> ATTACHED_TO_BOTTOM = Set.of(Direction.DOWN, Direction.NORTH, Direction.SOUTH, Direction.WEST, Direction.EAST);
+    public static final Set<Direction> ATTACHED_TO_NORTH = Set.of(Direction.DOWN, Direction.UP, Direction.SOUTH, Direction.WEST, Direction.EAST);
+    public static final Set<Direction> ATTACHED_TO_SOUTH = Set.of(Direction.DOWN, Direction.UP, Direction.NORTH, Direction.WEST, Direction.EAST);
+    public static final Set<Direction> ATTACHED_TO_WEST = Set.of(Direction.DOWN, Direction.UP, Direction.NORTH, Direction.SOUTH, Direction.EAST);
+    public static final Set<Direction> ATTACHED_TO_EAST = Set.of(Direction.DOWN, Direction.UP, Direction.NORTH, Direction.SOUTH, Direction.WEST);
     public final ModelLayerLocation location;
 
     BuiltinFactory(String name) {
@@ -91,19 +104,19 @@ public enum BuiltinFactory implements ModelFactory {
         var left = new PartDefinition(
                 CubeListBuilder.create().mirror()
                         .texOffs(0, 117)
-                        .addBox(offset, offset, offset, HORN_THICK, HORN_THICK, HORN_LENGTH)
+                        .addBox(offset, offset, offset, HORN_THICK, HORN_THICK, TAIL_HORN_LENGTH, ATTACHED_TO_NORTH)
                         .getCubes(),
                 PartPose.offsetAndRotation(0.0F, offset, 0.5F * TAIL_SIZE, rotX, rotY, 0.0F)
         );
         var right = new PartDefinition(
                 CubeListBuilder.create()
                         .texOffs(0, 117)
-                        .addBox(offset, offset, offset, HORN_THICK, HORN_THICK, HORN_LENGTH)
+                        .addBox(offset, offset, offset, HORN_THICK, HORN_THICK, TAIL_HORN_LENGTH, ATTACHED_TO_NORTH)
                         .getCubes(),
                 PartPose.offsetAndRotation(0.0F, offset, 0.5F * TAIL_SIZE, rotX, -rotY, 0.0F)
         );
         for (int i = 0; i < TAIL_SEGMENTS; ++i) {
-            var part = tail.addOrReplaceChild(Integer.toString(i), new PartDefinition(segment, scaledPose(calcTailSize(i))));
+            var part = tail.addOrReplaceChild(ClientUtil.toString(i), new PartDefinition(segment, scaledPose(calcTailSize(i))));
             if (i + 7 > TAIL_SEGMENTS && i + 3 < TAIL_SEGMENTS) {
                 part.addOrReplaceChild("left_horn", left);
                 part.addOrReplaceChild("right_horn", right);
