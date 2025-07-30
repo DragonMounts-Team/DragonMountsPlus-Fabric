@@ -48,7 +48,8 @@ public class DragonVariants {
     public static final DragonVariant NETHER_FEMALE;
     public static final DragonVariant NETHER_MALE;
     public static final DragonVariant NETHER_RARE;
-    public static final DragonVariant SCULK;
+    public static final DragonVariant WILD_SCULK;
+    public static final DragonVariant MUTANT_SCULK;
     public static final DragonVariant SKELETON;
     public static final DragonVariant STORM_FEMALE;
     public static final DragonVariant STORM_MALE;
@@ -81,8 +82,8 @@ public class DragonVariants {
     static ItemHolder<DragonHeadItem> registerHeadItem(DragonHead head, String name) {
         return DMItemGroups.DRAGON_HEADS.register(name, props -> new DragonHeadItem(
                 head.variant,
-                head.wall.get(),
                 head.standing.get(),
+                head.wall.get(),
                 props.rarity(Rarity.UNCOMMON).overrideDescription(DragonHeadBlock.TRANSLATION_KEY)
         ));
     }
@@ -131,7 +132,8 @@ public class DragonVariants {
         variants.add(NETHER_FEMALE = make(supplier, DragonTypes.NETHER, "nether_female"));
         variants.add(NETHER_MALE = make(supplier, DragonTypes.NETHER, "nether_male"));
         variants.add(NETHER_RARE = make(supplier, DragonTypes.NETHER, "nether_rare"));
-        variants.add(SCULK = make(supplier, DragonTypes.SCULK, "sculk"));
+        variants.add(WILD_SCULK = make(supplier, DragonTypes.SCULK, "wild_sculk"));
+        variants.add(MUTANT_SCULK = make(supplier, DragonTypes.SCULK, "mutant_sculk"));
         variants.add(SKELETON = make(supplier, DragonTypes.SKELETON, "skeleton"));
         variants.add(STORM_FEMALE = make(supplier, DragonTypes.STORM, "storm_female"));
         variants.add(STORM_MALE = make(supplier, DragonTypes.STORM, "storm_male"));

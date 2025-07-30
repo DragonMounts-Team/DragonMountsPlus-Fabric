@@ -30,10 +30,10 @@ public class DefaultAppearance extends VariantAppearance {
 
     public DefaultAppearance(
             ModelLayerLocation modelLocation,
-            BreathParticleFactory factory,
-            ResourceLocation breath,
             ResourceLocation body,
-            ResourceLocation glow
+            ResourceLocation glow,
+            ResourceLocation breath,
+            BreathParticleFactory factory
     ) {
         this.modelLocation = modelLocation;
         this.factory = factory;
@@ -87,7 +87,7 @@ public class DefaultAppearance extends VariantAppearance {
     }
 
     @Override
-    public Particle createParticle(BreathParticleOption option, TextureAtlas atlas, ClientLevel level, double x, double y, double z, double motionX, double motionY, double motionZ) {
+    public Particle createBreathParticle(BreathParticleOption option, TextureAtlas atlas, ClientLevel level, double x, double y, double z, double motionX, double motionY, double motionZ) {
         return this.factory.createParticle(option, atlas.getSprite(this.breath), level, x, y, z, motionX, motionY, motionZ);
     }
 
@@ -106,9 +106,8 @@ public class DefaultAppearance extends VariantAppearance {
         }
 
         public Builder withBreath(ResourceLocation breath, BreathParticleFactory factory) {
-            this.breath = breath;
             this.factory = factory;
-            return this;
+            return this.withBreath(breath);
         }
 
         public DefaultAppearance build(ResourceLocation folder) {
@@ -120,7 +119,7 @@ public class DefaultAppearance extends VariantAppearance {
         }
 
         public DefaultAppearance build(ResourceLocation body, ResourceLocation glow) {
-            return new DefaultAppearance(this.model, this.factory, this.breath, body, glow);
+            return new DefaultAppearance(this.model, body, glow, this.breath, this.factory);
         }
     }
 }

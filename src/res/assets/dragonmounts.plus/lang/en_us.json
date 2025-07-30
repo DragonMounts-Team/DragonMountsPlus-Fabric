@@ -167,6 +167,8 @@
   "options.dragonmounts.plus.smeltingBreath.tooltip": "Whether fire-like dragon breath can smelt the hit blocks",
   "options.dragonmounts.plus.toggleBreathing.tooltip": "Keep dragon breathing",
   "options.dragonmounts.plus.toggleDescending.tooltip": "Keep dragon descending",
+  "resourcePack.dragonmounts.plus.classic_amulet.name": "Classic Amulet",
+  "resourcePack.dragonmounts.plus.classic_amulet.description": "The classic look of amulets",
   "subtitles.entity.dragonmounts.plus.dragon.ambient": "Dragon roars",
   "subtitles.entity.dragonmounts.plus.dragon.breath_loop": "Dragon breathing",
   "subtitles.entity.dragonmounts.plus.dragon.breath_start": "Dragon breathing",

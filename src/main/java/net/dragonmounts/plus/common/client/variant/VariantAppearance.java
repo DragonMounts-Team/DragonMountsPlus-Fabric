@@ -4,7 +4,6 @@ import net.dragonmounts.plus.common.client.model.dragon.DragonModel;
 import net.dragonmounts.plus.common.client.renderer.dragon.DragonRenderState;
 import net.dragonmounts.plus.common.entity.breath.BreathParticleOption;
 import net.minecraft.client.model.geom.EntityModelSet;
-import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.renderer.RenderType;
@@ -15,7 +14,6 @@ import static net.dragonmounts.plus.common.DragonMountsShared.makeId;
 
 public abstract class VariantAppearance {
     public final static String TEXTURES_ROOT = "textures/entity/dragon/";
-    public static final ModelLayerLocation MODEL = new ModelLayerLocation(makeId("dragon"), "normal");
     public final static ResourceLocation DEFAULT_CHEST = makeId(TEXTURES_ROOT + "chest.png");
     public final static ResourceLocation DEFAULT_SADDLE = makeId(TEXTURES_ROOT + "saddle.png");
     public final static ResourceLocation DEFAULT_DISSOLVE = makeId(TEXTURES_ROOT + "dissolve.png");
@@ -36,7 +34,7 @@ public abstract class VariantAppearance {
 
     public abstract RenderType getGlowForBlock();
 
-    public abstract Particle createParticle(
+    public abstract Particle createBreathParticle(
             BreathParticleOption option,
             TextureAtlas atlas,
             ClientLevel level,

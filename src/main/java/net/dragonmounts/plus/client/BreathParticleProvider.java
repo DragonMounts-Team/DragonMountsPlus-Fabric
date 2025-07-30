@@ -16,6 +16,6 @@ public class BreathParticleProvider implements ParticleProvider<BreathParticleOp
 
     @Override
     public @Nullable Particle createParticle(BreathParticleOption option, ClientLevel level, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {
-        return option.variant().appearance.createParticle(option, this.sprite.getAtlas(), level, x, y, z, xSpeed, ySpeed, zSpeed);
+        return option.variant().appearance.createBreathParticle(option, this.sprite.getAtlas(), level, x, y, z, xSpeed, ySpeed, zSpeed);
     }
 }

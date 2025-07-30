@@ -53,7 +53,8 @@ public class VariantAppearances {
     public static final VariantAppearance WATER_MALE;
     public static final VariantAppearance WITHER;
     public static final VariantAppearance ZOMBIE;
-    public static final VariantAppearance SCULK;
+    public static final VariantAppearance WILD_SCULK;
+    public static final VariantAppearance MUTANT_SCULK;
 
     static {
         var builder = builder(BuiltinFactory.NORMAL)
@@ -152,7 +153,6 @@ public class VariantAppearances {
         WATER_MALE = builder.build(makeId("water/male"));
     }
 
-
     static {
         WITHER = builder(BuiltinFactory.SKELETON)
                 .withBreath(DMParticleSprites.WITHER_BREATH)
@@ -166,7 +166,9 @@ public class VariantAppearances {
     }
 
     static {
-        SCULK = builder(BuiltinFactory.NORMAL).build(makeId("sculk"));
+        var builder = builder(BuiltinFactory.NORMAL);
+        WILD_SCULK = builder.build(makeId("sculk/wild_type"));
+        MUTANT_SCULK = builder.build(makeId("sculk/mutant"));
     }
 
     public static Function<String, VariantAppearance> getSupplier() {
@@ -196,7 +198,8 @@ public class VariantAppearances {
         map.put("nether_female", NETHER_FEMALE);
         map.put("nether_male", NETHER_MALE);
         map.put("nether_rare", NETHER_RARE);
-        map.put("sculk", SCULK);
+        map.put("wild_sculk", WILD_SCULK);
+        map.put("mutant_sculk", MUTANT_SCULK);
         map.put("skeleton", SKELETON);
         map.put("storm_female", STORM_FEMALE);
         map.put("storm_male", STORM_MALE);
