@@ -3,19 +3,24 @@ package net.dragonmounts.plus.common.client.model.dragon;
 import net.dragonmounts.plus.common.client.ClientUtil;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.PartPose;
+import net.minecraft.client.model.geom.builders.CubeDefinition;
 import net.minecraft.client.model.geom.builders.CubeListBuilder;
 import net.minecraft.client.model.geom.builders.PartDefinition;
 import net.minecraft.core.Direction;
 import net.minecraft.util.Mth;
 
 import java.util.Collections;
+import java.util.List;
 import java.util.Set;
 
 import static net.dragonmounts.plus.common.DragonMountsShared.makeId;
 import static net.dragonmounts.plus.common.client.ClientUtil.scaledPose;
 import static net.dragonmounts.plus.common.client.model.dragon.DragonModel.*;
+import static net.dragonmounts.plus.common.client.model.dragon.ModelMagic.*;
 import static net.dragonmounts.plus.common.entity.dragon.DragonModelContracts.*;
 import static net.dragonmounts.plus.common.util.math.MathUtil.TO_RAD_FACTOR;
+import static net.minecraft.client.model.geom.PartPose.offsetAndRotation;
+import static net.minecraft.client.model.geom.PartPose.rotation;
 
 public enum BuiltinFactory implements ModelFactory {
     NORMAL("normal"),
@@ -38,8 +43,8 @@ public enum BuiltinFactory implements ModelFactory {
                     .texOffs(0, 0)
                     .addBox(-1, -8, -3, 2, 4, 6, ATTACHED_TO_BOTTOM)
                     .getCubes();
-            var left = new PartDefinition(scale, PartPose.rotation(0.0F, 0.0F, rotZ));
-            var right = new PartDefinition(scale, PartPose.rotation(0.0F, 0.0F, -rotZ));
+            var left = new PartDefinition(scale, rotation(0.0F, 0.0F, rotZ));
+            var right = new PartDefinition(scale, rotation(0.0F, 0.0F, -rotZ));
             for (int i = 0; i < TAIL_SEGMENTS; ++i) {
                 var part = tail.addOrReplaceChild(
                         ClientUtil.toString(i),
@@ -50,6 +55,109 @@ public enum BuiltinFactory implements ModelFactory {
             }
         }
     },
+    SCALE_SHARPENED("scale_sharpened") {
+        static CubeListBuilder buildBackScale(int offset) {
+            return CubeListBuilder.create().texOffs(0, 27)
+                    .addBox(0, -12, offset, 0, 12, 22, SHARPENED_SCALE_SURFACE);
+        }
+
+        static List<CubeDefinition> attachTailScale(CubeListBuilder builder) {
+            return builder.texOffs(0, 29)
+                    .addBox(0, -14, -5, 0, 9, 10, SHARPENED_SCALE_SURFACE)
+                    .getCubes();
+        }
+
+        static void attachTailHorn(PartDefinition segment, CubeListBuilder left, CubeListBuilder right) {
+            segment.addOrReplaceChild("left_horn", new PartDefinition(
+                    left.texOffs(0, 117)
+                            .addBox(TAIL_HORN_OFFSET, TAIL_HORN_OFFSET, TAIL_HORN_OFFSET, HORN_THICK, HORN_THICK, TAIL_HORN_LENGTH, ATTACHED_TO_NORTH)
+                            .getCubes(),
+                    PartPose.offsetAndRotation(0.0F, TAIL_HORN_OFFSET, HALF_TAIL_SIZE, TAIL_HORN_ROT_X, TAIL_HORN_ROT_Y, 0.0F)
+            ));
+            segment.addOrReplaceChild("right_horn", new PartDefinition(
+                    right.texOffs(0, 117)
+                            .addBox(TAIL_HORN_OFFSET, TAIL_HORN_OFFSET, TAIL_HORN_OFFSET, HORN_THICK, HORN_THICK, TAIL_HORN_LENGTH, ATTACHED_TO_NORTH)
+                            .getCubes(),
+                    PartPose.offsetAndRotation(0.0F, TAIL_HORN_OFFSET, HALF_TAIL_SIZE, TAIL_HORN_ROT_X, -TAIL_HORN_ROT_Y, 0.0F)
+            ));
+        }
+
+        static void attachTailHorn(PartDefinition segment, float width, float length, int u, int v) {
+            segment.addOrReplaceChild("left_horn", new PartDefinition(
+                    CubeListBuilder.create().mirror()
+                            .texOffs(u, v)
+                            .addBox(TAIL_HORN_OFFSET - width, TAIL_HORN_OFFSET + 1.5F, TAIL_HORN_OFFSET + 4.0F, width, 0.0F, length, TOP_SURFACE)
+                            .texOffs(0, 117)
+                            .addBox(TAIL_HORN_OFFSET, TAIL_HORN_OFFSET, TAIL_HORN_OFFSET, HORN_THICK, HORN_THICK, TAIL_HORN_LENGTH, ATTACHED_TO_NORTH)
+                            .getCubes(),
+                    PartPose.offsetAndRotation(0.0F, TAIL_HORN_OFFSET, HALF_TAIL_SIZE, TAIL_HORN_ROT_X, -TAIL_HORN_ROT_Y, 0.0F)
+            ));
+            segment.addOrReplaceChild("right_horn", new PartDefinition(
+                    CubeListBuilder.create()
+                            .texOffs(u, v)
+                            .addBox(TAIL_HORN_OFFSET + 3.0F, TAIL_HORN_OFFSET + 1.5F, TAIL_HORN_OFFSET + 4.0F, width, 0.0F, length, TOP_SURFACE)
+                            .texOffs(0, 117)
+                            .addBox(TAIL_HORN_OFFSET, TAIL_HORN_OFFSET, TAIL_HORN_OFFSET, HORN_THICK, HORN_THICK, TAIL_HORN_LENGTH, ATTACHED_TO_NORTH)
+                            .getCubes(),
+                    PartPose.offsetAndRotation(0.0F, TAIL_HORN_OFFSET, HALF_TAIL_SIZE, TAIL_HORN_ROT_X, TAIL_HORN_ROT_Y, 0.0F)
+            ));
+        }
+
+        @Override
+        public PartDefinition makeBody(PartDefinition root) {
+            var body = root.addOrReplaceChild(
+                    "body",
+                    buildBackScale(5)
+                            .texOffs(0, 0)
+                            .addBox(-12, 0, -16, 24, 24, 64),
+                    PartPose.offset(0, 4, 8)
+            );
+            body.addOrReplaceChild("back", buildBackScale(-15), PartPose.ZERO);
+            body.addOrReplaceChild("scale", buildBackScale(25), PartPose.ZERO);
+            return body;
+        }
+
+        @Override
+        public void makeNeck(PartDefinition root) {
+            var neck = root.addOrReplaceChild("neck", CubeListBuilder.create(), PartPose.ZERO);
+            var base = CubeListBuilder.create().texOffs(112, 88).addBox(-5, -5, -5, NECK_SIZE, NECK_SIZE, NECK_SIZE).getCubes();
+            for (int i = 0; i < NECK_SEGMENTS; ++i) {
+                float scale = calcNeckSize(i);
+                neck.addOrReplaceChild(ClientUtil.toString(i), new PartDefinition(base, scaledPose(scale, scale, 0.6F)));
+            }
+            var cubes = CubeListBuilder.create()
+                    .texOffs(0, 29)
+                    .addBox(0, -10, -5, 0, 9, NECK_SIZE, SHARPENED_SCALE_SURFACE)
+                    .getCubes();
+            var pose = new PartPose(0.0F, -4.0F, 0.0F, 0.0F, 0.0F, 0.0F, 1.0F, 0.6F, 1.0F);
+            neck.getChild("3").addOrReplaceChild("scale", new PartDefinition(cubes, pose));
+            neck.getChild("5").addOrReplaceChild("scale", new PartDefinition(cubes, pose));
+        }
+
+        @Override
+        public void makeTail(PartDefinition root) {
+            var builder = CubeListBuilder.create();
+            var tail = root.addOrReplaceChild("tail", builder, PartPose.offset(0.0F, 16.0F, 62.0F));
+            var base = builder.texOffs(152, 88)
+                    .addBox(-5, -5, -5, TAIL_SIZE, TAIL_SIZE, TAIL_SIZE)
+                    .getCubes();
+            tail.addOrReplaceChild("0", new PartDefinition(base, scaledPose(calcTailSize(0)))).addOrReplaceChild("scale", new PartDefinition(
+                    attachTailScale(CubeListBuilder.create()),
+                    offsetAndRotation(0.0F, 4.0F, 0.0F, -12.5F * TO_RAD_FACTOR, 0.0F, 0.0F)
+            ));
+            tail.addOrReplaceChild("1", new PartDefinition(base, scaledPose(calcTailSize(1)))).addOrReplaceChild("scale", new PartDefinition(
+                    attachTailScale(CubeListBuilder.create()),
+                    offsetAndRotation(0.0F, 2.0F, 0.0F, -2.5F * TO_RAD_FACTOR, 0.0F, 0.0F)
+            ));
+            var segment = attachTailScale(builder);
+            for (int i = 2; i < TAIL_SEGMENTS; ++i) {
+                tail.addOrReplaceChild(ClientUtil.toString(i), new PartDefinition(segment, scaledPose(calcTailSize(i))));
+            }
+            attachTailHorn(tail.getChild("6"), 7.0F, 28.0F, 140, 192);
+            attachTailHorn(tail.getChild("7"), 5.0F, 28.0F, 130, 192);
+            attachTailHorn(tail.getChild("8"), 15.0F, 28.0F, 100, 192);
+        }
+    },
     SKELETON("skeleton") {
         @Override
         public void makeTail(PartDefinition root) {
@@ -58,19 +166,20 @@ public enum BuiltinFactory implements ModelFactory {
 
         @Override
         public void makeFrontLegs(PartDefinition root) {
-            makeFrontLeg(root, "left_front_leg", SKELETON_LEG_WIDTH, LEG_LENGTH, true, PartPose.offset(-11, 18, 4));
-            makeFrontLeg(root, "right_front_leg", SKELETON_LEG_WIDTH, LEG_LENGTH, false, PartPose.offset(11, 18, 4));
+            makeFrontLeg(root, "left_front_leg", SKELETON_LEG_WIDTH, LEG_LENGTH, true, PartPose.offset(11, 18, 4));
+            makeFrontLeg(root, "right_front_leg", SKELETON_LEG_WIDTH, LEG_LENGTH, false, PartPose.offset(-11, 18, 4));
         }
 
         @Override
         public void makeHindLegs(PartDefinition root) {
-            makeHindLeg(root, "left_hind_leg", SKELETON_LEG_WIDTH, LEG_LENGTH, true, PartPose.offset(-11, 13, 46));
-            makeHindLeg(root, "right_hind_leg", SKELETON_LEG_WIDTH, LEG_LENGTH, false, PartPose.offset(11, 13, 46));
+            makeHindLeg(root, "left_hind_leg", SKELETON_LEG_WIDTH, LEG_LENGTH, true, PartPose.offset(11, 13, 46));
+            makeHindLeg(root, "right_hind_leg", SKELETON_LEG_WIDTH, LEG_LENGTH, false, PartPose.offset(-11, 13, 46));
         }
     };
     public static final int NORMAL_LEG_WIDTH = 9;
     public static final int SKELETON_LEG_WIDTH = 7;
-    public static final Set<Direction> WING_SURFACE = Collections.singleton(Direction.DOWN);
+    public static final Set<Direction> TOP_SURFACE = Collections.singleton(Direction.DOWN);
+    public static final Set<Direction> SHARPENED_SCALE_SURFACE = Collections.singleton(Direction.WEST);
     public static final Set<Direction> EAST_STRAP_SURFACE = Set.of(Direction.DOWN, Direction.NORTH, Direction.SOUTH, Direction.EAST);
     public static final Set<Direction> WEST_STRAP_SURFACE = Set.of(Direction.DOWN, Direction.NORTH, Direction.SOUTH, Direction.WEST);
     public static final Set<Direction> ATTACHED_TO_BOTTOM = Set.of(Direction.DOWN, Direction.NORTH, Direction.SOUTH, Direction.WEST, Direction.EAST);
@@ -98,22 +207,19 @@ public enum BuiltinFactory implements ModelFactory {
                 .texOffs(152, 88)
                 .addBox(-5, -5, -5, TAIL_SIZE, TAIL_SIZE, TAIL_SIZE)
                 .getCubes();
-        float offset = -0.5F * HORN_THICK;
-        float rotY = 145F * TO_RAD_FACTOR;
-        float rotX = -15F * TO_RAD_FACTOR;
         var left = new PartDefinition(
                 CubeListBuilder.create().mirror()
                         .texOffs(0, 117)
-                        .addBox(offset, offset, offset, HORN_THICK, HORN_THICK, TAIL_HORN_LENGTH, ATTACHED_TO_NORTH)
+                        .addBox(TAIL_HORN_OFFSET, TAIL_HORN_OFFSET, TAIL_HORN_OFFSET, HORN_THICK, HORN_THICK, TAIL_HORN_LENGTH, ATTACHED_TO_NORTH)
                         .getCubes(),
-                PartPose.offsetAndRotation(0.0F, offset, 0.5F * TAIL_SIZE, rotX, rotY, 0.0F)
+                PartPose.offsetAndRotation(0.0F, TAIL_HORN_OFFSET, HALF_TAIL_SIZE, TAIL_HORN_ROT_X, -TAIL_HORN_ROT_Y, 0.0F)
         );
         var right = new PartDefinition(
                 CubeListBuilder.create()
                         .texOffs(0, 117)
-                        .addBox(offset, offset, offset, HORN_THICK, HORN_THICK, TAIL_HORN_LENGTH, ATTACHED_TO_NORTH)
+                        .addBox(TAIL_HORN_OFFSET, TAIL_HORN_OFFSET, TAIL_HORN_OFFSET, HORN_THICK, HORN_THICK, TAIL_HORN_LENGTH, ATTACHED_TO_NORTH)
                         .getCubes(),
-                PartPose.offsetAndRotation(0.0F, offset, 0.5F * TAIL_SIZE, rotX, -rotY, 0.0F)
+                PartPose.offsetAndRotation(0.0F, TAIL_HORN_OFFSET, HALF_TAIL_SIZE, TAIL_HORN_ROT_X, TAIL_HORN_ROT_Y, 0.0F)
         );
         for (int i = 0; i < TAIL_SEGMENTS; ++i) {
             var part = tail.addOrReplaceChild(ClientUtil.toString(i), new PartDefinition(segment, scaledPose(calcTailSize(i))));

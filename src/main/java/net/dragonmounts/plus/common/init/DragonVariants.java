@@ -25,6 +25,7 @@ public class DragonVariants {
     public static final ImmutableList<DragonVariant> BUILTIN_VALUES;
     public static final DragonVariant AETHER_FEMALE;
     public static final DragonVariant AETHER_MALE;
+    public static final DragonVariant BREEZE;
     public static final DragonVariant DARK_FEMALE;
     public static final DragonVariant DARK_MALE;
     public static final DragonVariant ENCHANTED_FEMALE;
@@ -47,7 +48,7 @@ public class DragonVariants {
     public static final DragonVariant MOONLIGHT_MALE;
     public static final DragonVariant NETHER_FEMALE;
     public static final DragonVariant NETHER_MALE;
-    public static final DragonVariant NETHER_RARE;
+    public static final DragonVariant SOUL;
     public static final DragonVariant WILD_SCULK;
     public static final DragonVariant MUTANT_SCULK;
     public static final DragonVariant SKELETON;
@@ -109,6 +110,7 @@ public class DragonVariants {
         var variants = ImmutableList.<DragonVariant>builderWithExpectedSize(37);
         variants.add(AETHER_FEMALE = make(supplier, DragonTypes.AETHER, "aether_female"));
         variants.add(AETHER_MALE = make(supplier, DragonTypes.AETHER, "aether_male"));
+        variants.add(BREEZE = make(supplier, DragonTypes.AETHER, "breeze"));
         variants.add(DARK_FEMALE = make(supplier, DragonTypes.DARK, "dark_female"));
         variants.add(DARK_MALE = make(supplier, DragonTypes.DARK, "dark_male"));
         variants.add(ENCHANTED_FEMALE = make(supplier, DragonTypes.ENCHANTED, "enchanted_female"));
@@ -131,7 +133,7 @@ public class DragonVariants {
         variants.add(MOONLIGHT_MALE = make(supplier, DragonTypes.MOONLIGHT, "moonlight_male"));
         variants.add(NETHER_FEMALE = make(supplier, DragonTypes.NETHER, "nether_female"));
         variants.add(NETHER_MALE = make(supplier, DragonTypes.NETHER, "nether_male"));
-        variants.add(NETHER_RARE = make(supplier, DragonTypes.NETHER, "nether_rare"));
+        variants.add(SOUL = make(supplier, DragonTypes.NETHER, "soul"));
         variants.add(WILD_SCULK = make(supplier, DragonTypes.SCULK, "wild_sculk"));
         variants.add(MUTANT_SCULK = make(supplier, DragonTypes.SCULK, "mutant_sculk"));
         variants.add(SKELETON = make(supplier, DragonTypes.SKELETON, "skeleton"));

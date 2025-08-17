@@ -395,7 +395,7 @@ public class DMItems {
     );
     public static final DragonScaleArmorSuit SCULK_DRAGON_SCALE_ARMORS = makeSuit(
             DragonTypes.SCULK,
-            null,
+            DMArmorEffects.SCULK,
             TOOL_TAB,
             "sculk_dragon_scale_helmet",
             "sculk_dragon_scale_chestplate",

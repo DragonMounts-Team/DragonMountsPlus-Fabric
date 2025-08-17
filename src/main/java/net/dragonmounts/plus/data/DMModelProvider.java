@@ -130,7 +130,7 @@ public class DMModelProvider extends FabricModelProvider {
                 flute,
                 isUsingItem(),
                 tintedModel(getModelLocation(flute, "_playing"), tints),
-                tintedModel(gen.generateLayeredItem(flute, getItemTexture(flute), getItemTexture(flute, "_string")), tints)
+                tintedModel(getModelLocation(flute), tints)
         );
     }
 

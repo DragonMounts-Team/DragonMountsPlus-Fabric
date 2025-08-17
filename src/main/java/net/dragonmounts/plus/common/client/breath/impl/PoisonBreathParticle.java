@@ -14,5 +14,5 @@ public class PoisonBreathParticle extends BreathParticle {
     }
 
     @Override
-    protected void spawnChildParticle() {}
+    protected void tickIfAlive() {}
 }

@@ -55,7 +55,7 @@ public interface ModelFactory {
 
     default void makeNeck(PartDefinition root) {
         var builder = CubeListBuilder.create();
-        var neck = root.addOrReplaceChild("neck", CubeListBuilder.create(), PartPose.ZERO);
+        var neck = root.addOrReplaceChild("neck", builder, PartPose.ZERO);
         var normal = builder.texOffs(112, 88).addBox(-5, -5, -5, NECK_SIZE, NECK_SIZE, NECK_SIZE).getCubes();
         var scaled = builder.texOffs(0, 0).addBox(-1, -7, -3, 2, 4, 6, ATTACHED_TO_BOTTOM).getCubes();
         for (int i = 0; i < NECK_SEGMENTS; ++i) {
@@ -122,7 +122,7 @@ public interface ModelFactory {
                 .texOffs(0, 172)
                 .addBox(0, -1, -1, 70, 2, 2)
                 .texOffs(-49, 176)
-                .addBox(0, 0, 1, 70, 0, 48, WING_SURFACE);
+                .addBox(0, 0, 1, 70, 0, 48, TOP_SURFACE);
         var fingers = root.addOrReplaceChild(
                 "left_wing",
                 CubeListBuilder.create()
@@ -130,7 +130,7 @@ public interface ModelFactory {
                         .texOffs(0, 152)
                         .addBox(0, -3, -3, 28, 6, 6)
                         .texOffs(116, 232)
-                        .addBox(0, 0, 2, 28, 0, 24, WING_SURFACE),
+                        .addBox(0, 0, 2, 28, 0, 24, TOP_SURFACE),
                 new PartPose(10, 5, 4, 0.0F, -1.4F, -0.8F, 1.1F, 1.1F, 1.1F)
         ).addOrReplaceChild(
                 "forearm",
@@ -149,7 +149,7 @@ public interface ModelFactory {
                         .texOffs(0, 172)
                         .addBox(0, -1, -1, 70, 2, 2)
                         .texOffs(-32, 224)
-                        .addBox(0, 0, 1, 70, 0, 32, WING_SURFACE),
+                        .addBox(0, 0, 1, 70, 0, 32, TOP_SURFACE),
                 PartPose.offsetAndRotation(47, 0, 0, 0.015F, -3.0F, 0.0F)
         );
     }
@@ -160,7 +160,7 @@ public interface ModelFactory {
                 .texOffs(0, 172)
                 .addBox(-70, -1, -1, 70, 2, 2)
                 .texOffs(-49, 176)
-                .addBox(-70, 0, 1, 70, 0, 48, WING_SURFACE);
+                .addBox(-70, 0, 1, 70, 0, 48, TOP_SURFACE);
         var fingers = root.addOrReplaceChild(
                 "right_wing",
                 CubeListBuilder.create()
@@ -168,7 +168,7 @@ public interface ModelFactory {
                         .texOffs(0, 152)
                         .addBox(-28, -3, -3, 28, 6, 6)
                         .texOffs(116, 232)
-                        .addBox(-28, 0, 2, 28, 0, 24, WING_SURFACE),
+                        .addBox(-28, 0, 2, 28, 0, 24, TOP_SURFACE),
                 new PartPose(-10, 5, 4, 0.0F, 1.4F, 0.8F, 1.1F, 1.1F, 1.1F)
         ).addOrReplaceChild(
                 "forearm",
@@ -187,7 +187,7 @@ public interface ModelFactory {
                         .texOffs(0, 172)
                         .addBox(-70, -1, -1, 70, 2, 2)
                         .texOffs(-32, 224)
-                        .addBox(-70, 0, 1, 70, 0, 32, WING_SURFACE),
+                        .addBox(-70, 0, 1, 70, 0, 32, TOP_SURFACE),
                 PartPose.offsetAndRotation(-47, 0, 0, 0.015F, 3.0F, 0.0F)
         );
     }

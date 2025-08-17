@@ -18,6 +18,7 @@ public class VariantAppearances {
 
     public static final VariantAppearance AETHER_FEMALE;
     public static final VariantAppearance AETHER_MALE;
+    public static final VariantAppearance BREEZE;
     public static final VariantAppearance DARK_FEMALE;
     public static final VariantAppearance DARK_MALE;
     public static final VariantAppearance ENCHANTED_FEMALE;
@@ -40,7 +41,7 @@ public class VariantAppearances {
     public static final VariantAppearance MOONLIGHT_MALE;
     public static final VariantAppearance NETHER_FEMALE;
     public static final VariantAppearance NETHER_MALE;
-    public static final VariantAppearance NETHER_RARE;
+    public static final VariantAppearance SOUL;
     public static final VariantAppearance SKELETON;
     public static final VariantAppearance STORM_FEMALE;
     public static final VariantAppearance STORM_MALE;
@@ -61,6 +62,7 @@ public class VariantAppearances {
                 .withBreath(DMParticleSprites.AIRFLOW_BREATH, AirflowBreathParticle.FACTORY);
         AETHER_FEMALE = builder.build(makeId("aether/female"));
         AETHER_MALE = builder.build(makeId("aether/male"));
+        BREEZE = builder.build(makeId("aether/breeze"));
     }
 
     static {
@@ -116,11 +118,11 @@ public class VariantAppearances {
     }
 
     static {
-        var builder = builder(BuiltinFactory.NORMAL)
+        var builder = builder(BuiltinFactory.SCALE_SHARPENED)
                 .withBreath(DMParticleSprites.NETHER_BREATH, NetherBreathParticle.FACTORY);
         NETHER_FEMALE = builder.build(makeId("nether/female"));
         NETHER_MALE = builder.build(makeId("nether/male"));
-        NETHER_RARE = builder.withBreath(DMParticleSprites.SOUL_BREATH).build(makeId("nether/rare"));
+        SOUL = builder.withBreath(DMParticleSprites.SOUL_BREATH).build(makeId("nether/soul"));
     }
 
     static {
@@ -175,6 +177,7 @@ public class VariantAppearances {
         var map = new Object2ObjectOpenHashMap<String, VariantAppearance>();
         map.put("aether_female", AETHER_FEMALE);
         map.put("aether_male", AETHER_MALE);
+        map.put("breeze", BREEZE);
         map.put("dark_female", DARK_FEMALE);
         map.put("dark_male", DARK_MALE);
         map.put("enchanted_female", ENCHANTED_FEMALE);
@@ -197,7 +200,7 @@ public class VariantAppearances {
         map.put("moonlight_male", MOONLIGHT_MALE);
         map.put("nether_female", NETHER_FEMALE);
         map.put("nether_male", NETHER_MALE);
-        map.put("nether_rare", NETHER_RARE);
+        map.put("soul", SOUL);
         map.put("wild_sculk", WILD_SCULK);
         map.put("mutant_sculk", MUTANT_SCULK);
         map.put("skeleton", SKELETON);

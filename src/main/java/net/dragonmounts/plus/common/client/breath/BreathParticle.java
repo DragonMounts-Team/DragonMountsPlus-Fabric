@@ -64,7 +64,7 @@ public class BreathParticle extends TextureSheetParticle implements BreathNodeHo
         return this.random.nextFloat() <= SPECIAL_PARTICLE_CHANCE ? ParticleTypes.LARGE_SMOKE : ParticleTypes.SMOKE;
     }
 
-    protected void spawnChildParticle() {
+    protected void tickIfAlive() {
         if (this.inWater) {
             // smoke / steam when hitting water.  node is responsible for aging to death
             this.level.addParticle(this.getChildParticle(), this.x, this.y, this.z, 0, 0, 0);
@@ -96,7 +96,7 @@ public class BreathParticle extends TextureSheetParticle implements BreathNodeHo
         if (this.node.updateAge(this)) {
             this.remove();
         } else {
-            this.spawnChildParticle();
+            this.tickIfAlive();
         }
     }
 

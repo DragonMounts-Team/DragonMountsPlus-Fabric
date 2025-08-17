@@ -27,6 +27,18 @@ public class FluteItem extends Item {
         return null;
     }
 
+    /// @see net.minecraft.world.item.ItemUtils#startUsingInstantly(Level, Player, InteractionHand)
+    public static InteractionResult startPlaying(Player player, InteractionHand hand) {
+        var stack = player.getItemInHand(hand);
+        var sound = stack.get(DMDataComponents.FLUTE_SOUND);
+        if (sound == null) return InteractionResult.PASS;
+        if (player.isLocalPlayer()) {
+            ClientUtil.openFluteScreen(sound.dragon());
+        }
+        player.startUsingItem(hand);
+        return InteractionResult.CONSUME;
+    }
+
     public FluteItem(Properties props) {
         super(props);
     }
@@ -38,24 +50,12 @@ public class FluteItem extends Item {
 
     @Override
     public InteractionResult interactLivingEntity(ItemStack stack, Player player, LivingEntity entity, InteractionHand hand) {
-        return player.isShiftKeyDown() ? InteractionResult.PASS : useFlute(player, hand);
+        return player.isShiftKeyDown() ? InteractionResult.PASS : startPlaying(player, hand);
     }
 
     @Override
     public InteractionResult use(Level level, Player player, InteractionHand hand) {
-        return useFlute(player, hand);
-    }
-
-    /// @see net.minecraft.world.item.ItemUtils#startUsingInstantly(Level, Player, InteractionHand)
-    public static InteractionResult useFlute(Player player, InteractionHand hand) {
-        var stack = player.getItemInHand(hand);
-        var sound = stack.get(DMDataComponents.FLUTE_SOUND);
-        if (sound == null) return InteractionResult.PASS;
-        if (player.isLocalPlayer()) {
-            ClientUtil.openFluteScreen(sound.dragon());
-        }
-        player.startUsingItem(hand);
-        return InteractionResult.CONSUME;
+        return startPlaying(player, hand);
     }
 
     @Override

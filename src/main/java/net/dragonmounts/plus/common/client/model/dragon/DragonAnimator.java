@@ -421,9 +421,9 @@ public class DragonAnimator extends DragonHeadLocator<ClientDragonEntity> {
             interplateLegWalkingRotX(leftHindLeg, cache, HIND_LEG_WALKING_ROT_X, swing, walk, true);
             interplateLegWalkingRotX(rightHindLeg, cache, HIND_LEG_WALKING_ROT_X, swing, walk, false);
         }
-        leftFrontLeg.rotY = -(rightFrontLeg.rotY =
+        rightFrontLeg.rotY = -(leftFrontLeg.rotY =
                 interplateLegRotY(0.25F, 0.35F, 0.1F, 0.1F, sit, walk, ground));
-        leftHindLeg.rotY = -(rightHindLeg.rotY =
+        rightHindLeg.rotY = -(leftHindLeg.rotY =
                 interplateLegRotY(-0.25F, 0.10F, -0.1F, -0.1F, sit, walk, ground));
         if (ground < 1) {
             float footOffset = cycleOfs * 0.1F;

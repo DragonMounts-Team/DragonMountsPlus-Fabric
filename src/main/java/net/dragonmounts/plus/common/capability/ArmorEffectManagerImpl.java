@@ -16,9 +16,9 @@ import static net.dragonmounts.plus.common.DragonMountsShared.NAMESPACE;
 
 public final class ArmorEffectManagerImpl implements ArmorEffectManager {
     public static final String DATA_PARAMETER_KEY = NAMESPACE + ":armor_effect_manager";
-    private static ArmorEffectManagerImpl LOCAL_MANAGER = null;
     public static final int INITIAL_COOLDOWN_SIZE = 8;
     public static final int INITIAL_LEVEL_SIZE = 5;
+    private static ArmorEffectManagerImpl LOCAL_MANAGER = null;
 
     public static void onPlayerClone(Player player, Player priorPlayer) {
         var manager = ((ArmorEffectManager.Provider) player).dragonmounts$plus$getManager();

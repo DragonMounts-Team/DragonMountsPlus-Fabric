@@ -1,7 +1,0 @@
-{
-  "parent": "minecraft:item/generated",
-  "textures": {
-    "layer0": "dragonmounts.plus:item/flute",
-    "layer1": "dragonmounts.plus:item/flute_string"
-  }
-}

@@ -86,7 +86,7 @@ public class DragonTypes {
                 .addHabitat(Blocks.NETHER_WART_BLOCK)
                 .addHabitat(Blocks.WARPED_WART_BLOCK)
                 .register(ZombieType::new, makeId("zombie"));
-        DARK = new DragonTypeBuilder(0x808080, material.setDefense(BOOTS, 5), tier)
+        DARK = new DragonTypeBuilder(0x808080, material.setDefense(HELMET, 5), tier)
                 .setMaterial(DMItemTags.DARK_DRAGON_SCALES)
                 .setScaleColor(MapColor.DEEPSLATE)
                 .addImmunity(DamageTypes.MAGIC)

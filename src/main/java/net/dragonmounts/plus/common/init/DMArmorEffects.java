@@ -1,10 +1,11 @@
 package net.dragonmounts.plus.common.init;
 
-import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.dragonmounts.plus.common.api.DescribedArmorEffect;
 import net.dragonmounts.plus.common.capability.ArmorEffectManager;
 import net.dragonmounts.plus.common.capability.ArmorEffectManagerImpl;
+import net.dragonmounts.plus.common.client.gui.ArmorEffectDescriptor;
 import net.dragonmounts.plus.common.client.gui.ArmorEffectTooltip;
+import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
@@ -28,8 +29,7 @@ import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Collections;
-import java.util.List;
+import java.util.function.BooleanSupplier;
 
 import static net.dragonmounts.plus.common.DragonMountsShared.makeId;
 import static net.dragonmounts.plus.common.util.EntityUtil.addOrMergeEffect;
@@ -38,6 +38,7 @@ import static net.dragonmounts.plus.compat.registry.RegistryHandler.registerArmo
 
 public class DMArmorEffects {
     public static final Component FISHING_LUCK = Component.translatable("tooltip.dragonmounts.plus.armor_effect_fishing_luck");
+    public static final MutableComponent TRIGGER_PIECE_2 = Component.translatable("tooltip.armor_effect_trigger_piece_2");
     public static final MutableComponent TRIGGER_PIECE_4 = Component.translatable("tooltip.armor_effect_trigger_piece_4");
 
     public static final DescribedArmorEffect.Advanced AETHER = registerArmorEffect("aether", identifier -> new DescribedArmorEffect.Advanced(
@@ -59,13 +60,7 @@ public class DMArmorEffects {
     });
 
     public static final DescribedArmorEffect DARK = registerArmorEffect(makeId("dark"), new DescribedArmorEffect() {
-        private static final Component TITLE = DragonTypes.DARK.getName();
-        private static final List<Component> DESCRIPTION = Collections.singletonList(Component.translatable("tooltip.armor_effect.dragonmounts.plus.dark"));
-
-        @Override
-        public ArmorEffectTooltip getClientTooltip() {
-            return new ArmorEffectTooltip(TITLE, DESCRIPTION, DescribedArmorEffect.formatTrigger(this, TRIGGER_PIECE_4));
-        }
+        private ArmorEffectTooltip tooltip;
 
         @Override
         public boolean activate(ArmorEffectManager manager, Player player, int level) {
@@ -75,16 +70,23 @@ public class DMArmorEffects {
             }
             return false;
         }
-    });
-
-    public static final DescribedArmorEffect ENCHANTED = registerArmorEffect(makeId("enchanted"), new DescribedArmorEffect() {
-        private static final Component TITLE = DragonTypes.ENCHANTED.getName();
-        private static final List<Component> DESCRIPTION = Collections.singletonList(Component.translatable("tooltip.armor_effect.dragonmounts.plus.enchanted"));
 
         @Override
         public ArmorEffectTooltip getClientTooltip() {
-            return new ArmorEffectTooltip(TITLE, DESCRIPTION, DescribedArmorEffect.formatTrigger(this, TRIGGER_PIECE_4));
+            if (this.tooltip == null) {
+                this.tooltip = new ArmorEffectTooltip(DragonTypes.DARK.getName(), new ArmorEffectDescriptor(
+                        Component.translatable("tooltip.armor_effect.dragonmounts.plus.dark"),
+                        null,
+                        TRIGGER_PIECE_4,
+                        this::isLocalActive
+                ));
+            }
+            return this.tooltip;
         }
+    });
+
+    public static final DescribedArmorEffect ENCHANTED = registerArmorEffect(makeId("enchanted"), new DescribedArmorEffect() {
+        private ArmorEffectTooltip tooltip;
 
         @Override
         public boolean activate(ArmorEffectManager manager, Player player, int level) {
@@ -113,6 +115,19 @@ public class DMArmorEffects {
                 }
             }
             return level > 3;
+        }
+
+        @Override
+        public ArmorEffectTooltip getClientTooltip() {
+            if (this.tooltip == null) {
+                this.tooltip = new ArmorEffectTooltip(DragonTypes.ENCHANTED.getName(), new ArmorEffectDescriptor(
+                        Component.translatable("tooltip.armor_effect.dragonmounts.plus.enchanted"),
+                        null,
+                        TRIGGER_PIECE_4,
+                        this::isLocalActive
+                ));
+            }
+            return this.tooltip;
         }
     });
 
@@ -192,11 +207,19 @@ public class DMArmorEffects {
         }
 
         @Override
-        public List<Component> getDescription() {
-            var tooltips = new ObjectArrayList<Component>();
-            tooltips.add(FISHING_LUCK);
-            tooltips.add(this.description);
-            return tooltips;
+        public ArmorEffectTooltip makeClientTooltip() {
+            BooleanSupplier predicate = this::isLocalActive;
+            return new ArmorEffectTooltip(this.title, new ArmorEffectDescriptor(
+                    FISHING_LUCK,
+                    null,
+                    this.trigger,
+                    predicate
+            ), new ArmorEffectDescriptor(
+                    Component.translatable(Util.makeDescriptionId("tooltip.armor_effect", this.identifier)),
+                    this::getCooldownInfo,
+                    null,
+                    predicate
+            ));
         }
     });
 
@@ -206,8 +229,7 @@ public class DMArmorEffects {
     );
 
     public static final DescribedArmorEffect MOONLIGHT = registerArmorEffect(makeId("moonlight"), new DescribedArmorEffect() {
-        private static final Component TITLE = DragonTypes.MOONLIGHT.getName();
-        private static final List<Component> DESCRIPTION = Collections.singletonList(Component.translatable("tooltip.armor_effect.dragonmounts.plus.moonlight"));
+        private ArmorEffectTooltip tooltip;
 
         @Override
         public boolean activate(ArmorEffectManager manager, Player player, int level) {
@@ -220,7 +242,15 @@ public class DMArmorEffects {
 
         @Override
         public ArmorEffectTooltip getClientTooltip() {
-            return new ArmorEffectTooltip(TITLE, DESCRIPTION, DescribedArmorEffect.formatTrigger(this, TRIGGER_PIECE_4));
+            if (this.tooltip == null) {
+                this.tooltip = new ArmorEffectTooltip(DragonTypes.MOONLIGHT.getName(), new ArmorEffectDescriptor(
+                        Component.translatable("tooltip.armor_effect.dragonmounts.plus.moonlight"),
+                        null,
+                        TRIGGER_PIECE_4,
+                        this::isLocalActive
+                ));
+            }
+            return this.tooltip;
         }
     });
 
@@ -228,6 +258,36 @@ public class DMArmorEffects {
             "nether",
             identifier -> new DescribedArmorEffect.Advanced(identifier, DragonTypes.NETHER.getName(), 1200, TRIGGER_PIECE_4)
     );
+
+    public static final DescribedArmorEffect SCULK = registerArmorEffect(makeId("sculk"), new DescribedArmorEffect() {
+        private ArmorEffectTooltip tooltip;
+
+        @Override
+        public ArmorEffectTooltip getClientTooltip() {
+            if (this.tooltip == null) {
+                this.tooltip = new ArmorEffectTooltip(DragonTypes.SCULK.getName(), new ArmorEffectDescriptor(
+                        Component.translatable("tooltip.armor_effect.dragonmounts.plus.sculk"),
+                        null,
+                        TRIGGER_PIECE_2,
+                        this::isLocalActive
+                ), new ArmorEffectDescriptor(
+                        Component.translatable("tooltip.armor_effect.dragonmounts.plus.sculk.ultimate"),
+                        null,
+                        TRIGGER_PIECE_4,
+                        () -> {
+                            var manager = ArmorEffectManagerImpl.getLocal();
+                            return manager != null && manager.getLevel(this, true) > 3;
+                        }
+                ));
+            }
+            return this.tooltip;
+        }
+
+        @Override
+        public boolean activate(ArmorEffectManager manager, Player player, int level) {
+            return level > 1;
+        }
+    });
 
     public static final DescribedArmorEffect.Advanced STORM = registerArmorEffect(
             "storm",
@@ -255,17 +315,24 @@ public class DMArmorEffects {
         }
 
         @Override
-        public List<Component> getDescription() {
-            var tooltips = new ObjectArrayList<Component>();
-            tooltips.add(FISHING_LUCK);
-            tooltips.add(this.description);
-            return tooltips;
+        public ArmorEffectTooltip makeClientTooltip() {
+            BooleanSupplier predicate = this::isLocalActive;
+            return new ArmorEffectTooltip(this.title, new ArmorEffectDescriptor(
+                    FISHING_LUCK,
+                    null,
+                    this.trigger,
+                    predicate
+            ), new ArmorEffectDescriptor(
+                    Component.translatable(Util.makeDescriptionId("tooltip.armor_effect", this.identifier)),
+                    this::getCooldownInfo,
+                    null,
+                    predicate
+            ));
         }
     });
 
     public static final DescribedArmorEffect TERRA = registerArmorEffect(makeId("terra"), new DescribedArmorEffect() {
-        private static final Component TITLE = DragonTypes.TERRA.getName();
-        private static final List<Component> DESCRIPTION = Collections.singletonList(Component.translatable("tooltip.armor_effect.dragonmounts.plus.terra"));
+        private ArmorEffectTooltip tooltip;
 
         @Override
         public boolean activate(ArmorEffectManager manager, Player player, int level) {
@@ -278,13 +345,20 @@ public class DMArmorEffects {
 
         @Override
         public ArmorEffectTooltip getClientTooltip() {
-            return new ArmorEffectTooltip(TITLE, DESCRIPTION, DescribedArmorEffect.formatTrigger(this, TRIGGER_PIECE_4));
+            if (this.tooltip == null) {
+                this.tooltip = new ArmorEffectTooltip(DragonTypes.TERRA.getName(), new ArmorEffectDescriptor(
+                        Component.translatable("tooltip.armor_effect.dragonmounts.plus.terra"),
+                        null,
+                        TRIGGER_PIECE_4,
+                        this::isLocalActive
+                ));
+            }
+            return this.tooltip;
         }
     });
 
     public static final DescribedArmorEffect WATER = registerArmorEffect(makeId("water"), new DescribedArmorEffect() {
-        private static final Component TITLE = DragonTypes.WATER.getName();
-        private static final List<Component> DESCRIPTION = Collections.singletonList(Component.translatable("tooltip.armor_effect.dragonmounts.plus.water"));
+        private ArmorEffectTooltip tooltip;
 
         @Override
         public boolean activate(ArmorEffectManager manager, Player player, int level) {
@@ -297,7 +371,15 @@ public class DMArmorEffects {
 
         @Override
         public ArmorEffectTooltip getClientTooltip() {
-            return new ArmorEffectTooltip(TITLE, DESCRIPTION, DescribedArmorEffect.formatTrigger(this, TRIGGER_PIECE_4));
+            if (this.tooltip == null) {
+                this.tooltip = new ArmorEffectTooltip(DragonTypes.WATER.getName(), new ArmorEffectDescriptor(
+                        Component.translatable("tooltip.armor_effect.dragonmounts.plus.water"),
+                        null,
+                        TRIGGER_PIECE_4,
+                        this::isLocalActive
+                ));
+            }
+            return this.tooltip;
         }
     });
 

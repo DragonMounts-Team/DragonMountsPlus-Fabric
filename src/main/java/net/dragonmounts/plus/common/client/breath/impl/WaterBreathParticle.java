@@ -21,7 +21,7 @@ public class WaterBreathParticle extends BreathParticle {
     }
 
     @Override
-    protected void spawnChildParticle() {
+    protected void tickIfAlive() {
         if (this.random.nextFloat() <= NORMAL_PARTICLE_CHANCE && this.random.nextFloat() < this.node.getLifetimeFraction()) {
             this.level.addParticle(
                     this.getChildParticle(),

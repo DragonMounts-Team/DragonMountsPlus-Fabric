@@ -7,13 +7,7 @@ import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.ParticleProvider;
 import org.jetbrains.annotations.Nullable;
 
-public class BreathParticleProvider implements ParticleProvider<BreathParticleOption> {
-    private final FabricSpriteProvider sprite;
-
-    public BreathParticleProvider(FabricSpriteProvider sprite) {
-        this.sprite = sprite;
-    }
-
+public record BreathParticleProvider(FabricSpriteProvider sprite) implements ParticleProvider<BreathParticleOption> {
     @Override
     public @Nullable Particle createParticle(BreathParticleOption option, ClientLevel level, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {
         return option.variant().appearance.createBreathParticle(option, this.sprite.getAtlas(), level, x, y, z, xSpeed, ySpeed, zSpeed);

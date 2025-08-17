@@ -7,12 +7,9 @@ import net.dragonmounts.plus.common.component.DragonFood;
 import net.dragonmounts.plus.common.entity.dragon.DragonLifeStage;
 import net.dragonmounts.plus.common.entity.dragon.TameableDragonEntity;
 import net.dragonmounts.plus.common.init.DMSounds;
-import net.dragonmounts.plus.common.item.DragonArmorItem;
 import net.dragonmounts.plus.common.tag.DMItemTags;
 import net.dragonmounts.plus.common.util.math.MathUtil;
-import net.dragonmounts.plus.compat.platform.PlatformItemTags;
 import net.dragonmounts.plus.compat.registry.DragonType;
-import net.minecraft.core.Holder;
 import net.minecraft.network.protocol.game.ClientboundAddEntityPacket;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
@@ -22,8 +19,6 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.SaddleItem;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
@@ -117,21 +112,18 @@ public class ClientDragonEntity extends TameableDragonEntity {
         this.lastType = type;
     }
 
-    @SuppressWarnings("deprecation")
     @Override
     public @NotNull InteractionResult mobInteract(Player player, InteractionHand hand) {
         var stack = player.getItemInHand(hand);
-        if (DragonFood.isDragonFood(stack)) return InteractionResult.CONSUME;
+        if (!this.isBreathing() && DragonFood.isDragonFood(stack)) return InteractionResult.CONSUME;
         if (this.isOwnedBy(player)) {
-            var item = stack.getItem();
-            if (item instanceof SaddleItem || item instanceof DragonArmorItem) {
-                return InteractionResult.CONSUME;
-            }
-            Holder.Reference<Item> holder = item.builtInRegistryHolder();
-            if (holder.is(DMItemTags.BATONS) || holder.is(PlatformItemTags.WOODEN_CHESTS)) {
-                return InteractionResult.CONSUME;
-            }
-            return InteractionResult.CONSUME;
+            if (isBodyArmorItem(stack)
+                    || this.inventory.isSaddle(stack)
+                    || this.inventory.isChest(stack)
+                    || stack.is(DMItemTags.BATONS)
+            ) return InteractionResult.CONSUME;
+            var result = stack.interactLivingEntity(player, this, hand);
+            return result.consumesAction() ? result : InteractionResult.CONSUME;
         }
         return InteractionResult.PASS;
     }
