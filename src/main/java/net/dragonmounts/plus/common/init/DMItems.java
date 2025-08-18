@@ -9,20 +9,29 @@ import net.dragonmounts.plus.compat.registry.BlockItemHolder;
 import net.dragonmounts.plus.compat.registry.DragonScaleArmorSuit;
 import net.dragonmounts.plus.compat.registry.DragonType;
 import net.dragonmounts.plus.compat.registry.ItemHolder;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.EquipmentSlotGroup;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Item.Properties;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.ToolMaterial;
+import net.minecraft.world.item.component.ItemAttributeModifiers;
 import net.minecraft.world.item.equipment.ArmorMaterial;
 import net.minecraft.world.item.equipment.ArmorType;
+import net.minecraft.world.item.equipment.Equippable;
 import net.minecraft.world.level.block.DispenserBlock;
 
 import static net.dragonmounts.plus.common.init.DMItemGroups.*;
 import static net.dragonmounts.plus.compat.registry.DragonScaleArmorSuit.makeSuit;
 import static net.dragonmounts.plus.compat.registry.ItemHolder.registerItem;
+import static net.minecraft.resources.ResourceLocation.withDefaultNamespace;
 
 public class DMItems {
     public static final BlockItemHolder<DragonCoreBlock, ?> DRAGON_CORE = BlockItemHolder.registerItem(
@@ -131,11 +140,12 @@ public class DMItems {
     public static final ItemHolder<DragonScalesItem> ZOMBIE_DRAGON_SCALES = ITEM_TAB.register("zombie_dragon_scales", props -> makeDragonScales(DragonTypes.ZOMBIE, props));
     public static final ItemHolder<DragonScalesItem> DARK_DRAGON_SCALES = ITEM_TAB.register("dark_dragon_scales", props -> makeDragonScales(DragonTypes.DARK, props));
     // Dragon Armor
-    public static final ItemHolder<DragonArmorItem> IRON_DRAGON_ARMOR = TOOL_TAB.register("iron_dragon_armor", props -> makeDragonArmor(DragonArmorMaterials.IRON, props));
-    public static final ItemHolder<DragonArmorItem> GOLDEN_DRAGON_ARMOR = TOOL_TAB.register("golden_dragon_armor", props -> makeDragonArmor(DragonArmorMaterials.GOLD, props));
-    public static final ItemHolder<DragonArmorItem> EMERALD_DRAGON_ARMOR = TOOL_TAB.register("emerald_dragon_armor", props -> makeDragonArmor(DragonArmorMaterials.EMERALD, props));
-    public static final ItemHolder<DragonArmorItem> DIAMOND_DRAGON_ARMOR = TOOL_TAB.register("diamond_dragon_armor", props -> makeDragonArmor(DragonArmorMaterials.DIAMOND, props));
-    public static final ItemHolder<DragonArmorItem> NETHERITE_DRAGON_ARMOR = TOOL_TAB.register("netherite_dragon_armor", props -> makeDragonArmor(DragonArmorMaterials.NETHERITE, props.fireResistant()));
+    public static final ItemHolder<Item> COPPER_DRAGON_ARMOR = registerItem("copper_dragon_armor", props -> makeDragonArmor(DragonArmorMaterials.COPPER, props));
+    public static final ItemHolder<Item> IRON_DRAGON_ARMOR = TOOL_TAB.register("iron_dragon_armor", props -> makeDragonArmor(DragonArmorMaterials.IRON, props));
+    public static final ItemHolder<Item> GOLDEN_DRAGON_ARMOR = TOOL_TAB.register("golden_dragon_armor", props -> makeDragonArmor(DragonArmorMaterials.GOLD, props));
+    public static final ItemHolder<Item> EMERALD_DRAGON_ARMOR = TOOL_TAB.register("emerald_dragon_armor", props -> makeDragonArmor(DragonArmorMaterials.EMERALD, props));
+    public static final ItemHolder<Item> DIAMOND_DRAGON_ARMOR = TOOL_TAB.register("diamond_dragon_armor", props -> makeDragonArmor(DragonArmorMaterials.DIAMOND, props));
+    public static final ItemHolder<Item> NETHERITE_DRAGON_ARMOR = TOOL_TAB.register("netherite_dragon_armor", props -> makeDragonArmor(DragonArmorMaterials.NETHERITE, props.fireResistant()));
     // Dragon Scale Swords
     public static final ItemHolder<DragonScaleSwordItem> AETHER_DRAGON_SCALE_SWORD = TOOL_TAB.register("aether_dragon_scale_sword", props -> makeDragonScaleSword(DragonTypes.AETHER, props));
     public static final ItemHolder<DragonScaleSwordItem> WATER_DRAGON_SCALE_SWORD = TOOL_TAB.register("water_dragon_scale_sword", props -> makeDragonScaleSword(DragonTypes.WATER, props));
@@ -525,8 +535,22 @@ public class DMItems {
         return item;
     }
 
-    static DragonArmorItem makeDragonArmor(ArmorMaterial material, Properties props) {
-        return new DragonArmorItem(material, props.stacksTo(1));
+    static Item makeDragonArmor(ArmorMaterial material, Properties props) {
+        var builder = ItemAttributeModifiers.builder();
+        var group = EquipmentSlotGroup.bySlot(ArmorType.BODY.getSlot());
+        var name = withDefaultNamespace("armor." + ArmorType.BODY.getName());
+        builder.add(Attributes.ARMOR, new AttributeModifier(name, material.defense().getOrDefault(ArmorType.BODY, 0), AttributeModifier.Operation.ADD_VALUE), group);
+        builder.add(Attributes.ARMOR_TOUGHNESS, new AttributeModifier(name, material.toughness(), AttributeModifier.Operation.ADD_VALUE), group);
+        if (material.knockbackResistance() > 0.0F) {
+            builder.add(Attributes.KNOCKBACK_RESISTANCE, new AttributeModifier(name, material.knockbackResistance(), AttributeModifier.Operation.ADD_VALUE), group);
+        }
+        return new Item(props.component(DataComponents.EQUIPPABLE, Equippable.builder(EquipmentSlot.BODY)
+                .setEquipSound(SoundEvents.HORSE_ARMOR)
+                .setAsset(material.assetId())
+                .setAllowedEntities(DMEntities.TAMEABLE_DRAGON.get())
+                .setDamageOnHurt(false)
+                .build()
+        ).stacksTo(1).attributes(builder.build()));
     }
 
     static DragonEssenceItem makeDragonEssence(DragonType type, Properties props) {

@@ -1,6 +1,5 @@
 package net.dragonmounts.plus.data;
 
-import net.dragonmounts.plus.common.init.DragonArmorMaterials;
 import net.dragonmounts.plus.compat.registry.DragonType;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.minecraft.client.resources.model.EquipmentClientInfo;
@@ -17,40 +16,18 @@ import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.BiConsumer;
 
-import static net.minecraft.resources.ResourceLocation.withDefaultNamespace;
-
-public class DMEquipmentAssetProvider implements DataProvider {
-    private static EquipmentClientInfo makeAsset(String name) {
-        return EquipmentClientInfo.builder()
-                .addHumanoidLayers(withDefaultNamespace(name))
-                .addLayers(
-                        EquipmentClientInfo.LayerType.HORSE_BODY,
-                        EquipmentClientInfo.Layer.leatherDyeable(withDefaultNamespace(name), false))
-                .build();
+public record DMEquipmentAssetProvider(PackOutput.PathProvider path) implements DataProvider {
+    public static DMEquipmentAssetProvider from(FabricDataOutput output) {
+        return new DMEquipmentAssetProvider(output.createPathProvider(PackOutput.Target.RESOURCE_PACK, "equipment"));
     }
 
     private static void bootstrap(BiConsumer<ResourceKey<EquipmentAsset>, EquipmentClientInfo> output) {
-        output.accept(DragonArmorMaterials.IRON.assetId(), makeAsset("iron"));
-        output.accept(DragonArmorMaterials.GOLD.assetId(), makeAsset("gold"));
-        output.accept(DragonArmorMaterials.DIAMOND.assetId(), makeAsset("diamond"));
-        output.accept(DragonArmorMaterials.EMERALD.assetId(), EquipmentClientInfo.builder().addLayers(
-                // emeralds go well with wandering traders' llamas (x
-                EquipmentClientInfo.LayerType.LLAMA_BODY,
-                new EquipmentClientInfo.Layer(withDefaultNamespace("trader_llama"))
-        ).build());
-        output.accept(DragonArmorMaterials.NETHERITE.assetId(), EquipmentClientInfo.builder().addHumanoidLayers(withDefaultNamespace("netherite")).build());
         for (var type : DragonType.REGISTRY) {
             var material = type.material;
             if (material == ArmorMaterials.ARMADILLO_SCUTE) continue;
             var key = material.assetId();
             output.accept(key, EquipmentClientInfo.builder().addHumanoidLayers(key.location()).build());
         }
-    }
-
-    private final PackOutput.PathProvider pathProvider;
-
-    public DMEquipmentAssetProvider(FabricDataOutput output) {
-        this.pathProvider = output.createPathProvider(PackOutput.Target.RESOURCE_PACK, "equipment");
     }
 
     @Override
@@ -61,7 +38,7 @@ public class DMEquipmentAssetProvider implements DataProvider {
                 throw new IllegalStateException("Tried to register equipment asset twice for id: " + key);
             }
         });
-        return DataProvider.saveAll(output, EquipmentClientInfo.CODEC, this.pathProvider::json, map);
+        return DataProvider.saveAll(output, EquipmentClientInfo.CODEC, this.path::json, map);
     }
 
     @Override

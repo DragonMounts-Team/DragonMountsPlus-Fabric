@@ -3,8 +3,8 @@
   "category": "misc",
   "cookingtime": 200,
   "experience": 0.7,
-  "ingredient": "dragonmounts.plus:iron_dragon_armor",
+  "ingredient": "dragonmounts.plus:copper_dragon_armor",
   "result": {
-    "id": "minecraft:iron_ingot"
+    "id": "minecraft:copper_ingot"
   }
 }

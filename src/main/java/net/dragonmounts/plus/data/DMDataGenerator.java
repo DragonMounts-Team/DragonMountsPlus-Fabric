@@ -30,7 +30,7 @@ public class DMDataGenerator implements DataGeneratorEntrypoint {
         var block = pack.addProvider(DMBlockTagProvider::new);
         pack.addProvider((output, future) -> new DMItemTagProvider(output, future, block));
         pack.addProvider(DMRecipeProvider.Factory::new);
-        pack.addProvider(DMEquipmentAssetProvider::new);
+        pack.addProvider(DMEquipmentAssetProvider::from);
         pack.addProvider(DMDynamicProvider::new);
         pack.addProvider(DMBlockLootProvider::new);
         pack.addProvider(DMChestLootProvider::new);

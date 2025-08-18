@@ -42,13 +42,19 @@ public class DMRecipeProvider extends RecipeProvider {
     public void buildRecipes() {
         var output = this.output;
         var registry = Registries.RECIPE;
-        smelting(Ingredient.of(DMItems.IRON_DRAGON_ARMOR), RecipeCategory.MISC, Items.IRON_INGOT, 1.0F, 200)
+        smelting(Ingredient.of(DMItems.COPPER_DRAGON_ARMOR), RecipeCategory.MISC, Items.COPPER_INGOT, 0.7F, 200)
+                .unlockedBy("has_armor", has(DMItems.COPPER_DRAGON_ARMOR))
+                .save(output, makeKey(registry, "copper_ingot_form_smelting"));
+        smelting(Ingredient.of(DMItems.IRON_DRAGON_ARMOR), RecipeCategory.MISC, Items.IRON_INGOT, 0.7F, 200)
                 .unlockedBy("has_armor", has(DMItems.IRON_DRAGON_ARMOR))
                 .save(output, makeKey(registry, "iron_ingot_form_smelting"));
         smelting(Ingredient.of(DMItems.GOLDEN_DRAGON_ARMOR), RecipeCategory.MISC, Items.GOLD_INGOT, 1.0F, 200)
                 .unlockedBy("has_armor", has(DMItems.GOLDEN_DRAGON_ARMOR))
                 .save(output, makeKey(registry, "gold_ingot_form_smelting"));
-        blasting(Ingredient.of(DMItems.IRON_DRAGON_ARMOR), RecipeCategory.MISC, Items.IRON_INGOT, 1.0F, 100)
+        blasting(Ingredient.of(DMItems.COPPER_DRAGON_ARMOR), RecipeCategory.MISC, Items.COPPER_INGOT, 0.7F, 100)
+                .unlockedBy("has_armor", has(DMItems.COPPER_DRAGON_ARMOR))
+                .save(output, makeKey(registry, "copper_ingot_form_blasting"));
+        blasting(Ingredient.of(DMItems.IRON_DRAGON_ARMOR), RecipeCategory.MISC, Items.IRON_INGOT, 0.7F, 100)
                 .unlockedBy("has_armor", has(DMItems.IRON_DRAGON_ARMOR))
                 .save(output, makeKey(registry, "iron_ingot_form_blasting"));
         blasting(Ingredient.of(DMItems.GOLDEN_DRAGON_ARMOR), RecipeCategory.MISC, Items.GOLD_INGOT, 1.0F, 100)
@@ -57,6 +63,7 @@ public class DMRecipeProvider extends RecipeProvider {
         cook(100, (desc, time, method) -> method.cook(
                 Ingredient.of(DMItems.DRAGON_MEAT), RecipeCategory.FOOD, DMItems.COOKED_DRAGON_MEAT, 0.35F, time
         ).unlockedBy("has_meat", has(DMItems.DRAGON_MEAT)).save(this.output, makeKey(Registries.RECIPE, "cooked_dragon_meat_form_" + desc)));
+        this.dragonArmor(ConventionalItemTags.COPPER_INGOTS, ConventionalItemTags.STORAGE_BLOCKS_COPPER, DMItems.COPPER_DRAGON_ARMOR);
         this.dragonArmor(ConventionalItemTags.IRON_INGOTS, ConventionalItemTags.STORAGE_BLOCKS_IRON, DMItems.IRON_DRAGON_ARMOR);
         this.dragonArmor(ConventionalItemTags.GOLD_INGOTS, ConventionalItemTags.STORAGE_BLOCKS_GOLD, DMItems.GOLDEN_DRAGON_ARMOR);
         this.dragonArmor(ConventionalItemTags.EMERALD_GEMS, ConventionalItemTags.STORAGE_BLOCKS_EMERALD, DMItems.EMERALD_DRAGON_ARMOR);
@@ -87,7 +94,7 @@ public class DMRecipeProvider extends RecipeProvider {
                 RecipeCategory.TOOLS,
                 DMItems.NETHERITE_SHEARS.get()
         ).unlocks("has_netherite_ingot", this.has(ItemTags.NETHERITE_TOOL_MATERIALS))
-                .save(this.output, makeKey(registry, "netherite_shears_from_smithing"));
+                .save(output, makeKey(registry, "netherite_shears_from_smithing"));
         this.shaped(RecipeCategory.REDSTONE, Items.DISPENSER)
                 .define('R', ConventionalItemTags.REDSTONE_DUSTS)
                 .define('#', ConventionalItemTags.COBBLESTONES)
@@ -98,13 +105,13 @@ public class DMRecipeProvider extends RecipeProvider {
                 .unlockedBy("has_bow", has(DMItemTags.DRAGON_SCALE_BOWS))
                 .save(output, makeKey(registry, getItemName(Blocks.DISPENSER)));
         this.shaped(RecipeCategory.TOOLS, DMItems.AMULET)
-                .define('#', ConventionalItemTags.STRINGS)
-                .define('Y', ConventionalItemTags.COBBLESTONES)
-                .define('X', ConventionalItemTags.ENDER_PEARLS)
+                .define('O', Items.ENDER_EYE)
+                .define('Y', ConventionalItemTags.STRINGS)
+                .define('#', ConventionalItemTags.GLASS_BLOCKS_COLORLESS)
                 .pattern(" Y ")
-                .pattern("#X#")
+                .pattern("#O#")
                 .pattern(" # ")
-                .unlockedBy("has_pearls", has(ConventionalItemTags.ENDER_PEARLS))
+                .unlockedBy("has_ender_eye", has(Items.ENDER_EYE))
                 .save(output);
         this.shaped(RecipeCategory.DECORATIONS, DMBlocks.DRAGON_NEST)
                 .define('X', ConventionalItemTags.WOODEN_RODS)
@@ -114,12 +121,11 @@ public class DMRecipeProvider extends RecipeProvider {
                 .unlockedBy("has_sticks", has(ConventionalItemTags.WOODEN_RODS))
                 .save(output);
         this.shaped(RecipeCategory.TOOLS, DMItems.FLUTE)
-                .define('P', ConventionalItemTags.WOODEN_RODS)
-                .define('#', ConventionalItemTags.ENDER_PEARLS)
+                .define('#', ConventionalItemTags.WOODEN_RODS)
                 .define('X', ConventionalItemTags.STRINGS)
-                .pattern("P#")
+                .pattern("X#")
                 .pattern("#X")
-                .unlockedBy("has_pearls", has(ConventionalItemTags.ENDER_PEARLS))
+                .unlockedBy("has_string", has(ConventionalItemTags.STRINGS))
                 .save(output);
         this.shaped(RecipeCategory.TOOLS, Items.SADDLE)
                 .define('#', ConventionalItemTags.IRON_INGOTS)

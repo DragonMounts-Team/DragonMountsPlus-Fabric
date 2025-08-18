@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "group": "dragonmounts.plus.dragon_armor",
+  "key": {
+    "#": "#c:ingots/copper",
+    "X": "#c:storage_blocks/copper"
+  },
+  "pattern": [
+    "X #",
+    " XX",
+    "## "
+  ],
+  "result": {
+    "count": 1,
+    "id": "dragonmounts.plus:copper_dragon_armor"
+  }
+}

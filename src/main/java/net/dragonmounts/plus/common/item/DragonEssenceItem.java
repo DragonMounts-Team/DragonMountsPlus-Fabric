@@ -29,7 +29,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.LiquidBlock;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.phys.BlockHitResult;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -104,7 +103,7 @@ public class DragonEssenceItem extends Item implements DragonTypified, EntityCon
     }
 
     @Override
-    public @NotNull ItemStack saveEntity(TameableDragonEntity entity, DataComponentPatch patch) {
+    public ItemStack saveEntity(TameableDragonEntity entity, DataComponentPatch patch) {
         var stack = new ItemStack(this);
         var tag = saveWithId(entity, new CompoundTag());
         tag.remove(FLYING_DATA_PARAMETER_KEY);

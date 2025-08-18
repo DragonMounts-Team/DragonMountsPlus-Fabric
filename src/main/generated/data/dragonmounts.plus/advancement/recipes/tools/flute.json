@@ -1,11 +1,11 @@
 {
   "parent": "minecraft:recipes/root",
   "criteria": {
-    "has_pearls": {
+    "has_string": {
       "conditions": {
         "items": [
           {
-            "items": "#c:ender_pearls"
+            "items": "#c:strings"
           }
         ]
       },
@@ -21,7 +21,7 @@
   "requirements": [
     [
       "has_the_recipe",
-      "has_pearls"
+      "has_string"
     ]
   ],
   "rewards": {

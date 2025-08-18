@@ -2,13 +2,13 @@
   "type": "minecraft:crafting_shaped",
   "category": "equipment",
   "key": {
-    "#": "#c:strings",
-    "X": "#c:ender_pearls",
-    "Y": "#c:cobblestones"
+    "#": "#c:glass_blocks/colorless",
+    "O": "minecraft:ender_eye",
+    "Y": "#c:strings"
   },
   "pattern": [
     " Y ",
-    "#X#",
+    "#O#",
     " # "
   ],
   "result": {

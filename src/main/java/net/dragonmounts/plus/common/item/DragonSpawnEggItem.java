@@ -36,7 +36,6 @@ import net.minecraft.world.level.block.entity.TrialSpawnerBlockEntity;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Objects;
@@ -178,7 +177,7 @@ public class DragonSpawnEggItem extends SpawnEggItem implements EntityContainer<
     }
 
     @Override
-    public @NotNull ItemStack saveEntity(Entity entity, DataComponentPatch patch) {
+    public ItemStack saveEntity(Entity entity, DataComponentPatch patch) {
         if (entity instanceof TameableDragonEntity) {
             return EntityContainer.saveEntityData(this, saveWithId(entity, new CompoundTag()), patch);
         }

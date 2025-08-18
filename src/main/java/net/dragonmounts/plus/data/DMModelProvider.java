@@ -74,6 +74,7 @@ public class DMModelProvider extends FabricModelProvider {
     public void generateItemModels(ItemModelGenerators gen) {
         generateFlute(gen, DMItems.FLUTE.get());
         generateFlatItem(gen, DMItems.AMULET);
+        generateFlatItem(gen, DMItems.COPPER_DRAGON_ARMOR);
         generateFlatItem(gen, DMItems.IRON_DRAGON_ARMOR);
         generateFlatItem(gen, DMItems.GOLDEN_DRAGON_ARMOR);
         generateFlatItem(gen, DMItems.EMERALD_DRAGON_ARMOR);

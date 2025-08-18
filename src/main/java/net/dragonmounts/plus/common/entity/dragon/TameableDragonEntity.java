@@ -10,12 +10,12 @@ import net.dragonmounts.plus.common.component.DragonFood;
 import net.dragonmounts.plus.common.entity.ai.control.DragonBodyControl;
 import net.dragonmounts.plus.common.entity.ai.control.DragonMoveControl;
 import net.dragonmounts.plus.common.entity.breath.DragonBreathHelper;
+import net.dragonmounts.plus.common.init.DMEntities;
 import net.dragonmounts.plus.common.init.DMItems;
 import net.dragonmounts.plus.common.init.DMSounds;
 import net.dragonmounts.plus.common.init.DragonVariants;
 import net.dragonmounts.plus.common.inventory.DragonInventory;
 import net.dragonmounts.plus.common.inventory.DragonInventoryHandler;
-import net.dragonmounts.plus.common.item.DragonArmorItem;
 import net.dragonmounts.plus.common.item.DragonScalesItem;
 import net.dragonmounts.plus.common.item.DragonSpawnEggItem;
 import net.dragonmounts.plus.common.tag.DMItemTags;
@@ -27,6 +27,7 @@ import net.dragonmounts.plus.compat.registry.DragonVariant;
 import net.dragonmounts.plus.config.ServerConfig;
 import net.dragonmounts.plus.mixin.MobAccessor;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -86,7 +87,8 @@ public abstract class TameableDragonEntity extends TamableAnimal implements
     }
 
     public static boolean isBodyArmorItem(ItemStack stack) {
-        return !stack.isEmpty() && stack.getItem() instanceof DragonArmorItem;
+        var equippable = stack.get(DataComponents.EQUIPPABLE);
+        return equippable != null && EquipmentSlot.BODY == equippable.slot() && equippable.canBeEquippedBy(DMEntities.TAMEABLE_DRAGON.get());
     }
 
     public static AttributeSupplier.Builder createAttributes() {

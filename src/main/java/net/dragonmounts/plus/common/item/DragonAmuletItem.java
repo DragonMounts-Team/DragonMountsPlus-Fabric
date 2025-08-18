@@ -22,7 +22,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.component.CustomData;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -64,7 +63,7 @@ public class DragonAmuletItem extends AmuletItem<TameableDragonEntity> implement
     }
 
     @Override
-    public @NotNull ItemStack saveEntity(TameableDragonEntity entity, DataComponentPatch patch) {
+    public ItemStack saveEntity(TameableDragonEntity entity, DataComponentPatch patch) {
         var level = entity.level();
         var stack = new ItemStack(this);
         var tag = saveWithId(entity, new CompoundTag());
