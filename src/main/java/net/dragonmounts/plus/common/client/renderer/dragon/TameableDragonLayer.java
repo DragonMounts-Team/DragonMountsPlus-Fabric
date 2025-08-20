@@ -11,6 +11,7 @@ import net.minecraft.core.component.DataComponents;
 import net.minecraft.util.ARGB;
 import net.minecraft.util.Mth;
 
+import static net.minecraft.client.renderer.LightTexture.FULL_BRIGHT;
 import static net.minecraft.client.renderer.RenderType.armorCutoutNoCull;
 import static net.minecraft.client.renderer.entity.ItemRenderer.getArmorFoilBuffer;
 
@@ -21,21 +22,17 @@ public class TameableDragonLayer extends RenderLayer<DragonRenderState, DragonMo
 
     @Override
     public void render(PoseStack matrices, MultiBufferSource buffers, int light, DragonRenderState state, float yRot, float xRot) {
-        var model = this.getParentModel();
         var appearance = state.variant.appearance;
-        int onOverlay = OverlayTexture.NO_OVERLAY;
+        var model = appearance.getModel();
         if (!state.isInvisible) {
             if (state.deathTime > 0) {
-                boolean hurt = state.hurtTime > 0;
-                model.renderToBuffer(matrices, buffers.getBuffer(appearance.getDissolve(state)), light, onOverlay, ARGB.color(
-                        Mth.floor(state.deathTime * 255.0F / state.maxDeathTime), -1
-                ));
-                model.renderToBuffer(matrices, buffers.getBuffer(appearance.getDecal(state)), light, OverlayTexture.pack(0.0F, hurt));
-                model.renderToBuffer(matrices, buffers.getBuffer(appearance.getGlowDecal(state)), 15728640, OverlayTexture.pack(0.0F, hurt));
+                int color = ARGB.color(Mth.floor(state.deathTime * 255.0F / state.maxDeathTime), -1);
+                model.renderToBuffer(matrices, buffers.getBuffer(appearance.getDecal(state)), light, OverlayTexture.pack(0.0F, state.hurtTime > 0), color);
+                model.renderToBuffer(matrices, buffers.getBuffer(appearance.getGlowDecal(state)), FULL_BRIGHT, OverlayTexture.NO_OVERLAY, color);
                 return;
             }
             //glow
-            model.renderToBuffer(matrices, buffers.getBuffer(appearance.getGlow(state)), 15728640, onOverlay);
+            model.renderToBuffer(matrices, buffers.getBuffer(appearance.getGlow(state)), FULL_BRIGHT, OverlayTexture.NO_OVERLAY);
         }
         //saddle
         if (state.isSaddled) {
@@ -48,8 +45,8 @@ public class TameableDragonLayer extends RenderLayer<DragonRenderState, DragonMo
         //armor
         var equippable = state.armor.get(DataComponents.EQUIPPABLE);
         if (equippable == null) return;
-        var texture = equippable.assetId().map(DragonArmorMaterials::getTexture).orElse(null);
+        var texture = DragonArmorMaterials.getTexture(equippable.assetId());
         if (texture == null) return;
-        model.renderToBuffer(matrices, getArmorFoilBuffer(buffers, armorCutoutNoCull(texture), state.armor.hasFoil()), light, onOverlay);
+        model.renderToBuffer(matrices, getArmorFoilBuffer(buffers, armorCutoutNoCull(texture), state.armor.hasFoil()), light, OverlayTexture.NO_OVERLAY);
     }
 }

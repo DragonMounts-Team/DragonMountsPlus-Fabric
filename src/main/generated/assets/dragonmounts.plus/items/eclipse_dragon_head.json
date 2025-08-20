@@ -4,7 +4,7 @@
     "base": "minecraft:item/dragon_head",
     "model": {
       "type": "dragonmounts.plus:dragon_head",
-      "variant": "dragonmounts.plus:fire_rare"
+      "variant": "dragonmounts.plus:eclipse"
     }
   }
 }

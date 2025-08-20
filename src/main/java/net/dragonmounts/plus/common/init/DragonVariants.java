@@ -35,7 +35,7 @@ public class DragonVariants {
     public static final DragonVariant ENDER_RARE;
     public static final DragonVariant FIRE_FEMALE;
     public static final DragonVariant FIRE_MALE;
-    public static final DragonVariant FIRE_RARE;
+    public static final DragonVariant BLUE_FIRE;
     public static final DragonVariant FOREST_FEMALE;
     public static final DragonVariant FOREST_MALE;
     public static final DragonVariant FOREST_DRY_FEMALE;
@@ -46,6 +46,7 @@ public class DragonVariants {
     public static final DragonVariant ICE_MALE;
     public static final DragonVariant MOONLIGHT_FEMALE;
     public static final DragonVariant MOONLIGHT_MALE;
+    public static final DragonVariant ECLIPSE;
     public static final DragonVariant NETHER_FEMALE;
     public static final DragonVariant NETHER_MALE;
     public static final DragonVariant SOUL;
@@ -54,7 +55,7 @@ public class DragonVariants {
     public static final DragonVariant SKELETON;
     public static final DragonVariant STORM_FEMALE;
     public static final DragonVariant STORM_MALE;
-    public static final DragonVariant STORM_RARE;
+    public static final DragonVariant BRONZED_STORM;
     public static final DragonVariant SUNLIGHT_FEMALE;
     public static final DragonVariant SUNLIGHT_MALE;
     public static final DragonVariant TERRA_FEMALE;
@@ -120,7 +121,7 @@ public class DragonVariants {
         variants.add(ENDER_RARE = make(supplier, DragonTypes.ENDER, "ender_rare"));
         variants.add(FIRE_FEMALE = make(supplier, DragonTypes.FIRE, "fire_female"));
         variants.add(FIRE_MALE = make(supplier, DragonTypes.FIRE, "fire_male"));
-        variants.add(FIRE_RARE = make(supplier, DragonTypes.FIRE, "fire_rare"));
+        variants.add(BLUE_FIRE = make(supplier, DragonTypes.FIRE, "blue_fire"));
         variants.add(FOREST_FEMALE = make(supplier, DragonTypes.FOREST, "forest_female"));
         variants.add(FOREST_MALE = make(supplier, DragonTypes.FOREST, "forest_male"));
         variants.add(FOREST_DRY_FEMALE = make(supplier, DragonTypes.FOREST, "forest_dry_female"));
@@ -131,6 +132,7 @@ public class DragonVariants {
         variants.add(ICE_MALE = make(supplier, DragonTypes.ICE, "ice_male"));
         variants.add(MOONLIGHT_FEMALE = make(supplier, DragonTypes.MOONLIGHT, "moonlight_female"));
         variants.add(MOONLIGHT_MALE = make(supplier, DragonTypes.MOONLIGHT, "moonlight_male"));
+        variants.add(ECLIPSE = make(supplier, DragonTypes.MOONLIGHT, "eclipse"));
         variants.add(NETHER_FEMALE = make(supplier, DragonTypes.NETHER, "nether_female"));
         variants.add(NETHER_MALE = make(supplier, DragonTypes.NETHER, "nether_male"));
         variants.add(SOUL = make(supplier, DragonTypes.NETHER, "soul"));
@@ -139,7 +141,7 @@ public class DragonVariants {
         variants.add(SKELETON = make(supplier, DragonTypes.SKELETON, "skeleton"));
         variants.add(STORM_FEMALE = make(supplier, DragonTypes.STORM, "storm_female"));
         variants.add(STORM_MALE = make(supplier, DragonTypes.STORM, "storm_male"));
-        variants.add(STORM_RARE = make(supplier, DragonTypes.STORM, "storm_rare"));
+        variants.add(BRONZED_STORM = make(supplier, DragonTypes.STORM, "bronzed_storm"));
         variants.add(SUNLIGHT_FEMALE = make(supplier, DragonTypes.SUNLIGHT, "sunlight_female"));
         variants.add(SUNLIGHT_MALE = make(supplier, DragonTypes.SUNLIGHT, "sunlight_male"));
         variants.add(TERRA_FEMALE = make(supplier, DragonTypes.TERRA, "terra_female"));

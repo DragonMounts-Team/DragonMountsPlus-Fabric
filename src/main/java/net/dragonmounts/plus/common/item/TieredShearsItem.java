@@ -49,7 +49,7 @@ public class TieredShearsItem extends ShearsItem {
         for (var rule : vanilla) {
             list.add(new Tool.Rule(rule.blocks(), rule.speed().map(speed -> speed * factor), rule.correctForDrops()));
         }
-        return new Tool(list.build(), 1.0F, 1);
+        return new Tool(list.build(), props.defaultMiningSpeed(), props.damagePerBlock());
     }
 
     protected final ToolMaterial tier;

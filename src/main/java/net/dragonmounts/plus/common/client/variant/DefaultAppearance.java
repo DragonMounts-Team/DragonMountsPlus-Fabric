@@ -1,9 +1,10 @@
 package net.dragonmounts.plus.common.client.variant;
 
 import net.dragonmounts.plus.common.client.DMParticleSprites;
-import net.dragonmounts.plus.common.client.breath.BreathParticle;
 import net.dragonmounts.plus.common.client.breath.BreathParticleFactory;
+import net.dragonmounts.plus.common.client.breath.impl.FlameBreathParticle;
 import net.dragonmounts.plus.common.client.model.dragon.DragonModel;
+import net.dragonmounts.plus.common.client.renderer.RenderStateAccessor;
 import net.dragonmounts.plus.common.client.renderer.dragon.DragonRenderState;
 import net.dragonmounts.plus.common.entity.breath.BreathParticleOption;
 import net.minecraft.client.model.geom.EntityModelSet;
@@ -13,16 +14,14 @@ import net.minecraft.client.particle.Particle;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.resources.ResourceLocation;
-
-import static net.dragonmounts.plus.common.util.RenderStateAccessor.ENTITY_TRANSLUCENT_EMISSIVE_DECAL;
+import org.jetbrains.annotations.Nullable;
 
 public class DefaultAppearance extends VariantAppearance {
     public final ModelLayerLocation modelLocation;
     public final BreathParticleFactory factory;
     public final ResourceLocation breath;
     public final ResourceLocation body;
-    public final RenderType bodyForShoulder;
-    public final RenderType bodyForBlock;
+    public final RenderType base;
     public final RenderType decal;
     public final RenderType glow;
     public final RenderType glowDecal;
@@ -39,11 +38,10 @@ public class DefaultAppearance extends VariantAppearance {
         this.factory = factory;
         this.breath = breath;
         this.body = body;
-        this.bodyForShoulder = RenderType.entityCutoutNoCull(body);
-        this.bodyForBlock = RenderType.entityCutoutNoCullZOffset(body);
-        this.decal = RenderType.entityDecal(body);
+        this.base = RenderType.entityCutoutNoCull(body);
+        this.decal = RenderStateAccessor.entityCutoutDecal(body, DEFAULT_DISSOLVE);
         this.glow = RenderType.entityTranslucentEmissive(glow);
-        this.glowDecal = ENTITY_TRANSLUCENT_EMISSIVE_DECAL.apply(glow);
+        this.glowDecal = RenderStateAccessor.entityTranslucentEmissiveDecal(glow, DEFAULT_DISSOLVE);
     }
 
     @Override
@@ -57,12 +55,17 @@ public class DefaultAppearance extends VariantAppearance {
     }
 
     @Override
-    public ResourceLocation getBody(DragonRenderState state) {
+    public ResourceLocation getBodyTexture(DragonRenderState state) {
         return this.body;
     }
 
     @Override
-    public RenderType getGlow(DragonRenderState state) {
+    public RenderType getBase(@Nullable DragonRenderState state) {
+        return this.base;
+    }
+
+    @Override
+    public RenderType getGlow(@Nullable DragonRenderState state) {
         return this.glow;
     }
 
@@ -77,23 +80,13 @@ public class DefaultAppearance extends VariantAppearance {
     }
 
     @Override
-    public RenderType getBodyForBlock() {
-        return this.bodyForBlock;
-    }
-
-    @Override
-    public RenderType getGlowForBlock() {
-        return this.glow;
-    }
-
-    @Override
     public Particle createBreathParticle(BreathParticleOption option, TextureAtlas atlas, ClientLevel level, double x, double y, double z, double motionX, double motionY, double motionZ) {
         return this.factory.createParticle(option, atlas.getSprite(this.breath), level, x, y, z, motionX, motionY, motionZ);
     }
 
     public static class Builder {
         public final ModelLayerLocation model;
-        public BreathParticleFactory factory = BreathParticle.FACTORY;
+        public BreathParticleFactory factory = FlameBreathParticle.FACTORY;
         public ResourceLocation breath = DMParticleSprites.FLAME_BREATH;
 
         public Builder(ModelLayerLocation model) {

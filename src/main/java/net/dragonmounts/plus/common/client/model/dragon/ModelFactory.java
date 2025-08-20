@@ -116,12 +116,16 @@ public interface ModelFactory {
         makeHindLeg(root, "right_hind_leg", NORMAL_LEG_WIDTH, LEG_LENGTH, false, PartPose.offset(11, 13, 46));
     }
 
+    @Deprecated
+    default CubeListBuilder applyWingUV(CubeListBuilder builder) {
+        return builder.texOffs(-48, 176);
+    }
+
     default void makeLeftWing(PartDefinition root) {
-        var common = CubeListBuilder.create()
+        var common = applyWingUV(CubeListBuilder.create()
                 .mirror(true)
                 .texOffs(0, 172)
-                .addBox(0, -1, -1, 70, 2, 2)
-                .texOffs(-49, 176)
+                .addBox(0, -1, -1, 70, 2, 2))
                 .addBox(0, 0, 1, 70, 0, 48, TOP_SURFACE);
         var fingers = root.addOrReplaceChild(
                 "left_wing",
@@ -155,16 +159,13 @@ public interface ModelFactory {
     }
 
     default void makeRightWing(PartDefinition root) {
-        var common = CubeListBuilder.create()
-                .mirror(false)
+        var common = applyWingUV(CubeListBuilder.create()
                 .texOffs(0, 172)
-                .addBox(-70, -1, -1, 70, 2, 2)
-                .texOffs(-49, 176)
+                .addBox(-70, -1, -1, 70, 2, 2))
                 .addBox(-70, 0, 1, 70, 0, 48, TOP_SURFACE);
         var fingers = root.addOrReplaceChild(
                 "right_wing",
                 CubeListBuilder.create()
-                        .mirror(false)
                         .texOffs(0, 152)
                         .addBox(-28, -3, -3, 28, 6, 6)
                         .texOffs(116, 232)
@@ -183,7 +184,6 @@ public interface ModelFactory {
         fingers.addOrReplaceChild(
                 "3",
                 CubeListBuilder.create()
-                        .mirror(false)
                         .texOffs(0, 172)
                         .addBox(-70, -1, -1, 70, 2, 2)
                         .texOffs(-32, 224)

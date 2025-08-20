@@ -6,6 +6,7 @@ import static net.dragonmounts.plus.common.DragonMountsShared.makeId;
 
 public interface DMParticleSprites {
     ResourceLocation FLAME_BREATH = makeId("breath_fire");
+    ResourceLocation BLUE_FLAME_BREATH = makeId("breath_blue_fire");
     ResourceLocation AIRFLOW_BREATH = makeId("breath_air");
     ResourceLocation DARK_BREATH = makeId("breath_dark");
     ResourceLocation ENDER_BREATH = makeId("breath_acid");

@@ -119,7 +119,7 @@ public class DragonMounts implements ModInitializer, ServerPlayConnectionEvents.
     @Override
     public void onServerStarting(MinecraftServer server) {
         RUNNING_SERVER = server;
-        ServerConfig.INSTANCE.getEntries().forEach(ConfigEntry::reset);
+        ServerConfig.INSTANCE.getEntries().forEach(ConfigEntry::revert);
     }
 
     @Override

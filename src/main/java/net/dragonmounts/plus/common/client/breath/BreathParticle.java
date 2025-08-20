@@ -10,8 +10,6 @@ import net.minecraft.client.particle.TextureSheetParticle;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.particles.ParticleOptions;
-import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.border.WorldBorder;
@@ -21,10 +19,9 @@ import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.NotNull;
 
-public class BreathParticle extends TextureSheetParticle implements BreathNodeHost {
+public abstract class BreathParticle extends TextureSheetParticle implements BreathNodeHost {
     public static final float NORMAL_PARTICLE_CHANCE = 0.1F;
     public static final float SPECIAL_PARTICLE_CHANCE = 0.3F;
-    public static final BreathParticleFactory FACTORY = BreathParticle::new;
     public final BreathNode node;
     private boolean collided;
     private boolean inWater;
@@ -60,19 +57,7 @@ public class BreathParticle extends TextureSheetParticle implements BreathNodeHo
         return this.node.getCurrentRenderDiameter();
     }
 
-    protected ParticleOptions getChildParticle() {
-        return this.random.nextFloat() <= SPECIAL_PARTICLE_CHANCE ? ParticleTypes.LARGE_SMOKE : ParticleTypes.SMOKE;
-    }
-
-    protected void tickIfAlive() {
-        if (this.inWater) {
-            // smoke / steam when hitting water.  node is responsible for aging to death
-            this.level.addParticle(this.getChildParticle(), this.x, this.y, this.z, 0, 0, 0);
-        } else if (this.random.nextFloat() <= NORMAL_PARTICLE_CHANCE && this.random.nextFloat() < this.node.getLifetimeFraction()) {
-            // spawn a smoke trail after some time
-            this.level.addParticle(this.getChildParticle(), this.x, this.y, this.z, this.xd * 0.5, this.yd * 0.5, this.zd * 0.5);
-        }
-    }
+    protected abstract void tickIfAlive();
 
     @Override
     public final float getQuadSize(float partialTicks) {

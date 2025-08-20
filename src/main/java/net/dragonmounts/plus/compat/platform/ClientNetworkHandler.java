@@ -122,8 +122,8 @@ public class ClientNetworkHandler {
     }
 
     public static void handleSyncConfig(S2CSyncConfigPayload payload, ClientPlayNetworking.Context ignored) {
-        ServerConfig.INSTANCE.getEntries().forEach(ConfigEntry::reset);
         if (ClientUtil.isRemoteServer()) {
+            ServerConfig.INSTANCE.getEntries().forEach(ConfigEntry::reset);
             for (var config : payload.entries()) {
                 var entry = ServerConfig.INSTANCE.getEntry(config.id());
                 if (entry == null) continue;

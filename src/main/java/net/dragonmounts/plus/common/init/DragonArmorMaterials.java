@@ -6,9 +6,11 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.equipment.*;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.EnumMap;
+import java.util.Optional;
 
 import static net.dragonmounts.plus.common.DragonMountsShared.makeId;
 import static net.minecraft.resources.ResourceLocation.withDefaultNamespace;
@@ -33,7 +35,6 @@ public class DragonArmorMaterials {
         defense.put(ArmorType.HELMET, 2);
         defense.put(ArmorType.BODY, 2);
         COPPER = new ArmorMaterial(11, defense, 8, SoundEvents.ARMOR_EQUIP_GENERIC, 0.0F, 0.0F, ItemTags.REPAIRS_GOLD_ARMOR, asset);
-
     }
 
     static {
@@ -77,7 +78,8 @@ public class DragonArmorMaterials {
         }
     }
 
-    public static @Nullable ResourceLocation getTexture(ResourceKey<EquipmentAsset> asset) {
-        return TEXTURES.get(asset);
+    @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
+    public static @Nullable ResourceLocation getTexture(@NotNull Optional<ResourceKey<EquipmentAsset>> asset) {
+        return TEXTURES.get(asset.orElse(null));
     }
 }

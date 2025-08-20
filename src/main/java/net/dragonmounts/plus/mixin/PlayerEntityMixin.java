@@ -14,14 +14,12 @@ import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.stats.Stat;
 import net.minecraft.util.Mth;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemCooldowns;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import org.spongepowered.asm.mixin.Mixin;
@@ -38,12 +36,6 @@ import static net.minecraft.world.damagesource.DamageTypes.SONIC_BOOM;
 
 @Mixin(Player.class)
 public abstract class PlayerEntityMixin extends LivingEntity implements Provider {
-    @Shadow
-    public abstract ItemCooldowns getCooldowns();
-
-    @Shadow
-    public abstract void awardStat(Stat<?> stat);
-
     @Shadow
     public abstract void setItemSlot(EquipmentSlot slot, ItemStack stack);
 
@@ -111,8 +103,7 @@ public abstract class PlayerEntityMixin extends LivingEntity implements Provider
 
     @Inject(method = "actuallyHurt", at = @At(
             value = "INVOKE",
-            target = "Lnet/minecraft/world/entity/player/Player;setHealth(F)V",
-            shift = At.Shift.AFTER
+            target = "Lnet/minecraft/world/entity/player/Player;getDamageAfterArmorAbsorb(Lnet/minecraft/world/damagesource/DamageSource;F)F"
     ))
     public void riposte(ServerLevel level, DamageSource source, float amount, CallbackInfo info) {
         var ice = DMArmorEffects.ICE;

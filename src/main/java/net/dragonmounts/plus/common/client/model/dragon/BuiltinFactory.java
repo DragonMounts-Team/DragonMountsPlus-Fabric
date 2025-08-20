@@ -24,6 +24,23 @@ import static net.minecraft.client.model.geom.PartPose.rotation;
 
 public enum BuiltinFactory implements ModelFactory {
     NORMAL("normal"),
+    COMPAT("compat") {
+        @Override
+        public CubeListBuilder applyWingUV(CubeListBuilder builder) {
+            return builder.texOffs(-49, 176);
+        }
+    },
+    COMPAT_TAIL_HORNED("compat_tail_horned") {
+        @Override
+        public CubeListBuilder applyWingUV(CubeListBuilder builder) {
+            return builder.texOffs(-49, 176);
+        }
+
+        @Override
+        public void makeTail(PartDefinition root) {
+            makeHornedTail(root);
+        }
+    },
     TAIL_HORNED("tail_horned") {
         @Override
         public void makeTail(PartDefinition root) {
@@ -159,6 +176,11 @@ public enum BuiltinFactory implements ModelFactory {
         }
     },
     SKELETON("skeleton") {
+        @Override
+        public CubeListBuilder applyWingUV(CubeListBuilder builder) {
+            return builder.texOffs(-49, 176);
+        }
+
         @Override
         public void makeTail(PartDefinition root) {
             makeHornedTail(root);

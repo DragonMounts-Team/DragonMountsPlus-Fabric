@@ -51,7 +51,7 @@ public abstract class CustomHeadLayerMixin<S extends LivingEntityRenderState, M 
         matrices.translate(-0.5, 0.0, -0.5);
         var model = appearance.getModel();
         model.setupBlock(state.wornHeadAnimationPos, 180.0F, 0.75F);
-        renderHead(model.head, appearance, matrices, buffers, false, 0.5, 0.0, 0.5, light, OverlayTexture.NO_OVERLAY);
+        renderHead(model.head, appearance, matrices, buffers, 0.5, 0.0, 0.5, light, OverlayTexture.NO_OVERLAY);
         matrices.popPose();
         info.cancel();
     }

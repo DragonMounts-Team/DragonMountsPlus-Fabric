@@ -93,7 +93,7 @@ public class DragonAi {
                                 ), 2),
                                 Pair.of(new DoNothing(40, 100), 5)
                         )),
-                        (level, dragon) -> dragon.isFlying()
+                        (level, dragon) -> dragon.isFlying() || dragon.isOrderedToSit()
                 )
         ));
     }

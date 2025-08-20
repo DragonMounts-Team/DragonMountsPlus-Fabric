@@ -345,6 +345,7 @@ public class ServerDragonEntity extends TameableDragonEntity {
     @Override
     public void die(DamageSource source) {
         super.die(source);
+        this.ejectPassengers();
         if (this.isTame()) {
             this.spawnEssence(this.getDragonType().getInstance(DragonEssenceItem.class, DMItems.ENDER_DRAGON_ESSENCE.get())
                     .saveEntity(this, DataComponentPatch.EMPTY)
@@ -423,8 +424,6 @@ public class ServerDragonEntity extends TameableDragonEntity {
             cause.awardStat(Stats.ANIMALS_BRED);
             ((BredDragonsTrigger) CriteriaTriggers.BRED_ANIMALS).dragonmounts$plus$trigger(cause, this, mate, egg);
         }
-        this.setAge(6000);
-        mate.setAge(6000);
         this.resetLove();
         mate.resetLove();
         level.broadcastEntityEvent(this, (byte) 18);

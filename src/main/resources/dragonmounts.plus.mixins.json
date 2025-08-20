@@ -24,6 +24,7 @@
     "AbstractClientPlayerMixin",
     "CameraMixin",
     "ClientPacketListenerMixin",
+    "CoreShadersMixin",
     "CustomHeadLayerMixin",
     "DebugRendererMixin",
     "GuiGraphicsMixin",

@@ -9,6 +9,7 @@ import net.minecraft.client.particle.Particle;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.resources.ResourceLocation;
+import org.jetbrains.annotations.Nullable;
 
 import static net.dragonmounts.plus.common.DragonMountsShared.makeId;
 
@@ -22,17 +23,15 @@ public abstract class VariantAppearance {
 
     public abstract DragonModel getModel();
 
-    public abstract ResourceLocation getBody(DragonRenderState state);
+    public abstract RenderType getBase(@Nullable DragonRenderState state);
 
-    public abstract RenderType getGlow(DragonRenderState state);
+    public abstract RenderType getGlow(@Nullable DragonRenderState state);
 
     public abstract RenderType getDecal(DragonRenderState state);
 
     public abstract RenderType getGlowDecal(DragonRenderState state);
 
-    public abstract RenderType getBodyForBlock();
-
-    public abstract RenderType getGlowForBlock();
+    public abstract ResourceLocation getBodyTexture(DragonRenderState state);
 
     public abstract Particle createBreathParticle(
             BreathParticleOption option,
@@ -52,9 +51,5 @@ public abstract class VariantAppearance {
 
     public ResourceLocation getSaddle(DragonRenderState state) {
         return DEFAULT_SADDLE;
-    }
-
-    public RenderType getDissolve(DragonRenderState state) {
-        return RenderType.dragonExplosionAlpha(DEFAULT_DISSOLVE);
     }
 }

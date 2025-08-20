@@ -5,7 +5,6 @@ import net.dragonmounts.plus.common.client.breath.BreathParticleFactory;
 import net.dragonmounts.plus.common.entity.breath.BreathParticleOption;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
 
 public class IceBreathParticle extends BreathParticle {
@@ -16,7 +15,11 @@ public class IceBreathParticle extends BreathParticle {
     }
 
     @Override
-    protected ParticleOptions getChildParticle() {
-        return ParticleTypes.SNOWFLAKE;
+    protected void tickIfAlive() {
+        if (this.shouldExtinguish()) {
+            this.level.addParticle(ParticleTypes.SNOWFLAKE, this.x, this.y, this.z, 0, 0, 0);
+        } else if (this.random.nextFloat() <= NORMAL_PARTICLE_CHANCE && this.random.nextFloat() < this.node.getLifetimeFraction()) {
+            this.level.addParticle(ParticleTypes.SNOWFLAKE, this.x, this.y, this.z, this.xd * 0.5, this.yd * 0.5, this.zd * 0.5);
+        }
     }
 }

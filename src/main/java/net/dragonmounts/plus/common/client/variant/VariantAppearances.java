@@ -28,7 +28,7 @@ public class VariantAppearances {
     public static final VariantAppearance ENDER_RARE;
     public static final VariantAppearance FIRE_FEMALE;
     public static final VariantAppearance FIRE_MALE;
-    public static final VariantAppearance FIRE_RARE;
+    public static final VariantAppearance BLUE_FIRE;
     public static final VariantAppearance FOREST_FEMALE;
     public static final VariantAppearance FOREST_MALE;
     public static final VariantAppearance FOREST_DRY_FEMALE;
@@ -39,13 +39,14 @@ public class VariantAppearances {
     public static final VariantAppearance ICE_MALE;
     public static final VariantAppearance MOONLIGHT_FEMALE;
     public static final VariantAppearance MOONLIGHT_MALE;
+    public static final VariantAppearance ECLIPSE;
     public static final VariantAppearance NETHER_FEMALE;
     public static final VariantAppearance NETHER_MALE;
     public static final VariantAppearance SOUL;
     public static final VariantAppearance SKELETON;
     public static final VariantAppearance STORM_FEMALE;
     public static final VariantAppearance STORM_MALE;
-    public static final VariantAppearance STORM_RARE;
+    public static final VariantAppearance BRONZED_STORM;
     public static final VariantAppearance SUNLIGHT_FEMALE;
     public static final VariantAppearance SUNLIGHT_MALE;
     public static final VariantAppearance TERRA_FEMALE;
@@ -58,11 +59,13 @@ public class VariantAppearances {
     public static final VariantAppearance MUTANT_SCULK;
 
     static {
-        var builder = builder(BuiltinFactory.NORMAL)
+        var builder = builder(BuiltinFactory.COMPAT)
                 .withBreath(DMParticleSprites.AIRFLOW_BREATH, AirflowBreathParticle.FACTORY);
         AETHER_FEMALE = builder.build(makeId("aether/female"));
         AETHER_MALE = builder.build(makeId("aether/male"));
-        BREEZE = builder.build(makeId("aether/breeze"));
+        BREEZE = builder(BuiltinFactory.NORMAL)
+                .withBreath(DMParticleSprites.AIRFLOW_BREATH, AirflowBreathParticle.FACTORY)
+                .build(makeId("aether/breeze"));
     }
 
     static {
@@ -79,7 +82,7 @@ public class VariantAppearances {
     }
 
     static {
-        var builder = builder(BuiltinFactory.NORMAL)
+        var builder = builder(BuiltinFactory.COMPAT)
                 .withBreath(DMParticleSprites.ENDER_BREATH, EnderBreathParticle.FACTORY);
         ENDER_FEMALE = builder.build(makeId("ender/female"));
         ENDER_MALE = builder.build(makeId("ender/male"));
@@ -90,11 +93,11 @@ public class VariantAppearances {
         var builder = builder(BuiltinFactory.NORMAL);
         FIRE_FEMALE = builder.build(makeId("fire/female"));
         FIRE_MALE = builder.build(makeId("fire/male"));
-        FIRE_RARE = builder.build(makeId("fire/rare"));
+        BLUE_FIRE = builder.withBreath(DMParticleSprites.BLUE_FLAME_BREATH).build(makeId("fire/blue"));
     }
 
     static {
-        var builder = builder(BuiltinFactory.NORMAL);
+        var builder = builder(BuiltinFactory.COMPAT);
         var glow = makeId(TEXTURES_ROOT + "forest/glow.png");
         FOREST_FEMALE = builder.build(makeId(TEXTURES_ROOT + "forest/forest/female_body.png"), glow);
         FOREST_MALE = builder.build(makeId(TEXTURES_ROOT + "forest/forest/male_body.png"), glow);
@@ -115,6 +118,7 @@ public class VariantAppearances {
         var builder = builder(BuiltinFactory.NORMAL);
         MOONLIGHT_FEMALE = builder.build(makeId("moonlight/female"));
         MOONLIGHT_MALE = builder.build(makeId("moonlight/male"));
+        ECLIPSE = builder.build(makeId("moonlight/eclipse"));
     }
 
     static {
@@ -133,23 +137,23 @@ public class VariantAppearances {
         var builder = builder(BuiltinFactory.TAIL_HORNED);
         STORM_FEMALE = builder.build(makeId("storm/female"));
         STORM_MALE = builder.build(makeId("storm/male"));
-        STORM_RARE = builder.build(makeId("storm/rare"));
+        BRONZED_STORM = builder.build(makeId("storm/bronzed"));
     }
 
     static {
-        var builder = builder(BuiltinFactory.NORMAL);
+        var builder = builder(BuiltinFactory.COMPAT);
         SUNLIGHT_FEMALE = builder.build(makeId("sunlight/female"));
         SUNLIGHT_MALE = builder.build(makeId("sunlight/male"));
     }
 
     static {
-        var builder = builder(BuiltinFactory.NORMAL);
+        var builder = builder(BuiltinFactory.COMPAT);
         TERRA_FEMALE = builder.build(makeId("terra/female"));
         TERRA_MALE = builder.build(makeId("terra/male"));
     }
 
     static {
-        var builder = builder(BuiltinFactory.TAIL_HORNED)
+        var builder = builder(BuiltinFactory.COMPAT_TAIL_HORNED)
                 .withBreath(DMParticleSprites.WATER_BREATH, WaterBreathParticle.FACTORY);
         WATER_FEMALE = builder.build(makeId("water/female"));
         WATER_MALE = builder.build(makeId("water/male"));
@@ -162,13 +166,13 @@ public class VariantAppearances {
     }
 
     static {
-        ZOMBIE = builder(BuiltinFactory.TAIL_HORNED)
+        ZOMBIE = builder(BuiltinFactory.COMPAT_TAIL_HORNED)
                 .withBreath(DMParticleSprites.POISON_BREATH, PoisonBreathParticle.FACTORY)
                 .build(makeId("zombie"));
     }
 
     static {
-        var builder = builder(BuiltinFactory.NORMAL);
+        var builder = builder(BuiltinFactory.COMPAT);
         WILD_SCULK = builder.build(makeId("sculk/wild_type"));
         MUTANT_SCULK = builder.build(makeId("sculk/mutant"));
     }
@@ -187,7 +191,7 @@ public class VariantAppearances {
         map.put("ender_rare", ENDER_RARE);
         map.put("fire_female", FIRE_FEMALE);
         map.put("fire_male", FIRE_MALE);
-        map.put("fire_rare", FIRE_RARE);
+        map.put("blue_fire", BLUE_FIRE);
         map.put("forest_female", FOREST_FEMALE);
         map.put("forest_male", FOREST_MALE);
         map.put("forest_dry_female", FOREST_DRY_FEMALE);
@@ -198,6 +202,7 @@ public class VariantAppearances {
         map.put("ice_male", ICE_MALE);
         map.put("moonlight_female", MOONLIGHT_FEMALE);
         map.put("moonlight_male", MOONLIGHT_MALE);
+        map.put("eclipse", ECLIPSE);
         map.put("nether_female", NETHER_FEMALE);
         map.put("nether_male", NETHER_MALE);
         map.put("soul", SOUL);
@@ -206,7 +211,7 @@ public class VariantAppearances {
         map.put("skeleton", SKELETON);
         map.put("storm_female", STORM_FEMALE);
         map.put("storm_male", STORM_MALE);
-        map.put("storm_rare", STORM_RARE);
+        map.put("bronzed_storm", BRONZED_STORM);
         map.put("sunlight_female", SUNLIGHT_FEMALE);
         map.put("sunlight_male", SUNLIGHT_MALE);
         map.put("terra_female", TERRA_FEMALE);
