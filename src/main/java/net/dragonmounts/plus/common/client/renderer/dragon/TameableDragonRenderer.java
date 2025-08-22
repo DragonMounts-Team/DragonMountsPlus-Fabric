@@ -17,7 +17,7 @@ import static net.minecraft.client.renderer.entity.EnderDragonRenderer.renderCry
 
 public class TameableDragonRenderer extends MobRenderer<ClientDragonEntity, DragonRenderState, DragonModel> {
     public TameableDragonRenderer(EntityRendererProvider.Context context) {
-        super(context, new DragonModel(context.getModelSet().bakeLayer(BuiltinFactory.COMPAT.location)), 0);
+        super(context, new DragonModel(context.getModelSet().bakeLayer(BuiltinFactory.NORMAL.location)), 2);
         this.addLayer(new TameableDragonLayer(this));
     }
 

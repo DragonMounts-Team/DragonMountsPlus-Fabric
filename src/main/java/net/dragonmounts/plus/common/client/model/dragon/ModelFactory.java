@@ -107,13 +107,13 @@ public interface ModelFactory {
     }
 
     default void makeFrontLegs(PartDefinition root) {
-        makeFrontLeg(root, "left_front_leg", NORMAL_LEG_WIDTH, LEG_LENGTH, true, PartPose.offset(-11, 18, 4));
-        makeFrontLeg(root, "right_front_leg", NORMAL_LEG_WIDTH, LEG_LENGTH, false, PartPose.offset(11, 18, 4));
+        makeFrontLeg(root, "left_front_leg", NORMAL_LEG_WIDTH, LEG_LENGTH, true, PartPose.offset(11, 18, 4));
+        makeFrontLeg(root, "right_front_leg", NORMAL_LEG_WIDTH, LEG_LENGTH, false, PartPose.offset(-11, 18, 4));
     }
 
     default void makeHindLegs(PartDefinition root) {
-        makeHindLeg(root, "left_hind_leg", NORMAL_LEG_WIDTH, LEG_LENGTH, true, PartPose.offset(-11, 13, 46));
-        makeHindLeg(root, "right_hind_leg", NORMAL_LEG_WIDTH, LEG_LENGTH, false, PartPose.offset(11, 13, 46));
+        makeHindLeg(root, "left_hind_leg", NORMAL_LEG_WIDTH, LEG_LENGTH, true, PartPose.offset(11, 13, 46));
+        makeHindLeg(root, "right_hind_leg", NORMAL_LEG_WIDTH, LEG_LENGTH, false, PartPose.offset(-11, 13, 46));
     }
 
     @Deprecated
