@@ -85,7 +85,7 @@ public interface ModelFactory {
         float rad30 = 30 * TO_RAD_FACTOR;
         head.addOrReplaceChild(
                 "left_horn",
-                CubeListBuilder.create()
+                CubeListBuilder.create().mirror()
                         .addBox("horn", HORN_OFS, HORN_OFS, HORN_OFS, HORN_THICK, HORN_THICK, HEAD_HORN_LENGTH, 28, 32),
                 PartPose.offsetAndRotation(-5, -8, 0, rad30, -rad30, 0)
         );

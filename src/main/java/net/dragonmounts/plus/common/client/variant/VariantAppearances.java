@@ -57,6 +57,7 @@ public class VariantAppearances {
     public static final VariantAppearance ZOMBIE;
     public static final VariantAppearance WILD_SCULK;
     public static final VariantAppearance MUTANT_SCULK;
+    public static final VariantAppearance HOLLOWED;
 
     static {
         var builder = builder(BuiltinFactory.COMPAT)
@@ -172,9 +173,10 @@ public class VariantAppearances {
     }
 
     static {
-        var builder = builder(BuiltinFactory.COMPAT);
+        var builder = builder(BuiltinFactory.SKULL);
         WILD_SCULK = builder.build(makeId("sculk/wild_type"));
         MUTANT_SCULK = builder.build(makeId("sculk/mutant"));
+        HOLLOWED = builder.build(makeId("sculk/hollowed"));
     }
 
     public static Function<String, VariantAppearance> getSupplier() {
@@ -208,6 +210,7 @@ public class VariantAppearances {
         map.put("soul", SOUL);
         map.put("wild_sculk", WILD_SCULK);
         map.put("mutant_sculk", MUTANT_SCULK);
+        map.put("hollowed", HOLLOWED);
         map.put("skeleton", SKELETON);
         map.put("storm_female", STORM_FEMALE);
         map.put("storm_male", STORM_MALE);

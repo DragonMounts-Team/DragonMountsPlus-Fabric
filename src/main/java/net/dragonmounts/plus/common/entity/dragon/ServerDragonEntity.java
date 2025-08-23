@@ -111,16 +111,16 @@ public class ServerDragonEntity extends TameableDragonEntity {
         if (tag.contains(DragonLifeStage.DATA_PARAMETER_KEY)) {
             this.setLifeStage(DragonLifeStage.byName(tag.getString(DragonLifeStage.DATA_PARAMETER_KEY)), false, false);
         }
-        super.readAdditionalSaveData(tag);
-        if (!this.firstTick && (this.age != age || stage != this.stage)) {
-            ServerNetworkHandler.sendTracking(this, new SyncDragonAgePayload(this.getId(), this.age, this.stage));
-        }
         if (tag.contains(DragonVariant.DATA_PARAMETER_KEY)) {
             this.setVariant(DragonVariant.REGISTRY.getValue(tryParse(tag.getString(DragonVariant.DATA_PARAMETER_KEY))));
         } else if (tag.contains(DragonType.DATA_PARAMETER_KEY)) {
             this.setVariant(DragonType.REGISTRY.getValue(tryParse(tag.getString(DragonType.DATA_PARAMETER_KEY))).variants.draw(this.random, DragonVariants.ENDER_FEMALE, true));
         } else {
             this.applyType(this.getDragonType());
+        }
+        super.readAdditionalSaveData(tag);
+        if (!this.firstTick && (this.age != age || stage != this.stage)) {
+            ServerNetworkHandler.sendTracking(this, new SyncDragonAgePayload(this.getId(), this.age, this.stage));
         }
         if (tag.contains(SADDLE_DATA_PARAMETER_KEY)) {
             this.inventory.saddle.setLocal(ItemStack.parseOptional(this.registryAccess(), tag.getCompound(SADDLE_DATA_PARAMETER_KEY)), true);
@@ -346,6 +346,7 @@ public class ServerDragonEntity extends TameableDragonEntity {
     public void die(DamageSource source) {
         super.die(source);
         this.ejectPassengers();
+        this.setDeltaMovement(Vec3.ZERO);
         if (this.isTame()) {
             this.spawnEssence(this.getDragonType().getInstance(DragonEssenceItem.class, DMItems.ENDER_DRAGON_ESSENCE.get())
                     .saveEntity(this, DataComponentPatch.EMPTY)

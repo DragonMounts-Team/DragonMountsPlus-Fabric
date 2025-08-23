@@ -585,6 +585,7 @@ public abstract class TameableDragonEntity extends TamableAnimal implements
     @Override
     public void travel(Vec3 motion) {
         if (this.isFlying()) {
+            if (this.isDeadOrDying()) return;
             this.moveRelative(this.getFlyingSpeed(), motion);
             this.move(MoverType.SELF, this.getDeltaMovement());
             this.setDeltaMovement(this.getDeltaMovement().scale(0.91F));

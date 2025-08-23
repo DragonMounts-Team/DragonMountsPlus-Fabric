@@ -82,7 +82,10 @@ public class DMModelProvider extends FabricModelProvider {
         generateFlatItem(gen, DMItems.NETHERITE_DRAGON_ARMOR);
         generateFlatItem(gen, DMItems.DIAMOND_SHEARS);
         generateFlatItem(gen, DMItems.NETHERITE_SHEARS);
-        generateFlatItem(gen, DMItems.VARIATION_ORB);
+        gen.itemModelOutput.accept(
+                DMItems.VARIATION_ORB.get(),
+                plainModel(DMItems.VARIATION_ORB.key.location().withPrefix("item/"))
+        );
         generateFlatItem(gen, DMItems.DRAGON_MEAT);
         generateFlatItem(gen, DMItems.COOKED_DRAGON_MEAT);
         generateSpawnEgg(gen, DMItems.AETHER_DRAGON_SPAWN_EGG, 0x06E9FA, 0x281EE7);

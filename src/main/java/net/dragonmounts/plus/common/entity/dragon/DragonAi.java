@@ -167,6 +167,6 @@ public class DragonAi {
         var brain = dragon.getBrain();
         if (brain.hasMemoryValue(DMMemories.DISABLED_FOLLOWING_OWNER)) return false;
         var owner = brain.getMemory(DMMemories.FOLLOWABLE_OWNER).orElse(null);
-        return owner != null && dragon.distanceToSqr(owner) < 400.0;
+        return owner != null && (!owner.onGround() || owner.getBoundingBox().maxY > dragon.getY()) && dragon.distanceToSqr(owner) < 400.0;
     }
 }

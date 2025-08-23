@@ -84,21 +84,6 @@ public enum BuiltinFactory implements ModelFactory {
                     .getCubes();
         }
 
-        static void attachTailHorn(PartDefinition segment, CubeListBuilder left, CubeListBuilder right) {
-            segment.addOrReplaceChild("left_horn", new PartDefinition(
-                    left.texOffs(0, 117)
-                            .addBox(TAIL_HORN_OFFSET, TAIL_HORN_OFFSET, TAIL_HORN_OFFSET, HORN_THICK, HORN_THICK, TAIL_HORN_LENGTH, ATTACHED_TO_NORTH)
-                            .getCubes(),
-                    PartPose.offsetAndRotation(0.0F, TAIL_HORN_OFFSET, HALF_TAIL_SIZE, TAIL_HORN_ROT_X, TAIL_HORN_ROT_Y, 0.0F)
-            ));
-            segment.addOrReplaceChild("right_horn", new PartDefinition(
-                    right.texOffs(0, 117)
-                            .addBox(TAIL_HORN_OFFSET, TAIL_HORN_OFFSET, TAIL_HORN_OFFSET, HORN_THICK, HORN_THICK, TAIL_HORN_LENGTH, ATTACHED_TO_NORTH)
-                            .getCubes(),
-                    PartPose.offsetAndRotation(0.0F, TAIL_HORN_OFFSET, HALF_TAIL_SIZE, TAIL_HORN_ROT_X, -TAIL_HORN_ROT_Y, 0.0F)
-            ));
-        }
-
         static void attachTailHorn(PartDefinition segment, float width, float length, int u, int v) {
             segment.addOrReplaceChild("left_horn", new PartDefinition(
                     CubeListBuilder.create().mirror()
@@ -181,6 +166,24 @@ public enum BuiltinFactory implements ModelFactory {
             return builder.texOffs(-49, 176);
         }
 
+        @Override
+        public void makeTail(PartDefinition root) {
+            makeHornedTail(root);
+        }
+
+        @Override
+        public void makeFrontLegs(PartDefinition root) {
+            makeFrontLeg(root, "left_front_leg", SKELETON_LEG_WIDTH, LEG_LENGTH, true, PartPose.offset(11, 18, 4));
+            makeFrontLeg(root, "right_front_leg", SKELETON_LEG_WIDTH, LEG_LENGTH, false, PartPose.offset(-11, 18, 4));
+        }
+
+        @Override
+        public void makeHindLegs(PartDefinition root) {
+            makeHindLeg(root, "left_hind_leg", SKELETON_LEG_WIDTH, LEG_LENGTH, true, PartPose.offset(11, 13, 46));
+            makeHindLeg(root, "right_hind_leg", SKELETON_LEG_WIDTH, LEG_LENGTH, false, PartPose.offset(-11, 13, 46));
+        }
+    },
+    SKULL("skull") {
         @Override
         public void makeTail(PartDefinition root) {
             makeHornedTail(root);

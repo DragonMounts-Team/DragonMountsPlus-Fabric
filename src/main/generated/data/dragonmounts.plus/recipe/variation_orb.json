@@ -3,13 +3,13 @@
   "category": "equipment",
   "key": {
     "#": "#c:gems/amethyst",
-    "*": "#c:ingots/gold",
-    "O": "minecraft:ender_eye"
+    "O": "#c:ender_pearls",
+    "U": "minecraft:dragon_breath"
   },
   "pattern": [
-    "*#*",
-    "#O#",
-    "*#*"
+    "#U#",
+    "UOU",
+    "#U#"
   ],
   "result": {
     "count": 1,

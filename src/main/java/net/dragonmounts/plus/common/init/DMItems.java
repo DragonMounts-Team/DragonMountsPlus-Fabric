@@ -145,7 +145,7 @@ public class DMItems {
     public static final ItemHolder<Item> GOLDEN_DRAGON_ARMOR = TOOL_TAB.register("golden_dragon_armor", props -> makeDragonArmor(DragonArmorMaterials.GOLD, props));
     public static final ItemHolder<Item> EMERALD_DRAGON_ARMOR = TOOL_TAB.register("emerald_dragon_armor", props -> makeDragonArmor(DragonArmorMaterials.EMERALD, props));
     public static final ItemHolder<Item> DIAMOND_DRAGON_ARMOR = TOOL_TAB.register("diamond_dragon_armor", props -> makeDragonArmor(DragonArmorMaterials.DIAMOND, props));
-    public static final ItemHolder<Item> NETHERITE_DRAGON_ARMOR = TOOL_TAB.register("netherite_dragon_armor", props -> makeDragonArmor(DragonArmorMaterials.NETHERITE, props.fireResistant()));
+    public static final ItemHolder<Item> NETHERITE_DRAGON_ARMOR = registerItem("netherite_dragon_armor", props -> makeDragonArmor(DragonArmorMaterials.NETHERITE, props.fireResistant()));
     // Dragon Scale Swords
     public static final ItemHolder<DragonScaleSwordItem> AETHER_DRAGON_SCALE_SWORD = TOOL_TAB.register("aether_dragon_scale_sword", props -> makeDragonScaleSword(DragonTypes.AETHER, props));
     public static final ItemHolder<DragonScaleSwordItem> WATER_DRAGON_SCALE_SWORD = TOOL_TAB.register("water_dragon_scale_sword", props -> makeDragonScaleSword(DragonTypes.WATER, props));
@@ -479,7 +479,7 @@ public class DMItems {
     public static final ItemHolder<TieredShearsItem> DIAMOND_SHEARS = ITEM_TAB.register("diamond_shears", props ->
             makeTieredShears(ToolMaterial.DIAMOND, props)
     );
-    public static final ItemHolder<TieredShearsItem> NETHERITE_SHEARS = ITEM_TAB.register("netherite_shears", props ->
+    public static final ItemHolder<TieredShearsItem> NETHERITE_SHEARS = registerItem("netherite_shears", props ->
             makeTieredShears(ToolMaterial.NETHERITE, props.fireResistant())
     );
     // Misc

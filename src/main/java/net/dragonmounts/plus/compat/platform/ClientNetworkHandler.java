@@ -99,7 +99,7 @@ public class ClientNetworkHandler {
             if (minor != null) {
                 level.playLocalSound(dragon, minor.value(), SoundSource.NEUTRAL, 0.25F, 0.75F);
             }
-            dragon.animator.transitOrKeepMouthState(MouthState.EATING);
+            dragon.animator.transitMouthState(MouthState.EATING, true);
             dragon.animator.remainingEating = MouthState.EATING.duration;
             var particles = food.particles().orElse(stack);
             if (particles.isEmpty()) return;

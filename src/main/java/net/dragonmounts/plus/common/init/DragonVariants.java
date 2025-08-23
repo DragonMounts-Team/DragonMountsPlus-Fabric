@@ -52,6 +52,7 @@ public class DragonVariants {
     public static final DragonVariant SOUL;
     public static final DragonVariant WILD_SCULK;
     public static final DragonVariant MUTANT_SCULK;
+    public static final DragonVariant HOLLOWED;
     public static final DragonVariant SKELETON;
     public static final DragonVariant STORM_FEMALE;
     public static final DragonVariant STORM_MALE;
@@ -138,6 +139,7 @@ public class DragonVariants {
         variants.add(SOUL = make(supplier, DragonTypes.NETHER, "soul"));
         variants.add(WILD_SCULK = make(supplier, DragonTypes.SCULK, "wild_sculk"));
         variants.add(MUTANT_SCULK = make(supplier, DragonTypes.SCULK, "mutant_sculk"));
+        variants.add(HOLLOWED = make(supplier, DragonTypes.SCULK, "hollowed"));
         variants.add(SKELETON = make(supplier, DragonTypes.SKELETON, "skeleton"));
         variants.add(STORM_FEMALE = make(supplier, DragonTypes.STORM, "storm_female"));
         variants.add(STORM_MALE = make(supplier, DragonTypes.STORM, "storm_male"));

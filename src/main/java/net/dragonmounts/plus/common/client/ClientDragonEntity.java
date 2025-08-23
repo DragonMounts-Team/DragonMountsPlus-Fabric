@@ -133,13 +133,13 @@ public class ClientDragonEntity extends TameableDragonEntity {
         switch (id) {
             case ON_ATTACK -> {
                 this.playSound(SoundEvents.GENERIC_EAT.value(), 1.0F, 0.7F);
-                this.animator.transitMouthState(MouthState.ATTACKING);
+                this.animator.transitMouthState(MouthState.ATTACKING, false);
             }
             case ON_ROAR -> {
                 SoundEvent sound = this.getVariant().type.getRoarSound(this);
                 if (sound == null) break;
                 this.playSound(sound, Mth.clamp(this.getAgeScale(), 0.3F, 0.6F), 1.0F);
-                this.animator.transitMouthState(MouthState.ROARING);
+                this.animator.transitMouthState(MouthState.ROARING, false);
             }
             default -> super.handleEntityEvent(id);
         }

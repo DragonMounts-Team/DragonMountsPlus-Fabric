@@ -135,12 +135,12 @@ public class DMRecipeProvider extends RecipeProvider {
                 .unlockedBy("has_leather", has(ConventionalItemTags.LEATHERS))
                 .save(output, makeKey(registry, getItemName(Items.SADDLE)));
         this.shaped(RecipeCategory.TOOLS, DMItems.VARIATION_ORB)
-                .define('O', Items.ENDER_EYE)
                 .define('#', ConventionalItemTags.AMETHYST_GEMS)
-                .define('*', ConventionalItemTags.GOLD_INGOTS)
-                .pattern("*#*")
-                .pattern("#O#")
-                .pattern("*#*")
+                .define('O', ConventionalItemTags.ENDER_PEARLS)
+                .define('U', Items.DRAGON_BREATH)
+                .pattern("#U#")
+                .pattern("UOU")
+                .pattern("#U#")
                 .unlockedBy("has_amethyst", has(ConventionalItemTags.AMETHYST_GEMS))
                 .save(output);
     }

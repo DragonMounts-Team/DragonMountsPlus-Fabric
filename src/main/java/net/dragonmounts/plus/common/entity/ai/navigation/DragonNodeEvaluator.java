@@ -8,6 +8,7 @@ import net.minecraft.world.entity.Mob;
 import net.minecraft.world.level.PathNavigationRegion;
 import net.minecraft.world.level.pathfinder.Node;
 import net.minecraft.world.level.pathfinder.PathType;
+import net.minecraft.world.level.pathfinder.PathfindingContext;
 import net.minecraft.world.level.pathfinder.WalkNodeEvaluator;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
@@ -30,11 +31,9 @@ public class DragonNodeEvaluator extends WalkNodeEvaluator {
 
     @Override
     public Node getStart() {
-        if (this.dragon.isFlying()) {
-            var pos = this.dragon.position();
-            return this.getStartNode(BlockPos.containing(pos.x, pos.y + 0.5, pos.z));
-        }
-        return super.getStart();
+        if (this.dragon.onGround()) return super.getStart();
+        var pos = this.dragon.position();
+        return this.getStartNode(BlockPos.containing(pos.x, pos.y + 0.5, pos.z));
     }
 
     @Override
@@ -144,9 +143,35 @@ public class DragonNodeEvaluator extends WalkNodeEvaluator {
     }
 
     protected final boolean isVerticalNeighborValid(Node neighbor, Node center) {
-        return isNeighborValid(neighbor, center) && ((
-                !this.mob.isBaby() && neighbor.type == PathType.OPEN
-        ) || neighbor.type == PathType.WATER);
+        return this.isNeighborValid(neighbor, center) && switch (neighbor.type) {
+            case WALKABLE, WATER -> true;
+            case OPEN -> !this.dragon.isBaby();
+            default -> false;
+        };
+    }
+
+    @Override
+    public PathType getPathType(PathfindingContext context, int x, int y, int z) {
+        var type = context.getPathTypeFromState(x, y, z);
+        if (type == PathType.OPEN && y >= context.level().getMinY() + 1) {
+            switch (context.getPathTypeFromState(x, y - 1, z)) {
+                case WALKABLE, OPEN, WATER -> type = PathType.WALKABLE;
+                case DANGER_FIRE, LAVA -> {
+                    return PathType.DAMAGE_FIRE;
+                }
+                case DAMAGE_OTHER -> {
+                    return PathType.DAMAGE_OTHER;
+                }
+                case COCOA -> {
+                    return PathType.COCOA;
+                }
+                case FENCE -> {
+                    var pos = context.mobPosition();
+                    if (pos.getX() != x || pos.getZ() != z || pos.getY() + 1 != y) return PathType.FENCE;
+                }
+            }
+        }
+        return type == PathType.WALKABLE || type == PathType.OPEN ? checkNeighbourBlocks(context, x, y, z, type) : type;
     }
 
     /// <pre>{@code return this.mob.isBaby() && height > super.getMobJumpHeight()}</pre>

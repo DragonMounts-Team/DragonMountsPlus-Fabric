@@ -17,6 +17,7 @@ public class DragonPathNavigation extends PathNavigation {
 
     public DragonPathNavigation(ServerDragonEntity dragon, Level level) {
         super(dragon, level);
+        this.setCanFloat(true);
         this.dragon = dragon;
     }
 
@@ -33,7 +34,7 @@ public class DragonPathNavigation extends PathNavigation {
 
     @Override
     protected boolean canUpdatePath() {
-        return this.canFloat() && this.mob.isInLiquid() || !this.mob.isPassenger();
+        return true;
     }
 
     @Override

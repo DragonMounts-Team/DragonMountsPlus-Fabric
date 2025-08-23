@@ -37,9 +37,13 @@ public class TryFindGround<E extends PathfinderMob & FlyingAnimal> extends OneSh
         if (this.predicate.test(entity)) return false;
         var brain = entity.getBrain();
         if (brain.hasMemoryValue(WALK_TARGET) || brain.hasMemoryValue(ATTACK_TARGET)) return false;
+        var current = entity.blockPosition();
+        var below = current.below();
+        if (level.getBlockState(below).isFaceSturdy(level, below, Direction.UP)) {
+            entity.setDeltaMovement(entity.getDeltaMovement().add(0.0, -0.98, 0.0));
+        }
         if (time - this.lastTry < COOLDOWN_TICKS) return true;
         this.lastTry = time;
-        var current = entity.blockPosition();
         var down = new BlockPos.MutableBlockPos();
         var context = CollisionContext.of(entity);
         for (var pos : BlockPos.withinManhattan(current, this.width, this.height, this.width)) {

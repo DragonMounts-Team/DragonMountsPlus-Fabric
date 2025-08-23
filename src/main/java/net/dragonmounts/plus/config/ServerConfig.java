@@ -105,7 +105,7 @@ public class ServerConfig extends ConfigHolder<CommandSourceStack> {
                 config("baseKnockbackResistance", 1.0, 0.0, 1.0, this::invalidateAttributes)
         );
         register(registry, this.baseMovementSpeed =
-                config("baseMovementSpeed", 0.4, 0.0, 1024.0, this::invalidateAttributes)
+                config("baseMovementSpeed", 0.3, 0.0, 1024.0, this::invalidateAttributes)
         );
         register(registry, this.baseStepHeight =
                 config("baseStepHeight", 1.25, 0.0, 10, this::invalidateAttributes)

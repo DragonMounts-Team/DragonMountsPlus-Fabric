@@ -1,0 +1,14 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "dragonmounts.plus:item/variation_orb"
+  },
+  "display": {
+    "gui": {
+      "translation": [-0.5, 0.5, 0]
+    },
+    "fixed": {
+      "translation": [-0.5, 0.5, 0]
+    }
+  }
+}

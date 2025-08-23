@@ -141,13 +141,8 @@ public class DragonAnimator extends DragonHeadLocator<ClientDragonEntity> {
         state.jawRotX = (1.0F - Mth.sin(animBase)) * 0.1F * flutter + Mth.lerp(partialTicks, this.lastJawRotX, jawRotX);
     }
 
-    public void transitMouthState(MouthState mouth) {
-        this.mouth = mouth;
-        this.duration = 0;
-    }
-
-    public void transitOrKeepMouthState(MouthState mouth) {
-        if (mouth == this.mouth) return;
+    public void transitMouthState(MouthState mouth, boolean keep) {
+        if (keep && mouth == this.mouth) return;
         this.mouth = mouth;
         this.duration = 0;
     }
@@ -168,7 +163,7 @@ public class DragonAnimator extends DragonHeadLocator<ClientDragonEntity> {
             case EATING -> {
                 if (this.updateBasicMouthRotX()) break;
                 if (this.remainingEating < 0) {
-                    this.transitMouthState(MouthState.IDLE);
+                    this.transitMouthState(MouthState.IDLE, false);
                 } else {
                     this.duration = 0;
                 }
@@ -176,7 +171,7 @@ public class DragonAnimator extends DragonHeadLocator<ClientDragonEntity> {
             }
             default -> {
                 if (this.updateBasicMouthRotX()) break;
-                this.transitMouthState(MouthState.IDLE);
+                this.transitMouthState(MouthState.IDLE, false);
                 this.jawRotX = 0.0F;
             }
         }
@@ -238,14 +233,14 @@ public class DragonAnimator extends DragonHeadLocator<ClientDragonEntity> {
         switch (dragon.breathHelper.getCurrentBreathState()) {
             case IDLE -> {
                 if (this.mouth == MouthState.BREATHING) {
-                    this.transitMouthState(MouthState.IDLE);
+                    this.transitMouthState(MouthState.IDLE, false);
                     this.jawRotX = 0.0F;
                     break;
                 }
                 this.updateMouthRotX();
             }
             case STARTING -> {
-                this.transitOrKeepMouthState(MouthState.BREATHING);
+                this.transitMouthState(MouthState.BREATHING, true);
                 this.updateMouthRotX();
             }
             case SUSTAIN -> {
