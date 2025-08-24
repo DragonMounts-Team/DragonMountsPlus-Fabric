@@ -1,6 +1,7 @@
 package net.dragonmounts.plus.data;
 
 import net.dragonmounts.plus.common.block.DragonScaleBlock;
+import net.dragonmounts.plus.common.crafting.DragonArmorUpgradeRecipe;
 import net.dragonmounts.plus.common.init.DMBlocks;
 import net.dragonmounts.plus.common.init.DMItems;
 import net.dragonmounts.plus.common.item.*;
@@ -10,6 +11,9 @@ import net.dragonmounts.plus.compat.registry.DragonType;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricRecipeProvider;
 import net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags;
+import net.minecraft.advancements.AdvancementRequirements;
+import net.minecraft.advancements.AdvancementRewards;
+import net.minecraft.advancements.critereon.RecipeUnlockedTrigger;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
@@ -87,14 +91,6 @@ public class DMRecipeProvider extends RecipeProvider {
                 .pattern("X ")
                 .unlockedBy("has_diamond", has(ConventionalItemTags.DIAMOND_GEMS))
                 .save(output);
-        smithing(
-                Ingredient.of(Items.NETHERITE_UPGRADE_SMITHING_TEMPLATE),
-                Ingredient.of(DMItems.DIAMOND_SHEARS),
-                this.tag(ItemTags.NETHERITE_TOOL_MATERIALS),
-                RecipeCategory.TOOLS,
-                DMItems.NETHERITE_SHEARS.get()
-        ).unlocks("has_netherite_ingot", this.has(ItemTags.NETHERITE_TOOL_MATERIALS))
-                .save(output, makeKey(registry, "netherite_shears_from_smithing"));
         this.shaped(RecipeCategory.REDSTONE, Items.DISPENSER)
                 .define('R', ConventionalItemTags.REDSTONE_DUSTS)
                 .define('#', ConventionalItemTags.COBBLESTONES)
@@ -143,6 +139,20 @@ public class DMRecipeProvider extends RecipeProvider {
                 .pattern("#U#")
                 .unlockedBy("has_amethyst", has(ConventionalItemTags.AMETHYST_GEMS))
                 .save(output);
+        var unlock = this.has(ItemTags.NETHERITE_TOOL_MATERIALS);
+        var template = Ingredient.of(Items.NETHERITE_UPGRADE_SMITHING_TEMPLATE);
+        var ingot = this.tag(ItemTags.NETHERITE_TOOL_MATERIALS);
+        smithing(template, Ingredient.of(DMItems.DIAMOND_SHEARS), ingot, RecipeCategory.TOOLS, DMItems.NETHERITE_SHEARS.get())
+                .unlocks("has_netherite_ingot", unlock)
+                .save(output, makeKey(registry, "netherite_shears_smithing"));
+        var dragonArmorUpgrade = makeKey(registry, "netherite_dragon_armor_smithing");
+        output.accept(dragonArmorUpgrade, new DragonArmorUpgradeRecipe(ingot), output.advancement()
+                .addCriterion("has_the_recipe", RecipeUnlockedTrigger.unlocked(dragonArmorUpgrade))
+                .rewards(AdvancementRewards.Builder.recipe(dragonArmorUpgrade))
+                .requirements(AdvancementRequirements.Strategy.OR)
+                .addCriterion("has_netherite_ingot", unlock)
+                .build(dragonArmorUpgrade.location().withPrefix("recipes/" + RecipeCategory.TOOLS.getFolderName() + "/"))
+        );
     }
 
     public static void cook(int unit, CookingRecipeBuilder builder) {
@@ -155,11 +165,10 @@ public class DMRecipeProvider extends RecipeProvider {
         this.shaped(RecipeCategory.COMBAT, result)
                 .define('#', ingot)
                 .define('X', block)
-                .pattern("X #")
-                .pattern(" XX")
-                .pattern("## ")
+                .pattern("#  ")
+                .pattern("XXX")
+                .pattern(" ##")
                 .group("dragonmounts.plus.dragon_armor")
-                .unlockedBy("has_ingot", has(ingot))
                 .unlockedBy("has_block", has(block))
                 .save(this.output);
     }

@@ -49,6 +49,7 @@ public class VariantAppearances {
     public static final VariantAppearance BRONZED_STORM;
     public static final VariantAppearance SUNLIGHT_FEMALE;
     public static final VariantAppearance SUNLIGHT_MALE;
+    public static final VariantAppearance AURORA;
     public static final VariantAppearance TERRA_FEMALE;
     public static final VariantAppearance TERRA_MALE;
     public static final VariantAppearance WATER_FEMALE;
@@ -142,9 +143,10 @@ public class VariantAppearances {
     }
 
     static {
-        var builder = builder(BuiltinFactory.COMPAT);
+        var builder = builder(BuiltinFactory.NORMAL);
         SUNLIGHT_FEMALE = builder.build(makeId("sunlight/female"));
         SUNLIGHT_MALE = builder.build(makeId("sunlight/male"));
+        AURORA = builder.build(makeId("sunlight/aurora"));
     }
 
     static {
@@ -217,6 +219,7 @@ public class VariantAppearances {
         map.put("bronzed_storm", BRONZED_STORM);
         map.put("sunlight_female", SUNLIGHT_FEMALE);
         map.put("sunlight_male", SUNLIGHT_MALE);
+        map.put("aurora", AURORA);
         map.put("terra_female", TERRA_FEMALE);
         map.put("terra_male", TERRA_MALE);
         map.put("water_female", WATER_FEMALE);

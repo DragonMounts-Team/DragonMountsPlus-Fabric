@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "dragonmounts.plus:netherite_shears_from_smithing"
+        "recipe": "dragonmounts.plus:netherite_shears_smithing"
       },
       "trigger": "minecraft:recipe_unlocked"
     }
@@ -26,7 +26,7 @@
   ],
   "rewards": {
     "recipes": [
-      "dragonmounts.plus:netherite_shears_from_smithing"
+      "dragonmounts.plus:netherite_shears_smithing"
     ]
   }
 }

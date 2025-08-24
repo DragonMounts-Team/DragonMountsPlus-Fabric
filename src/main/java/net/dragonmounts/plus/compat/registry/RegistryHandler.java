@@ -24,6 +24,8 @@ import net.minecraft.world.entity.ai.sensing.SensorType;
 import net.minecraft.world.entity.schedule.Activity;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.consume_effects.ConsumeEffect;
+import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.levelgen.structure.Structure;
 import net.minecraft.world.level.levelgen.structure.StructureType;
 import net.minecraft.world.level.levelgen.structure.pieces.StructurePieceType;
@@ -63,6 +65,10 @@ public class RegistryHandler {
             StreamCodec<? super RegistryFriendlyByteBuf, T> packetCodec
     ) {
         return Registry.register(BuiltInRegistries.PARTICLE_TYPE, makeId(name), FabricParticleTypes.complex(overrideLimiter, codec, packetCodec));
+    }
+
+    public static <S extends RecipeSerializer<T>, T extends Recipe<?>> S registerRecipe(ResourceLocation identifier, S serializer) {
+        return Registry.register(BuiltInRegistries.RECIPE_SERIALIZER, identifier, serializer);
     }
 
     public static <T extends Sensor<?>> SensorType<T> registerSensor(String name, Supplier<T> factory) {

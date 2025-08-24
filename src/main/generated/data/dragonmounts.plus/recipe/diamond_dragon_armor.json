@@ -7,9 +7,9 @@
     "X": "#c:storage_blocks/diamond"
   },
   "pattern": [
-    "X #",
-    " XX",
-    "## "
+    "#  ",
+    "XXX",
+    " ##"
   ],
   "result": {
     "count": 1,

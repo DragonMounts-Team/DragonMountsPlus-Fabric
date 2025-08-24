@@ -7,9 +7,9 @@
     "X": "#c:storage_blocks/iron"
   },
   "pattern": [
-    "X #",
-    " XX",
-    "## "
+    "#  ",
+    "XXX",
+    " ##"
   ],
   "result": {
     "count": 1,

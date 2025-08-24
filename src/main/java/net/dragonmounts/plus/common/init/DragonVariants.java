@@ -59,6 +59,7 @@ public class DragonVariants {
     public static final DragonVariant BRONZED_STORM;
     public static final DragonVariant SUNLIGHT_FEMALE;
     public static final DragonVariant SUNLIGHT_MALE;
+    public static final DragonVariant AURORA;
     public static final DragonVariant TERRA_FEMALE;
     public static final DragonVariant TERRA_MALE;
     public static final DragonVariant WATER_FEMALE;
@@ -146,6 +147,7 @@ public class DragonVariants {
         variants.add(BRONZED_STORM = make(supplier, DragonTypes.STORM, "bronzed_storm"));
         variants.add(SUNLIGHT_FEMALE = make(supplier, DragonTypes.SUNLIGHT, "sunlight_female"));
         variants.add(SUNLIGHT_MALE = make(supplier, DragonTypes.SUNLIGHT, "sunlight_male"));
+        variants.add(AURORA = make(supplier, DragonTypes.SUNLIGHT, "aurora"));
         variants.add(TERRA_FEMALE = make(supplier, DragonTypes.TERRA, "terra_female"));
         variants.add(TERRA_MALE = make(supplier, DragonTypes.TERRA, "terra_male"));
         variants.add(WATER_FEMALE = make(supplier, DragonTypes.WATER, "water_female"));
