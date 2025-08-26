@@ -64,6 +64,7 @@ public class DragonVariants {
     public static final DragonVariant TERRA_MALE;
     public static final DragonVariant WATER_FEMALE;
     public static final DragonVariant WATER_MALE;
+    public static final DragonVariant BRINE;
     public static final DragonVariant WITHER;
     public static final DragonVariant ZOMBIE;
 
@@ -152,6 +153,7 @@ public class DragonVariants {
         variants.add(TERRA_MALE = make(supplier, DragonTypes.TERRA, "terra_male"));
         variants.add(WATER_FEMALE = make(supplier, DragonTypes.WATER, "water_female"));
         variants.add(WATER_MALE = make(supplier, DragonTypes.WATER, "water_male"));
+        variants.add(BRINE = make(supplier, DragonTypes.WATER, "brine"));
         variants.add(WITHER = make(supplier, DragonTypes.WITHER, "wither"));
         variants.add(ZOMBIE = make(supplier, DragonTypes.ZOMBIE, "zombie"));
         BUILTIN_VALUES = variants.build();

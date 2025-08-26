@@ -54,6 +54,7 @@ public class VariantAppearances {
     public static final VariantAppearance TERRA_MALE;
     public static final VariantAppearance WATER_FEMALE;
     public static final VariantAppearance WATER_MALE;
+    public static final VariantAppearance BRINE;
     public static final VariantAppearance WITHER;
     public static final VariantAppearance ZOMBIE;
     public static final VariantAppearance WILD_SCULK;
@@ -156,10 +157,11 @@ public class VariantAppearances {
     }
 
     static {
-        var builder = builder(BuiltinFactory.COMPAT_TAIL_HORNED)
+        var builder = builder(BuiltinFactory.SCALE_SHARPENED)
                 .withBreath(DMParticleSprites.WATER_BREATH, WaterBreathParticle.FACTORY);
         WATER_FEMALE = builder.build(makeId("water/female"));
         WATER_MALE = builder.build(makeId("water/male"));
+        BRINE = builder.build(makeId("water/brine"));
     }
 
     static {
@@ -175,7 +177,7 @@ public class VariantAppearances {
     }
 
     static {
-        var builder = builder(BuiltinFactory.SKULL);
+        var builder = builder(BuiltinFactory.SCULK);
         WILD_SCULK = builder.build(makeId("sculk/wild_type"));
         MUTANT_SCULK = builder.build(makeId("sculk/mutant"));
         HOLLOWED = builder.build(makeId("sculk/hollowed"));
@@ -224,6 +226,7 @@ public class VariantAppearances {
         map.put("terra_male", TERRA_MALE);
         map.put("water_female", WATER_FEMALE);
         map.put("water_male", WATER_MALE);
+        map.put("brine", BRINE);
         map.put("wither", WITHER);
         map.put("zombie", ZOMBIE);
         return key -> {

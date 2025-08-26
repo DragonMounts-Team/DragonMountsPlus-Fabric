@@ -120,17 +120,16 @@ public class DragonCoreBlockEntity extends RandomizableContainerBlockEntity impl
     }
 
     @Override
-    @SuppressWarnings("EnhancedSwitchMigration")
     public boolean triggerEvent(int id, int data) {
-        if (id == 1) switch (this.openCount = data) {
-            case 0:
-                this.stage = AnimationStatus.CLOSING;
-                return true;
-            case 1:
-                this.stage = AnimationStatus.OPENING;
-                return true;
-            default:
-                return true;
+        if (id == 1) {
+            switch (this.openCount = data) {
+                case 0:
+                    this.stage = AnimationStatus.CLOSING;
+                    return true; // to skip jump op
+                case 1:
+                    this.stage = AnimationStatus.OPENING;
+            }
+            return true;
         }
         return super.triggerEvent(id, data);
     }

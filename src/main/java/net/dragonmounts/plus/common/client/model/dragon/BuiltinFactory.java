@@ -84,11 +84,11 @@ public enum BuiltinFactory implements ModelFactory {
                     .getCubes();
         }
 
-        static void attachTailHorn(PartDefinition segment, float width, float length, int u, int v) {
+        static void attachTailHorn(PartDefinition segment, float width, float length, float offset, int u, int v) {
             segment.addOrReplaceChild("left_horn", new PartDefinition(
                     CubeListBuilder.create().mirror()
                             .texOffs(u, v)
-                            .addBox(TAIL_HORN_OFFSET - width, TAIL_HORN_OFFSET + 1.5F, TAIL_HORN_OFFSET + 4.0F, width, 0.0F, length, TOP_SURFACE)
+                            .addBox(TAIL_HORN_OFFSET - width, TAIL_HORN_OFFSET + 1.5F, offset, width, 0.0F, length, TOP_SURFACE)
                             .texOffs(0, 117)
                             .addBox(TAIL_HORN_OFFSET, TAIL_HORN_OFFSET, TAIL_HORN_OFFSET, HORN_THICK, HORN_THICK, TAIL_HORN_LENGTH, ATTACHED_TO_NORTH)
                             .getCubes(),
@@ -97,7 +97,7 @@ public enum BuiltinFactory implements ModelFactory {
             segment.addOrReplaceChild("right_horn", new PartDefinition(
                     CubeListBuilder.create()
                             .texOffs(u, v)
-                            .addBox(TAIL_HORN_OFFSET + 3.0F, TAIL_HORN_OFFSET + 1.5F, TAIL_HORN_OFFSET + 4.0F, width, 0.0F, length, TOP_SURFACE)
+                            .addBox(TAIL_HORN_OFFSET + 3.0F, TAIL_HORN_OFFSET + 1.5F, offset, width, 0.0F, length, TOP_SURFACE)
                             .texOffs(0, 117)
                             .addBox(TAIL_HORN_OFFSET, TAIL_HORN_OFFSET, TAIL_HORN_OFFSET, HORN_THICK, HORN_THICK, TAIL_HORN_LENGTH, ATTACHED_TO_NORTH)
                             .getCubes(),
@@ -155,9 +155,9 @@ public enum BuiltinFactory implements ModelFactory {
             for (int i = 2; i < TAIL_SEGMENTS; ++i) {
                 tail.addOrReplaceChild(ClientUtil.toString(i), new PartDefinition(segment, scaledPose(calcTailSize(i))));
             }
-            attachTailHorn(tail.getChild("6"), 7.0F, 28.0F, 140, 192);
-            attachTailHorn(tail.getChild("7"), 5.0F, 28.0F, 130, 192);
-            attachTailHorn(tail.getChild("8"), 15.0F, 28.0F, 100, 192);
+            attachTailHorn(tail.getChild("6"), 7.0F, 26.0F, TAIL_HORN_OFFSET + 9.0F, 142, 192);
+            attachTailHorn(tail.getChild("7"), 5.0F, 22.0F, TAIL_HORN_OFFSET + 10.0F, 136, 192);
+            attachTailHorn(tail.getChild("8"), 15.0F, 22.0F, TAIL_HORN_OFFSET + 10.0F, 106, 192);
         }
     },
     SKELETON("skeleton") {
@@ -183,7 +183,7 @@ public enum BuiltinFactory implements ModelFactory {
             makeHindLeg(root, "right_hind_leg", SKELETON_LEG_WIDTH, LEG_LENGTH, false, PartPose.offset(-11, 13, 46));
         }
     },
-    SKULL("skull") {
+    SCULK("sculk") {
         @Override
         public void makeTail(PartDefinition root) {
             makeHornedTail(root);

@@ -55,7 +55,7 @@ public class ClientNetworkHandler {
         }
     }
 
-    public static void handleCooldownInit(InitCooldownPayload payload, @SuppressWarnings("unused") ClientPlayNetworking.Context context) {
+    public static void handleCooldownInit(InitCooldownPayload payload, ClientPlayNetworking.Context context) {
         ArmorEffectManagerImpl.init(payload.data());
     }
 
