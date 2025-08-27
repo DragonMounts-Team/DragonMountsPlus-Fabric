@@ -73,14 +73,14 @@ public enum BuiltinFactory implements ModelFactory {
         }
     },
     SCALE_SHARPENED("scale_sharpened") {
-        static CubeListBuilder buildBackScale(int offset) {
+        static CubeListBuilder buildBackScale(float offset) {
             return CubeListBuilder.create().texOffs(0, 27)
-                    .addBox(0, -12, offset, 0, 12, 22, SHARPENED_SCALE_SURFACE);
+                    .addBox(0, -12, offset, 0, 12, 22);
         }
 
         static List<CubeDefinition> attachTailScale(CubeListBuilder builder) {
             return builder.texOffs(0, 29)
-                    .addBox(0, -14, -5, 0, 9, 10, SHARPENED_SCALE_SURFACE)
+                    .addBox(0, -14, -5, 0, 9, 10)
                     .getCubes();
         }
 
@@ -109,27 +109,38 @@ public enum BuiltinFactory implements ModelFactory {
         public PartDefinition makeBody(PartDefinition root) {
             var body = root.addOrReplaceChild(
                     "body",
-                    buildBackScale(5)
+                    buildBackScale(5.0F)
                             .texOffs(0, 0)
                             .addBox(-12, 0, -16, 24, 24, 64),
                     PartPose.offset(0, 4, 8)
             );
-            body.addOrReplaceChild("back", buildBackScale(-15), PartPose.ZERO);
-            body.addOrReplaceChild("scale", buildBackScale(25), PartPose.ZERO);
+            body.addOrReplaceChild(
+                    "back",
+                    buildBackScale(-22.0F),
+                    PartPose.offsetAndRotation(0.0F, 0.0F, 5.0F + 9.0F * (float) Math.tan(10.0F * TO_RAD_FACTOR), 10.0F * TO_RAD_FACTOR, 0.0F, 0.0F)
+            );
+            body.addOrReplaceChild(
+                    "scale",
+                    buildBackScale(0.0F),
+                    PartPose.offsetAndRotation(0.0F, 0.0F, 27.0F - 9.0F * (float) Math.tan(15.0F * TO_RAD_FACTOR), -15.0F * TO_RAD_FACTOR, 0.0F, 0.0F)
+            );
             return body;
         }
 
         @Override
         public void makeNeck(PartDefinition root) {
             var neck = root.addOrReplaceChild("neck", CubeListBuilder.create(), PartPose.ZERO);
-            var base = CubeListBuilder.create().texOffs(112, 88).addBox(-5, -5, -5, NECK_SIZE, NECK_SIZE, NECK_SIZE).getCubes();
+            var base = CubeListBuilder.create()
+                    .texOffs(112, 88)
+                    .addBox(-5, -5, -5, NECK_SIZE, NECK_SIZE, NECK_SIZE)
+                    .getCubes();
             for (int i = 0; i < NECK_SEGMENTS; ++i) {
                 float scale = calcNeckSize(i);
                 neck.addOrReplaceChild(ClientUtil.toString(i), new PartDefinition(base, scaledPose(scale, scale, 0.6F)));
             }
             var cubes = CubeListBuilder.create()
                     .texOffs(0, 29)
-                    .addBox(0, -10, -5, 0, 9, NECK_SIZE, SHARPENED_SCALE_SURFACE)
+                    .addBox(0, -10, -5, 0, 9, NECK_SIZE)
                     .getCubes();
             var pose = new PartPose(0.0F, -4.0F, 0.0F, 0.0F, 0.0F, 0.0F, 1.0F, 0.6F, 1.0F);
             neck.getChild("3").addOrReplaceChild("scale", new PartDefinition(cubes, pose));
@@ -204,7 +215,6 @@ public enum BuiltinFactory implements ModelFactory {
     public static final int NORMAL_LEG_WIDTH = 9;
     public static final int SKELETON_LEG_WIDTH = 7;
     public static final Set<Direction> TOP_SURFACE = Collections.singleton(Direction.DOWN);
-    public static final Set<Direction> SHARPENED_SCALE_SURFACE = Collections.singleton(Direction.WEST);
     public static final Set<Direction> EAST_STRAP_SURFACE = Set.of(Direction.DOWN, Direction.NORTH, Direction.SOUTH, Direction.EAST);
     public static final Set<Direction> WEST_STRAP_SURFACE = Set.of(Direction.DOWN, Direction.NORTH, Direction.SOUTH, Direction.WEST);
     public static final Set<Direction> ATTACHED_TO_BOTTOM = Set.of(Direction.DOWN, Direction.NORTH, Direction.SOUTH, Direction.WEST, Direction.EAST);
