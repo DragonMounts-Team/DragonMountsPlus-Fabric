@@ -13,27 +13,31 @@ import org.jetbrains.annotations.Nullable;
 
 import static net.dragonmounts.plus.common.DragonMountsShared.makeId;
 
-public abstract class VariantAppearance {
-    public final static String TEXTURES_ROOT = "textures/entity/dragon/";
-    public final static ResourceLocation DEFAULT_CHEST = makeId(TEXTURES_ROOT + "chest.png");
-    public final static ResourceLocation DEFAULT_SADDLE = makeId(TEXTURES_ROOT + "saddle.png");
-    public final static ResourceLocation DEFAULT_DISSOLVE = makeId(TEXTURES_ROOT + "dissolve.png");
+public interface VariantAppearance {
+    String TEXTURES_ROOT = "textures/entity/dragon/";
+    ResourceLocation DEFAULT_CHEST = makeId(TEXTURES_ROOT + "chest.png");
+    ResourceLocation DEFAULT_SADDLE = makeId(TEXTURES_ROOT + "saddle.png");
+    ResourceLocation DEFAULT_DISSOLVE = makeId(TEXTURES_ROOT + "dissolve.png");
 
-    public abstract void onReload(EntityModelSet models);
+    void onReload(EntityModelSet models);
 
-    public abstract DragonModel getModel();
+    DragonModel getModel();
 
-    public abstract RenderType getBase(@Nullable DragonRenderState state);
+    RenderType getBase(@Nullable DragonRenderState state);
 
-    public abstract RenderType getGlow(@Nullable DragonRenderState state);
+    RenderType getGlow(@Nullable DragonRenderState state);
 
-    public abstract RenderType getDecal(DragonRenderState state);
+    RenderType getDecal(DragonRenderState state);
 
-    public abstract RenderType getGlowDecal(DragonRenderState state);
+    RenderType getGlowDecal(DragonRenderState state);
 
-    public abstract ResourceLocation getBodyTexture(DragonRenderState state);
+    RenderType getChest(DragonRenderState state);
 
-    public abstract Particle createBreathParticle(
+    RenderType getSaddle(DragonRenderState state);
+
+    ResourceLocation getBodyTexture(DragonRenderState state);
+
+    Particle createBreathParticle(
             BreathParticleOption option,
             TextureAtlas atlas,
             ClientLevel level,
@@ -44,12 +48,4 @@ public abstract class VariantAppearance {
             double motionY,
             double motionZ
     );
-
-    public ResourceLocation getChest(DragonRenderState state) {
-        return DEFAULT_CHEST;
-    }
-
-    public ResourceLocation getSaddle(DragonRenderState state) {
-        return DEFAULT_SADDLE;
-    }
 }

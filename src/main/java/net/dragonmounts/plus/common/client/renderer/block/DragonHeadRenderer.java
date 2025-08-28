@@ -42,8 +42,8 @@ public enum DragonHeadRenderer implements BlockEntityRenderer<DragonHeadBlockEnt
         matrices.pushPose();
         matrices.translate(offsetX, offsetY, offsetZ);
         matrices.scale(-1.0F, -1.0F, 1.0F);
-        head.render(matrices, buffers.getBuffer(appearance.getBase(null)), light, overlay);
-        head.render(matrices, buffers.getBuffer(appearance.getGlow(null)), LightTexture.FULL_BLOCK, OverlayTexture.NO_OVERLAY);
+        head.render(matrices, buffers.getBuffer(appearance.getBase(null)), light, overlay, -1);
+        head.render(matrices, buffers.getBuffer(appearance.getGlow(null)), LightTexture.FULL_BLOCK, OverlayTexture.NO_OVERLAY, -1);
         matrices.popPose();
     }
 

@@ -41,6 +41,7 @@ public class DragonModel extends EntityModel<DragonRenderState> implements Heade
     private final ModelPart[] tails;
     public final ModelPart body;
     public final ModelPart chest;
+    public final ModelPart saddle;
     public final ModelPart back;
 
     public DragonModel(ModelPart root) {
@@ -59,9 +60,10 @@ public class DragonModel extends EntityModel<DragonRenderState> implements Heade
         this.rightHindLeg = new LegPart(root.getChild("right_hind_leg"));
         this.necks = getChildren(root.getChild("neck"), NECK_SEGMENTS);
         this.tails = getChildren(root.getChild("tail"), TAIL_SEGMENTS);
-        this.body = root.getChild("body");
-        this.chest = this.body.getChild("chest");
-        this.back = this.body.getChild("back");
+        var body = this.body = root.getChild("body");
+        (this.chest = body.getChild("chest")).visible = false;
+        (this.saddle = body.getChild("saddle")).visible = false;
+        this.back = body.getChild("back");
     }
 
     public void setupBlock(float ticks, float yRot, float scale) {
@@ -94,7 +96,6 @@ public class DragonModel extends EntityModel<DragonRenderState> implements Heade
         this.rightFrontLeg.loadPose(state.rightFrontLeg);
         this.leftHindLeg.loadPose(state.leftHindLeg);
         this.rightHindLeg.loadPose(state.rightHindLeg);
-        this.chest.visible = state.hasChest;
         this.back.visible = !state.isSaddled;
         for (int i = 0; i < WING_FINGERS; ++i) {
             this.leftFingers[i].yRot = -(this.rightFingers[i].yRot = state.fingerRotY[i]);

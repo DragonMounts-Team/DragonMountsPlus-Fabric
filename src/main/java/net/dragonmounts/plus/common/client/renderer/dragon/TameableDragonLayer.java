@@ -36,17 +36,27 @@ public class TameableDragonLayer extends RenderLayer<DragonRenderState, DragonMo
         }
         //saddle
         if (state.isSaddled) {
-            renderColoredCutoutModel(model, appearance.getSaddle(state), matrices, buffers, light, state, -1);
+            var saddle = model.saddle;
+            saddle.visible = true;
+            model.renderToBuffer(matrices, buffers.getBuffer(appearance.getSaddle(state)), light, OverlayTexture.NO_OVERLAY, -1);
+            saddle.visible = false;
         }
         //chest
         if (state.hasChest) {
-            renderColoredCutoutModel(model, appearance.getChest(state), matrices, buffers, light, state, -1);
+            var chest = model.chest;
+            chest.visible = true;
+            matrices.pushPose();
+            model.root().translateAndRotate(matrices);
+            model.body.translateAndRotate(matrices);
+            chest.render(matrices, buffers.getBuffer(appearance.getChest(state)), light, OverlayTexture.NO_OVERLAY, -1);
+            matrices.popPose();
+            chest.visible = false;
         }
         //armor
         var equippable = state.armor.get(DataComponents.EQUIPPABLE);
         if (equippable == null) return;
         var texture = DragonArmorMaterials.getTexture(equippable.assetId());
         if (texture == null) return;
-        model.renderToBuffer(matrices, getArmorFoilBuffer(buffers, armorCutoutNoCull(texture), state.armor.hasFoil()), light, OverlayTexture.NO_OVERLAY);
+        model.renderToBuffer(matrices, getArmorFoilBuffer(buffers, armorCutoutNoCull(texture), state.armor.hasFoil()), light, OverlayTexture.NO_OVERLAY, -1);
     }
 }

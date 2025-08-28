@@ -16,7 +16,7 @@ import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.Nullable;
 
-public class DefaultAppearance extends VariantAppearance {
+public class DefaultAppearance implements VariantAppearance {
     public final ModelLayerLocation modelLocation;
     public final BreathParticleFactory factory;
     public final ResourceLocation breath;
@@ -25,6 +25,8 @@ public class DefaultAppearance extends VariantAppearance {
     public final RenderType decal;
     public final RenderType glow;
     public final RenderType glowDecal;
+    public final RenderType chest;
+    public final RenderType saddle;
     private DragonModel model;
 
     public DefaultAppearance(
@@ -42,6 +44,8 @@ public class DefaultAppearance extends VariantAppearance {
         this.decal = RenderStateAccessor.entityCutoutDecal(body, DEFAULT_DISSOLVE);
         this.glow = RenderType.entityTranslucentEmissive(glow);
         this.glowDecal = RenderStateAccessor.entityTranslucentEmissiveDecal(glow, DEFAULT_DISSOLVE);
+        this.chest = RenderType.entityCutoutNoCull(DEFAULT_CHEST);
+        this.saddle = RenderType.entityCutoutNoCull(DEFAULT_SADDLE);
     }
 
     @Override
@@ -77,6 +81,16 @@ public class DefaultAppearance extends VariantAppearance {
     @Override
     public RenderType getGlowDecal(DragonRenderState state) {
         return this.glowDecal;
+    }
+
+    @Override
+    public RenderType getChest(DragonRenderState state) {
+        return this.chest;
+    }
+
+    @Override
+    public RenderType getSaddle(DragonRenderState state) {
+        return this.saddle;
     }
 
     @Override
