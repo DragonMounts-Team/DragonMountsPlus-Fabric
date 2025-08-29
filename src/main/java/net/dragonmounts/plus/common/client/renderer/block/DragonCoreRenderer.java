@@ -52,7 +52,7 @@ public class DragonCoreRenderer implements BlockEntityRenderer<DragonCoreBlockEn
         matrices.scale(1.0F, -1.0F, -1.0F);
         matrices.translate(0.0F, -1.0F, 0.0F);
         this.model.animate(progress);
-        this.model.renderToBuffer(matrices, buffers.getBuffer(RENDER_TYPE), light, overlay);
+        this.model.renderToBuffer(matrices, buffers.getBuffer(RENDER_TYPE), light, overlay, -1);
         matrices.popPose();
     }
 

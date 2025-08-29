@@ -89,7 +89,7 @@ public class DragonInventoryScreen extends AbstractContainerScreen<DragonInvento
         var dragon = this.menu.dragon;
         this.health = String.format("%.2f/%.2f", dragon.getHealth(), dragon.getMaxHealth());
         this.armor = String.format("%.2f", dragon.getAttributeValue(Attributes.ARMOR));
-        this.sittingToggle.setState(dragon.isInSittingPose(), ORDER_TO_STAND, ORDER_TO_SIT);
+        this.sittingToggle.setState(this.menu.sitting.get() != 0, ORDER_TO_STAND, ORDER_TO_SIT);
         this.trustToggle.setState(dragon.isTrustingAnyPlayer());
     }
 

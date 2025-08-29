@@ -6,11 +6,11 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.DataSlot;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.EnchantmentEffectComponents;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
-import org.jetbrains.annotations.NotNull;
 
 import static net.dragonmounts.plus.common.DragonMountsShared.makeId;
 import static net.dragonmounts.plus.common.inventory.DragonInventory.*;
@@ -23,20 +23,19 @@ public class DragonInventoryHandler extends AbstractContainerMenu {
     public final TameableDragonEntity dragon;
     public final FluteSlot flute;
     public final Player player;
+    public final DataSlot sitting;
 
     public DragonInventoryHandler(int id, Inventory playerInventory, TameableDragonEntity dragon) {
         super(DMScreenHandlers.DRAGON_INVENTORY, id);
-        DragonInventory dragonInventory = this.inventory = dragon.inventory;
-        this.dragon = dragon;
-        this.player = playerInventory.player;
-        dragonInventory.startOpen(this.player);
+        var inventory = this.inventory = (this.dragon = dragon).inventory;
+        inventory.startOpen(this.player = playerInventory.player);
         this.addSlot(this.flute = new FluteSlot(this, 8, 8));
-        this.addSlot(new ArmorSlot(SLOT_ARMOR_INDEX, 156, 36));
-        this.addSlot(new ChestSlot(SLOT_CHEST_INDEX, 156, 54));
-        this.addSlot(new SaddleSlot(SLOT_SADDLE_INDEX, 156, 18));
+        this.addSlot(new ArmorSlot(inventory, SLOT_ARMOR_INDEX, 156, 36));
+        this.addSlot(new ChestSlot(inventory, SLOT_CHEST_INDEX, 156, 54));
+        this.addSlot(new SaddleSlot(inventory, SLOT_SADDLE_INDEX, 156, 18));
         for (int i = 0; i < 3; ++i) {
             for (int j = 3, y = i * 18 + 75; j < 12; ++j) {
-                this.addSlot(new InventorySlot(j + i * 9, j * 18 + 102, y));
+                this.addSlot(new InventorySlot(inventory, j + i * 9, j * 18 + 102, y));
             }
         }
         for (int i = 0; i < 3; ++i) {
@@ -47,10 +46,11 @@ public class DragonInventoryHandler extends AbstractContainerMenu {
         for (int j = 0; j < 9; ++j) {
             this.addSlot(new Slot(playerInventory, j, j * 18 + 156, 200));
         }
+        this.sitting = this.addDataSlot(dragon.level().isClientSide ? DataSlot.standalone() : new SittingState(dragon));
     }
 
     @Override
-    public @NotNull ItemStack quickMoveStack(Player player, int index) {
+    public ItemStack quickMoveStack(Player player, int index) {
         var slot = this.getSlot(index);
         if (slot.hasItem()) {
             ItemStack stack = slot.getItem(), copy = stack.copy();
@@ -93,21 +93,23 @@ public class DragonInventoryHandler extends AbstractContainerMenu {
         return this.inventory.stillValid(player);
     }
 
-    public class SaddleSlot extends Slot {
+    public static class SaddleSlot extends Slot {
         public static final ResourceLocation ICON = ResourceLocation.withDefaultNamespace("container/slot/saddle");
+        public final TameableDragonEntity dragon;
 
-        public SaddleSlot(int slot, int x, int y) {
-            super(DragonInventoryHandler.this.inventory, slot, x, y);
+        public SaddleSlot(DragonInventory inventory, int slot, int x, int y) {
+            super(inventory, slot, x, y);
+            this.dragon = inventory.dragon;
         }
 
         @Override
         public boolean mayPlace(ItemStack stack) {
-            return DragonInventoryHandler.this.inventory.isSaddle(stack);
+            return isDragonSaddle(stack);
         }
 
         @Override
         public boolean mayPickup(Player player) {
-            return !DragonInventoryHandler.this.dragon.hasControllingPassenger();
+            return !this.dragon.hasControllingPassenger();
         }
 
         @Override
@@ -121,21 +123,21 @@ public class DragonInventoryHandler extends AbstractContainerMenu {
         }
     }
 
-    public class ArmorSlot extends Slot {
+    public static class ArmorSlot extends Slot {
         public static final ResourceLocation ICON = makeId("slot/dragon_armor");
 
-        public ArmorSlot(int slot, int x, int y) {
-            super(DragonInventoryHandler.this.inventory, slot, x, y);
+        public ArmorSlot(DragonInventory inventory, int slot, int x, int y) {
+            super(inventory, slot, x, y);
         }
 
         @Override
         public boolean mayPlace(ItemStack stack) {
-            return TameableDragonEntity.isBodyArmorItem(stack);
+            return isDragonArmor(stack);
         }
 
         @Override
         public boolean mayPickup(Player player) {
-            ItemStack stack = this.getItem();
+            var stack = this.getItem();
             return (stack.isEmpty() || player.isCreative() || !EnchantmentHelper.has(stack, EnchantmentEffectComponents.PREVENT_ARMOR_CHANGE)) && super.mayPickup(player);
         }
 
@@ -150,16 +152,16 @@ public class DragonInventoryHandler extends AbstractContainerMenu {
         }
     }
 
-    public class ChestSlot extends Slot {
+    public static class ChestSlot extends Slot {
         public static final ResourceLocation ICON = makeId("slot/chest");
 
-        public ChestSlot(int slot, int x, int y) {
-            super(DragonInventoryHandler.this.inventory, slot, x, y);
+        public ChestSlot(DragonInventory inventory, int slot, int x, int y) {
+            super(inventory, slot, x, y);
         }
 
         @Override
         public boolean mayPlace(ItemStack stack) {
-            return DragonInventoryHandler.this.inventory.isChest(stack);
+            return isChest(stack);
         }
 
         @Override
@@ -173,15 +175,34 @@ public class DragonInventoryHandler extends AbstractContainerMenu {
         }
     }
 
-    public class InventorySlot extends Slot {
-        public InventorySlot(int slot, int x, int y) {
-            super(DragonInventoryHandler.this.inventory, slot, x, y);
+    public static class InventorySlot extends Slot {
+        public final TameableDragonEntity dragon;
+
+        public InventorySlot(DragonInventory inventory, int slot, int x, int y) {
+            super(inventory, slot, x, y);
+            this.dragon = inventory.dragon;
         }
 
         @Override
         public boolean isActive() {
-            return this.hasItem() || DragonInventoryHandler.this.dragon.hasChest();
+            return this.hasItem() || this.dragon.hasChest();
         }
+    }
+
+    public static class SittingState extends DataSlot {
+        public final TameableDragonEntity dragon;
+
+        public SittingState(TameableDragonEntity dragon) {
+            this.dragon = dragon;
+        }
+
+        @Override
+        public int get() {
+            return this.dragon.isOrderedToSit() ? 1 : 0;
+        }
+
+        @Override
+        public void set(int value) {}
     }
 
     public static boolean canPlaceAt(AbstractContainerMenu menu, int index, ItemStack stack) {

@@ -59,10 +59,20 @@ public class TryFindGround<E extends PathfinderMob & FlyingAnimal> extends OneSh
                     var target = new BlockPosTracker(pos.immutable());
                     brain.setMemory(LOOK_TARGET, target);
                     brain.setMemory(WALK_TARGET, new WalkTarget(target, this.speedModifier, 1));
-                    break;
+                    return true;
                 }
             }
         }
+        int targetY = Math.max(level.getMinY() + level.getLogicalHeight() / 4, level.getSeaLevel());
+        int distance = current.getY() - targetY;
+        if (distance > 32) {
+            targetY = current.getY() - 32;
+        } else if (distance < -32) {
+            targetY = current.getY() + 32;
+        }
+        var target = new BlockPosTracker(new BlockPos(current.getX(), targetY, current.getZ()));
+        brain.setMemory(LOOK_TARGET, target);
+        brain.setMemory(WALK_TARGET, new WalkTarget(target, this.speedModifier, 8));
         return true;
     }
 }

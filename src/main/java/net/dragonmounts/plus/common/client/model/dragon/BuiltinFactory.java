@@ -171,12 +171,7 @@ public enum BuiltinFactory implements ModelFactory {
             attachTailHorn(tail.getChild("8"), 15.0F, 22.0F, TAIL_HORN_OFFSET + 10.0F, 106, 192);
         }
     },
-    SKELETON("skeleton") {
-        @Override
-        public CubeListBuilder applyWingUV(CubeListBuilder builder) {
-            return builder.texOffs(-49, 176);
-        }
-
+    SCULK("sculk") {
         @Override
         public void makeTail(PartDefinition root) {
             makeHornedTail(root);
@@ -194,7 +189,12 @@ public enum BuiltinFactory implements ModelFactory {
             makeHindLeg(root, "right_hind_leg", SKELETON_LEG_WIDTH, LEG_LENGTH, false, PartPose.offset(-11, 13, 46));
         }
     },
-    SCULK("sculk") {
+    SKELETON("skeleton") {
+        @Override
+        public void makeHead(PartDefinition root) {
+            makeHead(root, CubeListBuilder.create());
+        }
+
         @Override
         public void makeTail(PartDefinition root) {
             makeHornedTail(root);
@@ -234,6 +234,39 @@ public enum BuiltinFactory implements ModelFactory {
 
     public static float calcTailSize(int index) {
         return Mth.lerp((index + 1) / (float) TAIL_SEGMENTS, 1.5F, 0.3F);
+    }
+
+    public static void makeHead(PartDefinition root, CubeListBuilder head) {
+        var part = root.addOrReplaceChild(
+                "head",
+                head.texOffs(0, 0)
+                        .addBox(-8.0F, -8.0F, 6.0F + HEAD_OFS, HEAD_SIZE, HEAD_SIZE, HEAD_SIZE)
+                        // upper jaw
+                        .texOffs(56, 88)
+                        .addBox(-6.0F, -1.0F, -8.0F + HEAD_OFS, JAW_WIDTH, JAW_HEIGHT, JAW_LENGTH, ATTACHED_TO_SOUTH),
+                PartPose.ZERO
+        );
+        part.addOrReplaceChild(
+                "left_horn",
+                CubeListBuilder.create().mirror()
+                        .addBox("horn", HORN_OFS, HORN_OFS, HORN_OFS, HORN_THICK, HORN_THICK, HEAD_HORN_LENGTH, 28, 32),
+                PartPose.offsetAndRotation(-5, -8, 0, 30.0F * TO_RAD_FACTOR, -30.0F * TO_RAD_FACTOR, 0)
+        );
+        part.addOrReplaceChild(
+                "right_horn",
+                CubeListBuilder.create()
+                        .addBox("horn", HORN_OFS, HORN_OFS, HORN_OFS, HORN_THICK, HORN_THICK, HEAD_HORN_LENGTH, 28, 32)
+                        .mirror(),
+                PartPose.offsetAndRotation(5, -8, 0, 30.0F * TO_RAD_FACTOR, 30.0F * TO_RAD_FACTOR, 0)
+        );
+        part.addOrReplaceChild(
+                "jaw",
+                CubeListBuilder.create()
+                        .texOffs(0, 88)
+                        // lower jaw
+                        .addBox(-6.0F, 0.0F, -16.0F, 12, 4, 16, ATTACHED_TO_SOUTH),
+                PartPose.offset(0.0F, 4.0F, 8.0F + HEAD_OFS)
+        );
     }
 
     public static void makeHornedTail(PartDefinition root) {

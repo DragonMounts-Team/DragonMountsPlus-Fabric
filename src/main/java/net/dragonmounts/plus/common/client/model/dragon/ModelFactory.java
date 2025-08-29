@@ -9,9 +9,9 @@ import net.minecraft.client.model.geom.builders.PartDefinition;
 
 import static net.dragonmounts.plus.common.client.ClientUtil.scaledPose;
 import static net.dragonmounts.plus.common.client.model.dragon.BuiltinFactory.*;
-import static net.dragonmounts.plus.common.client.model.dragon.DragonModel.*;
+import static net.dragonmounts.plus.common.client.model.dragon.DragonModel.HEAD_OFS;
+import static net.dragonmounts.plus.common.client.model.dragon.DragonModel.LEG_LENGTH;
 import static net.dragonmounts.plus.common.entity.dragon.DragonModelContracts.*;
-import static net.dragonmounts.plus.common.util.math.MathUtil.TO_RAD_FACTOR;
 
 public interface ModelFactory {
     default LayerDefinition makeModel() {
@@ -68,41 +68,11 @@ public interface ModelFactory {
     }
 
     default void makeHead(PartDefinition root) {
-        var head = root.addOrReplaceChild(
-                "head",
-                CubeListBuilder.create()
-                        .texOffs(0, 0)
-                        .addBox(-8.0F, -8.0F, 6.0F + HEAD_OFS, HEAD_SIZE, HEAD_SIZE, HEAD_SIZE)
-                        .texOffs(56, 88)
-                        // upper jaw
-                        .addBox(-6.0F, -1.0F, -8.0F + HEAD_OFS, JAW_WIDTH, JAW_HEIGHT, JAW_LENGTH, ATTACHED_TO_SOUTH)
-                        .texOffs(48, 0)
-                        // nostrils
-                        .addBox(-5.0F, -3.0F, -6.0F + HEAD_OFS, 2.0F, 2.0F, 4.0F, ATTACHED_TO_BOTTOM).mirror()
-                        .addBox(3.0F, -3.0F, -6.0F + HEAD_OFS, 2.0F, 2.0F, 4.0F, ATTACHED_TO_BOTTOM),
-                PartPose.ZERO
-        );
-        float rad30 = 30 * TO_RAD_FACTOR;
-        head.addOrReplaceChild(
-                "left_horn",
-                CubeListBuilder.create().mirror()
-                        .addBox("horn", HORN_OFS, HORN_OFS, HORN_OFS, HORN_THICK, HORN_THICK, HEAD_HORN_LENGTH, 28, 32),
-                PartPose.offsetAndRotation(-5, -8, 0, rad30, -rad30, 0)
-        );
-        head.addOrReplaceChild(
-                "right_horn",
-                CubeListBuilder.create()
-                        .addBox("horn", HORN_OFS, HORN_OFS, HORN_OFS, HORN_THICK, HORN_THICK, HEAD_HORN_LENGTH, 28, 32)
-                        .mirror(),
-                PartPose.offsetAndRotation(5, -8, 0, rad30, rad30, 0)
-        );
-        head.addOrReplaceChild(
-                "jaw",
-                CubeListBuilder.create()
-                        .texOffs(0, 88)
-                        // lower jaw
-                        .addBox(-6.0F, 0.0F, -16.0F, 12, 4, 16, ATTACHED_TO_SOUTH),
-                PartPose.offset(0.0F, 4.0F, 8.0F + HEAD_OFS)
+        BuiltinFactory.makeHead(root, CubeListBuilder.create()
+                // nostrils
+                .texOffs(48, 0)
+                .addBox(-5.0F, -3.0F, -6.0F + HEAD_OFS, 2.0F, 2.0F, 4.0F, ATTACHED_TO_BOTTOM).mirror()
+                .addBox(3.0F, -3.0F, -6.0F + HEAD_OFS, 2.0F, 2.0F, 4.0F, ATTACHED_TO_BOTTOM)
         );
     }
 

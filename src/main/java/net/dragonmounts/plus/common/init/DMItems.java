@@ -198,7 +198,7 @@ public class DMItems {
             new VariationOrbItem(props.stacksTo(16))
     );
     // Dragon Armors
-    public static final ItemHolder<Item> COPPER_DRAGON_ARMOR = registerItem("copper_dragon_armor", props -> makeDragonArmor(DragonArmorMaterials.COPPER, props));
+    public static final ItemHolder<Item> COPPER_DRAGON_ARMOR = COMBAT_TAB.register("copper_dragon_armor", props -> makeDragonArmor(DragonArmorMaterials.COPPER, props));
     public static final ItemHolder<Item> IRON_DRAGON_ARMOR = COMBAT_TAB.register("iron_dragon_armor", props -> makeDragonArmor(DragonArmorMaterials.IRON, props));
     public static final ItemHolder<Item> GOLDEN_DRAGON_ARMOR = COMBAT_TAB.register("golden_dragon_armor", props -> makeDragonArmor(DragonArmorMaterials.GOLD, props));
     public static final ItemHolder<Item> EMERALD_DRAGON_ARMOR = COMBAT_TAB.register("emerald_dragon_armor", props -> makeDragonArmor(DragonArmorMaterials.EMERALD, props));

@@ -32,7 +32,7 @@ public class TameableDragonLayer extends RenderLayer<DragonRenderState, DragonMo
                 return;
             }
             //glow
-            model.renderToBuffer(matrices, buffers.getBuffer(appearance.getGlow(state)), FULL_BRIGHT, OverlayTexture.NO_OVERLAY);
+            model.renderToBuffer(matrices, buffers.getBuffer(appearance.getGlow(state)), FULL_BRIGHT, OverlayTexture.NO_OVERLAY, -1);
         }
         //saddle
         if (state.isSaddled) {

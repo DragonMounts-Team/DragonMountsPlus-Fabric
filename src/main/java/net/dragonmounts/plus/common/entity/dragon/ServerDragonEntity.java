@@ -119,6 +119,7 @@ public class ServerDragonEntity extends TameableDragonEntity {
             this.applyType(this.getDragonType());
         }
         super.readAdditionalSaveData(tag);
+        this.setInSittingPose(this.isOrderedToSit() && this.onGround());
         if (!this.firstTick && (this.age != age || stage != this.stage)) {
             ServerNetworkHandler.sendTracking(this, new SyncDragonAgePayload(this.getId(), this.age, this.stage));
         }

@@ -73,6 +73,7 @@ public class FireBreath extends DragonBreath {
 
     @Override
     public void affectEntity(ServerLevel level, LivingEntity target, BreathAffectedEntity hit) {
+        target.igniteForTicks(80);
         float damage = this.damage * hit.getHitDensity();
         if (target.isInPowderSnow || target.isFullyFrozen()) {
             damage *= 2.0F;
@@ -80,7 +81,6 @@ public class FireBreath extends DragonBreath {
             damage *= 1.5F;
         }
         target.hurtServer(level, level.damageSources().mobAttack(this.dragon), damage);
-        target.igniteForTicks(80);
     }
 
     protected boolean litBlock(ServerLevel level, BlockPos pos, BlockState state) {

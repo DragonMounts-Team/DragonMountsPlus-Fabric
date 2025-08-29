@@ -2,9 +2,12 @@ package net.dragonmounts.plus.common.inventory;
 
 import it.unimi.dsi.fastutil.booleans.BooleanConsumer;
 import net.dragonmounts.plus.common.entity.dragon.TameableDragonEntity;
+import net.dragonmounts.plus.common.init.DMEntities;
+import net.dragonmounts.plus.common.tag.DMItemTags;
 import net.dragonmounts.plus.common.util.ArrayUtil;
 import net.dragonmounts.plus.compat.platform.PlatformItemTags;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -15,8 +18,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.player.StackedItemContents;
 import net.minecraft.world.inventory.StackedContentsCompatible;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.SaddleItem;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
 import java.util.function.Predicate;
@@ -26,6 +27,19 @@ import java.util.function.Predicate;
  * @see net.minecraft.world.SimpleContainer
  */
 public class DragonInventory implements Container, StackedContentsCompatible {
+    public static boolean isChest(ItemStack stack) {
+        return stack.is(PlatformItemTags.WOODEN_CHESTS);
+    }
+
+    public static boolean isDragonArmor(ItemStack stack) {
+        var equippable = stack.get(DataComponents.EQUIPPABLE);
+        return equippable != null && EquipmentSlot.BODY == equippable.slot() && equippable.canBeEquippedBy(DMEntities.TAMEABLE_DRAGON.get());
+    }
+
+    public static boolean isDragonSaddle(ItemStack stack) {
+        return stack.is(DMItemTags.DRAGON_SADDLES);
+    }
+
     public static final String DATA_PARAMETER_KEY = "Items";
     public static final int SLOT_ARMOR_INDEX = 0;
     public static final int SLOT_CHEST_INDEX = 1;
@@ -46,29 +60,21 @@ public class DragonInventory implements Container, StackedContentsCompatible {
     ) {
         Arrays.fill(this.stacks = new ItemStack[INVENTORY_SIZE], ItemStack.EMPTY);
         this.dragon = dragon;
-        this.armor = SlotAccess.forEquipmentSlot(dragon, EquipmentSlot.BODY, TameableDragonEntity::isBodyArmorItem);
-        this.chest = new Slot(chest, this::isChest, onChestChanged);
-        this.saddle = new Slot(saddle, this::isSaddle, onSaddleChanged);
-    }
-
-    public boolean isSaddle(ItemStack stack) {
-        return stack.getItem() instanceof SaddleItem;
-    }
-
-    public boolean isChest(ItemStack stack) {
-        return stack.is(PlatformItemTags.WOODEN_CHESTS);
+        this.armor = SlotAccess.forEquipmentSlot(dragon, EquipmentSlot.BODY, DragonInventory::isDragonArmor);
+        this.chest = new Slot(chest, DragonInventory::isChest, onChestChanged);
+        this.saddle = new Slot(saddle, DragonInventory::isDragonSaddle, onSaddleChanged);
     }
 
     public boolean onInteract(ItemStack stack) {
-        if (TameableDragonEntity.isBodyArmorItem(stack) && this.armor.get().isEmpty()) {
+        if (isDragonArmor(stack) && this.armor.get().isEmpty()) {
             this.dragon.setItemSlot(EquipmentSlot.BODY, stack.split(1));
             return true;
         }
-        if (this.isSaddle(stack) && this.saddle.get().isEmpty()) {
+        if (isDragonSaddle(stack) && this.saddle.get().isEmpty()) {
             this.saddle.set(stack.split(1));
             return true;
         }
-        if (this.isChest(stack) && this.chest.get().isEmpty()) {
+        if (isChest(stack) && this.chest.get().isEmpty()) {
             this.chest.set(stack.split(1));
             return true;
         }
@@ -84,7 +90,7 @@ public class DragonInventory implements Container, StackedContentsCompatible {
             case SLOT_SADDLE_INDEX -> this.saddle;
             default -> new SlotAccess() {
                 @Override
-                public @NotNull ItemStack get() {
+                public ItemStack get() {
                     return stacks[index];
                 }
 
@@ -112,7 +118,7 @@ public class DragonInventory implements Container, StackedContentsCompatible {
     }
 
     @Override
-    public @NotNull ItemStack getItem(int index) {
+    public ItemStack getItem(int index) {
         return switch (index) {
             case SLOT_ARMOR_INDEX -> this.armor.get();
             case SLOT_CHEST_INDEX -> this.chest.get();
@@ -122,7 +128,7 @@ public class DragonInventory implements Container, StackedContentsCompatible {
     }
 
     @Override
-    public @NotNull ItemStack removeItem(int index, int count) {
+    public ItemStack removeItem(int index, int count) {
         if (count <= 0) return ItemStack.EMPTY;
         switch (index) {
             case SLOT_ARMOR_INDEX:
@@ -141,7 +147,7 @@ public class DragonInventory implements Container, StackedContentsCompatible {
     }
 
     @Override
-    public @NotNull ItemStack removeItemNoUpdate(int index) {
+    public ItemStack removeItemNoUpdate(int index) {
         ItemStack stack;
         switch (index) {
             case SLOT_ARMOR_INDEX:
@@ -259,7 +265,7 @@ public class DragonInventory implements Container, StackedContentsCompatible {
         }
 
         @Override
-        public @NotNull ItemStack get() {
+        public ItemStack get() {
             return this.stack;
         }
 

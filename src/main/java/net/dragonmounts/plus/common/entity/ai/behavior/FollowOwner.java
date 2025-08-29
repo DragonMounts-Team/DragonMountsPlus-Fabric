@@ -44,14 +44,14 @@ public class FollowOwner extends OneShot<TamableAnimal> {
         if (owner == null || animal.distanceToSqr(owner) < this.squaredStart) return false;
         if (time - this.lastTry < COOLDOWN_TICKS) return true;
         this.lastTry = time;
-        if (animal.shouldTryTeleportToOwner()) {
+        if (owner.isFallFlying() ? animal.distanceToSqr(owner) > 400.0 : animal.shouldTryTeleportToOwner()) {
             animal.tryToTeleportToOwner();
             return true;
         }
         brain.setMemory(MemoryModuleType.LOOK_TARGET, new EntityTracker(owner, true));
         brain.setMemory(MemoryModuleType.WALK_TARGET, new WalkTarget(
                 new EntityTracker(owner, false),
-                this.speedModifier,
+                owner.isFallFlying() ? this.speedModifier * 1.5F : this.speedModifier,
                 this.stopDist
         ));
         return true;

@@ -58,6 +58,7 @@ public class NetherBreath extends FireBreath {
 
     @Override
     public void affectEntity(ServerLevel level, LivingEntity target, BreathAffectedEntity hit) {
+        target.igniteForTicks(160);
         float damage = this.damage * hit.getHitDensity();
         if (target.isInPowderSnow || target.isFullyFrozen()) {
             damage *= 2.5F;
@@ -65,6 +66,5 @@ public class NetherBreath extends FireBreath {
             damage *= 2.0F;
         }
         target.hurtServer(level, level.damageSources().mobAttack(this.dragon), damage);
-        target.igniteForTicks(160);
     }
 }

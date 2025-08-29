@@ -57,6 +57,8 @@ public class DispatchBehavior<E extends LivingEntity> implements BehaviorControl
             if (behavior.getStatus() == Behavior.Status.STOPPED) {
                 this.doStop(level, entity, time);
             }
+        } else {
+            this.doStop(level, entity, time);
         }
     }
 
@@ -73,5 +75,4 @@ public class DispatchBehavior<E extends LivingEntity> implements BehaviorControl
                 ? "DispatchBehavior"
                 : "DispatchBehavior[" + this.impl.debugString() + "]";
     }
-
 }

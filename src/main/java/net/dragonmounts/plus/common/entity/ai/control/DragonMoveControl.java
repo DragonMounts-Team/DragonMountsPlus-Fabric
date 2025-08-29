@@ -33,12 +33,12 @@ public class DragonMoveControl extends MoveControl {
                 dragon.setZza(0.0F);
                 return;
             }
-            dragon.setYRot(this.rotlerp(
-                    dragon.getYRot(),
-                    (float) (Mth.atan2(distZ, distX) * 180.0F / MathUtil.PI) - 90.0F,
-                    90.0F
-            ));
             if (dragon.onGround()) {
+                dragon.setYRot(this.rotlerp(
+                        dragon.getYRot(),
+                        (float) (Mth.atan2(distZ, distX) * 180.0F / MathUtil.PI) - 90.0F,
+                        90.0F
+                ));
                 // invoke super.tick()
                 dragon.setSpeed((float) (this.speedModifier * dragon.getAttributeValue(Attributes.MOVEMENT_SPEED)));
                 var location = dragon.blockPosition();
@@ -57,14 +57,20 @@ public class DragonMoveControl extends MoveControl {
                     dragon.setYya(dragon.yya + 0.5F);
                 }
             } else {
+                // TODO: see SmoothSwimmingMoveControl
+                dragon.setYRot(this.rotlerp(
+                        dragon.getYRot(),
+                        (float) (Mth.atan2(distZ, distX) * 180.0F / MathUtil.PI) - 90.0F,
+                        30.0F
+                ));
+                double dist = Math.sqrt(squared);
                 float speed = (float) (this.speedModifier * dragon.getAttributeValue(Attributes.FLYING_SPEED));
                 dragon.setSpeed(speed);
-                double dist = Math.sqrt(squared);
-                if (dist > 1.0E-5 || Math.abs(distY) > 1.0E-5) { // adjusted order to simplify population
+                if (dist > Mth.EPSILON || Math.abs(distY) > Mth.EPSILON) { // adjusted order to simplify population
                     dragon.setXRot(this.rotlerp(
                             dragon.getXRot(),
                             (float) (Mth.atan2(distY, dist) * -180.0F / MathUtil.PI),
-                            20
+                            85.0F
                     ));
                     dragon.setYya(distY > 0.0 ? speed : -speed);
                 }

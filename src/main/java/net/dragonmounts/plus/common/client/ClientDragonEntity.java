@@ -7,6 +7,7 @@ import net.dragonmounts.plus.common.component.DragonFood;
 import net.dragonmounts.plus.common.entity.dragon.DragonLifeStage;
 import net.dragonmounts.plus.common.entity.dragon.TameableDragonEntity;
 import net.dragonmounts.plus.common.init.DMSounds;
+import net.dragonmounts.plus.common.inventory.DragonInventory;
 import net.dragonmounts.plus.common.tag.DMItemTags;
 import net.dragonmounts.plus.common.util.math.MathUtil;
 import net.dragonmounts.plus.compat.registry.DragonType;
@@ -117,9 +118,9 @@ public class ClientDragonEntity extends TameableDragonEntity {
         var stack = player.getItemInHand(hand);
         if (!this.isBreathing() && DragonFood.isDragonFood(stack)) return InteractionResult.CONSUME;
         if (this.isOwnedBy(player)) {
-            if (isBodyArmorItem(stack)
-                    || this.inventory.isSaddle(stack)
-                    || this.inventory.isChest(stack)
+            if (DragonInventory.isDragonArmor(stack)
+                    || DragonInventory.isDragonSaddle(stack)
+                    || DragonInventory.isChest(stack)
                     || stack.is(DMItemTags.BATONS)
             ) return InteractionResult.CONSUME;
             var result = stack.interactLivingEntity(player, this, hand);

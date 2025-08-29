@@ -16,6 +16,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.Brain;
 import net.minecraft.world.entity.ai.behavior.*;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
+import net.minecraft.world.entity.ai.memory.MemoryStatus;
 import net.minecraft.world.entity.ai.sensing.Sensor;
 import net.minecraft.world.entity.ai.sensing.SensorType;
 import net.minecraft.world.entity.player.Player;
@@ -117,13 +118,15 @@ public class DragonAi {
     }
 
     static void initSittingActivity(Brain<ServerDragonEntity> brain) {
-        brain.addActivityAndRemoveMemoryWhenStopped(DMActivities.SITTING, 0, ImmutableList.of(
-                BrainUtil.dispatch(
-                        new SitWhenOrderedTo(),
-                        new TryFindGround<>(32, 48, 0.75F, dragon -> false),
-                        (level, dragon) -> dragon.onGround()
-                )
-        ), DMMemories.IS_ORDERED_TO_SIT);
+        brain.addActivityAndRemoveMemoriesWhenStopped(DMActivities.SITTING, ImmutableList.of(Pair.of(0, BrainUtil.dispatch(
+                new SitWhenOrderedTo(),
+                new TryFindGround<>(32, 48, 0.75F, dragon -> {
+                    if (dragon.isOrderedToSit()) return false;
+                    dragon.getBrain().eraseMemory(DMMemories.IS_ORDERED_TO_SIT);
+                    return true;
+                }),
+                (level, dragon) -> dragon.onGround()
+        ))), ImmutableSet.of(Pair.of(DMMemories.IS_ORDERED_TO_SIT, MemoryStatus.VALUE_PRESENT)), ImmutableSet.of());
     }
 
     public static Brain.Provider<ServerDragonEntity> brainProvider() {
