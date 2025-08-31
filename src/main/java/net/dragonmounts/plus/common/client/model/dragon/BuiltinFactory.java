@@ -4,6 +4,7 @@ import net.dragonmounts.plus.common.client.ClientUtil;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.CubeDefinition;
+import net.minecraft.client.model.geom.builders.CubeDeformation;
 import net.minecraft.client.model.geom.builders.CubeListBuilder;
 import net.minecraft.client.model.geom.builders.PartDefinition;
 import net.minecraft.core.Direction;
@@ -55,13 +56,12 @@ public enum BuiltinFactory implements ModelFactory {
                     .texOffs(152, 88)
                     .addBox(-5, -5, -5, TAIL_SIZE, TAIL_SIZE, TAIL_SIZE)
                     .getCubes();
-            var rotZ = 45F * TO_RAD_FACTOR;
             var scale = CubeListBuilder.create()
                     .texOffs(0, 0)
                     .addBox(-1, -8, -3, 2, 4, 6, ATTACHED_TO_BOTTOM)
                     .getCubes();
-            var left = new PartDefinition(scale, rotation(0.0F, 0.0F, rotZ));
-            var right = new PartDefinition(scale, rotation(0.0F, 0.0F, -rotZ));
+            var left = new PartDefinition(scale, rotation(0.0F, 0.0F, 45F * TO_RAD_FACTOR));
+            var right = new PartDefinition(scale, rotation(0.0F, 0.0F, -45F * TO_RAD_FACTOR));
             for (int i = 0; i < TAIL_SEGMENTS; ++i) {
                 var part = tail.addOrReplaceChild(
                         ClientUtil.toString(i),
@@ -74,14 +74,11 @@ public enum BuiltinFactory implements ModelFactory {
     },
     SCALE_SHARPENED("scale_sharpened") {
         static CubeListBuilder buildBackScale(float offset) {
-            return CubeListBuilder.create().texOffs(0, 27)
-                    .addBox(0, -12, offset, 0, 12, 22);
+            return CubeListBuilder.create().texOffs(0, 27).addBox(0, -12, offset, 0, 12, 22);
         }
 
         static List<CubeDefinition> attachTailScale(CubeListBuilder builder) {
-            return builder.texOffs(0, 29)
-                    .addBox(0, -14, -5, 0, 9, 10)
-                    .getCubes();
+            return builder.texOffs(0, 29).addBox(0, -14, -5, 0, 9, 10).getCubes();
         }
 
         static void attachTailHorn(PartDefinition segment, float width, float length, float offset, int u, int v) {
@@ -92,7 +89,7 @@ public enum BuiltinFactory implements ModelFactory {
                             .texOffs(0, 117)
                             .addBox(TAIL_HORN_OFFSET, TAIL_HORN_OFFSET, TAIL_HORN_OFFSET, HORN_THICK, HORN_THICK, TAIL_HORN_LENGTH, ATTACHED_TO_NORTH)
                             .getCubes(),
-                    PartPose.offsetAndRotation(0.0F, TAIL_HORN_OFFSET, HALF_TAIL_SIZE, TAIL_HORN_ROT_X, -TAIL_HORN_ROT_Y, 0.0F)
+                    PartPose.offsetAndRotation(0.0F, TAIL_HORN_OFFSET, -HALF_TAIL_SIZE, TAIL_HORN_ROT_X, TAIL_HORN_ROT_Y, 0.0F)
             ));
             segment.addOrReplaceChild("right_horn", new PartDefinition(
                     CubeListBuilder.create()
@@ -101,7 +98,7 @@ public enum BuiltinFactory implements ModelFactory {
                             .texOffs(0, 117)
                             .addBox(TAIL_HORN_OFFSET, TAIL_HORN_OFFSET, TAIL_HORN_OFFSET, HORN_THICK, HORN_THICK, TAIL_HORN_LENGTH, ATTACHED_TO_NORTH)
                             .getCubes(),
-                    PartPose.offsetAndRotation(0.0F, TAIL_HORN_OFFSET, HALF_TAIL_SIZE, TAIL_HORN_ROT_X, TAIL_HORN_ROT_Y, 0.0F)
+                    PartPose.offsetAndRotation(0.0F, TAIL_HORN_OFFSET, -HALF_TAIL_SIZE, TAIL_HORN_ROT_X, -TAIL_HORN_ROT_Y, 0.0F)
             ));
         }
 
@@ -156,11 +153,11 @@ public enum BuiltinFactory implements ModelFactory {
                     .getCubes();
             tail.addOrReplaceChild("0", new PartDefinition(base, scaledPose(calcTailSize(0)))).addOrReplaceChild("scale", new PartDefinition(
                     attachTailScale(CubeListBuilder.create()),
-                    offsetAndRotation(0.0F, 4.0F, 0.0F, -12.5F * TO_RAD_FACTOR, 0.0F, 0.0F)
+                    offsetAndRotation(0.0F, 4.0F, 0.0F, 12.5F * TO_RAD_FACTOR, 0.0F, 0.0F)
             ));
             tail.addOrReplaceChild("1", new PartDefinition(base, scaledPose(calcTailSize(1)))).addOrReplaceChild("scale", new PartDefinition(
                     attachTailScale(CubeListBuilder.create()),
-                    offsetAndRotation(0.0F, 2.0F, 0.0F, -2.5F * TO_RAD_FACTOR, 0.0F, 0.0F)
+                    offsetAndRotation(0.0F, 2.0F, 0.0F, 2.5F * TO_RAD_FACTOR, 0.0F, 0.0F)
             ));
             var segment = attachTailScale(builder);
             for (int i = 2; i < TAIL_SEGMENTS; ++i) {
@@ -190,9 +187,166 @@ public enum BuiltinFactory implements ModelFactory {
         }
     },
     SKELETON("skeleton") {
+        static CubeListBuilder makeTail(CubeListBuilder builder) {
+            return builder.texOffs(24, 108)
+                    .addBox(-3, -4, -5, 6, 5, 10)
+                    .texOffs(0, 0)
+                    .addBox(-1, -8, -3, 2, 4, 6, ATTACHED_TO_BOTTOM);
+        }
+
+        static CubeListBuilder attachTailBone(CubeListBuilder builder, float offset) {
+            return builder.mirror()
+                    .texOffs(48, 110)
+                    .addBox(-3 - offset, -2, -2, 2, 2, 4)
+                    .mirror(false)
+                    .addBox(1 + offset, -2, -2, 2, 2, 4);
+        }
+
+        @Override
+        public PartDefinition makeBody(PartDefinition root) {
+            var body = root.addOrReplaceChild(
+                    "body",
+                    CubeListBuilder.create()
+                            // body
+                            .texOffs(0, 0)
+                            .addBox(-12, 0, -16, 24, 24, 64, LAYER_DEFORMATION)
+                            // scales
+                            .texOffs(0, 32)
+                            .addBox(-1, -6, 10, 2, 6, 12, ATTACHED_TO_BOTTOM)
+                            .addBox(-1, -6, 30, 2, 6, 12, ATTACHED_TO_BOTTOM)
+                            // ribs
+                            .texOffs(128, 112)
+                            .addBox(-11.5F, 1.5F, -13, 23, 18, 40)
+                            // spines
+                            .texOffs(144, 176)
+                            .addBox(-4, 0, -15.5F, 8, 8, 21)
+                            .addBox(-4, 0, 5.5F, 8, 8, 21)
+                            .addBox(-4, 0, 26.5F, 8, 8, 21)
+                            // sternum
+                            .texOffs(176, 192)
+                            .addBox(-1.5F, 18, -15, 3, 5, 29)
+                            .texOffs(176, 52)
+                            .addBox(-3.5F, 17, -13, 7, 4, 29)
+                            // heart
+                            .texOffs(112, 128)
+                            .addBox(-4, 12, -9, 8, 6, 15)
+                            // shoulders
+                            .texOffs(112, 112)
+                            .addBox(-11, 0, -14, 7, 3, 13)
+                            .mirror()
+                            .addBox(4, 0, -14, 7, 3, 13)
+                            .texOffs(72, 110)
+                            .addBox(7, 1, -15, 5, 12, 10)
+                            .mirror(false)
+                            .addBox(-12, 1, -15, 5, 12, 10)
+                            // hips
+                            .texOffs(72, 132)
+                            .addBox(-11, 0, 32, 7, 12, 13)
+                            .mirror()
+                            .addBox(4, 0, 32, 7, 12, 13),
+                    PartPose.offset(0, 4, 8)
+            );
+            body.addOrReplaceChild(
+                    "back",
+                    CubeListBuilder.create()
+                            .texOffs(0, 32)
+                            .addBox(-1, -6, -10, 2, 6, 12, ATTACHED_TO_BOTTOM),
+                    PartPose.ZERO
+            );
+            return body;
+        }
+
         @Override
         public void makeHead(PartDefinition root) {
             makeHead(root, CubeListBuilder.create());
+        }
+
+        @Override
+        public void makeNeck(PartDefinition root) {
+            var builder = CubeListBuilder.create();
+            var neck = root.addOrReplaceChild("neck", builder, PartPose.ZERO);
+            var base = builder
+                    .texOffs(112, 88)
+                    .addBox(-5, -5, -5, 10, 9, 6, LAYER_DEFORMATION)
+                    .texOffs(0, 108)
+                    .addBox(-3, -5, -5, 6, 7, 6)
+                    .texOffs(0, 108)
+                    .addBox(3, -2, -3, 1, 2, 2)
+                    .mirror()
+                    .addBox(-4, -2, -3, 1, 2, 2)
+                    .getCubes();
+            var scaled = builder.mirror(false)
+                    .texOffs(0, 10)
+                    .addBox(-1, -7, -3, 2, 2, 3)
+                    .getCubes();
+            for (int i = 0; i < NECK_SEGMENTS; ++i) {
+                float scale = calcNeckSize(i);
+                neck.addOrReplaceChild(ClientUtil.toString(i), new PartDefinition(i == 2 || i == 4 ? scaled : base, scaledPose(scale, scale, 1.0F)));
+            }
+        }
+
+        @Override
+        public void makeTail(PartDefinition root) {
+            var builder = CubeListBuilder.create();
+            var tail = root.addOrReplaceChild("tail", builder, PartPose.offset(0.0F, 16.0F, 60.0F));
+            tail.addOrReplaceChild("11", makeTail(builder), scaledPose(calcTailSize(11)));
+            var segment = attachTailBone(builder, 2.0F)
+                    .texOffs(152, 88)
+                    .addBox(-5.5F, -5, -5, 11, 9, 10, LAYER_DEFORMATION)
+                    .getCubes();
+            var bone = CubeListBuilder.create()
+                    .texOffs(24, 108)
+                    .addBox(-1, 0, -1, 2, 4, 2)
+                    .getCubes();
+            var pose = rotation(-10.0F * TO_RAD_FACTOR, 0.0F, 0.0F);
+            for (int i = 0; i < 5; ++i) {
+                tail.addOrReplaceChild(ClientUtil.toString(i), new PartDefinition(segment, scaledPose(calcTailSize(i))))
+                        .addOrReplaceChild("bone", new PartDefinition(bone, pose));
+            }
+            tail.addOrReplaceChild("5", new PartDefinition(segment, scaledPose(calcTailSize(5))))
+                    .addOrReplaceChild("bone", new PartDefinition(bone, pose.translated(0.0F, -0.5F, 0.0F)));
+            tail.addOrReplaceChild(
+                    "6",
+                    attachTailBone(makeTail(CubeListBuilder.create()), 1.0F)
+                            .texOffs(152, 88)
+                            .addBox(-5.5F, -5, -5, 11, 9, 10, LAYER_DEFORMATION),
+                    scaledPose(calcTailSize(6))
+            ).addOrReplaceChild("bone", new PartDefinition(bone, pose.translated(0.0F, -1.0F, 0.0F)));
+            segment = attachTailBone(makeTail(CubeListBuilder.create()), 1.0F)
+                    .texOffs(0, 123)
+                    .addBox(-4.5F, -5, -5, 9, 7, 10, LAYER_DEFORMATION)
+                    .getCubes();
+            tail.addOrReplaceChild("7", new PartDefinition(segment, scaledPose(calcTailSize(7))))
+                    .addOrReplaceChild("bone", new PartDefinition(bone, pose.translated(0.0F, -1.5F, 0.0F)));
+            tail.addOrReplaceChild("8", new PartDefinition(segment, scaledPose(calcTailSize(8))))
+                    .addOrReplaceChild("bone", new PartDefinition(bone, pose.translated(0.0F, -2.0F, 0.0F)));
+            tail.addOrReplaceChild("9", new PartDefinition(segment, scaledPose(calcTailSize(9))));
+            tail.addOrReplaceChild(
+                    "10",
+                    makeTail(CubeListBuilder.create())
+                            .texOffs(38, 123)
+                            .addBox(-3.5F, -5, -5, 7, 6, 10, LAYER_DEFORMATION),
+                    scaledPose(calcTailSize(10))
+            );
+            assert tail.getChildren().size() == TAIL_SEGMENTS;
+        }
+
+        @Override
+        public void makeFrontLegs(PartDefinition root) {
+            makeFrontLeg(root, "left_front_leg", SKELETON_LEG_WIDTH, LEG_LENGTH, true, PartPose.offset(11, 18, 4));
+            makeFrontLeg(root, "right_front_leg", SKELETON_LEG_WIDTH, LEG_LENGTH, false, PartPose.offset(-11, 18, 4));
+        }
+
+        @Override
+        public void makeHindLegs(PartDefinition root) {
+            makeHindLeg(root, "left_hind_leg", SKELETON_LEG_WIDTH, LEG_LENGTH, true, PartPose.offset(11, 13, 46));
+            makeHindLeg(root, "right_hind_leg", SKELETON_LEG_WIDTH, LEG_LENGTH, false, PartPose.offset(-11, 13, 46));
+        }
+    },
+    WITHER("wither") {
+        @Override
+        public CubeListBuilder applyWingUV(CubeListBuilder builder) {
+            return builder.texOffs(-49, 176);
         }
 
         @Override
@@ -222,6 +376,7 @@ public enum BuiltinFactory implements ModelFactory {
     public static final Set<Direction> ATTACHED_TO_SOUTH = Set.of(Direction.DOWN, Direction.UP, Direction.NORTH, Direction.WEST, Direction.EAST);
     public static final Set<Direction> ATTACHED_TO_WEST = Set.of(Direction.DOWN, Direction.UP, Direction.NORTH, Direction.SOUTH, Direction.EAST);
     public static final Set<Direction> ATTACHED_TO_EAST = Set.of(Direction.DOWN, Direction.UP, Direction.NORTH, Direction.SOUTH, Direction.WEST);
+    public static final CubeDeformation LAYER_DEFORMATION = new CubeDeformation(0.1F);
     public final ModelLayerLocation location;
 
     BuiltinFactory(String name) {
@@ -280,14 +435,14 @@ public enum BuiltinFactory implements ModelFactory {
                         .texOffs(0, 117)
                         .addBox(TAIL_HORN_OFFSET, TAIL_HORN_OFFSET, TAIL_HORN_OFFSET, HORN_THICK, HORN_THICK, TAIL_HORN_LENGTH, ATTACHED_TO_NORTH)
                         .getCubes(),
-                PartPose.offsetAndRotation(0.0F, TAIL_HORN_OFFSET, HALF_TAIL_SIZE, TAIL_HORN_ROT_X, -TAIL_HORN_ROT_Y, 0.0F)
+                PartPose.offsetAndRotation(0.0F, TAIL_HORN_OFFSET, -HALF_TAIL_SIZE, TAIL_HORN_ROT_X, TAIL_HORN_ROT_Y, 0.0F)
         );
         var right = new PartDefinition(
                 CubeListBuilder.create()
                         .texOffs(0, 117)
                         .addBox(TAIL_HORN_OFFSET, TAIL_HORN_OFFSET, TAIL_HORN_OFFSET, HORN_THICK, HORN_THICK, TAIL_HORN_LENGTH, ATTACHED_TO_NORTH)
                         .getCubes(),
-                PartPose.offsetAndRotation(0.0F, TAIL_HORN_OFFSET, HALF_TAIL_SIZE, TAIL_HORN_ROT_X, TAIL_HORN_ROT_Y, 0.0F)
+                PartPose.offsetAndRotation(0.0F, TAIL_HORN_OFFSET, -HALF_TAIL_SIZE, TAIL_HORN_ROT_X, -TAIL_HORN_ROT_Y, 0.0F)
         );
         for (int i = 0; i < TAIL_SEGMENTS; ++i) {
             var part = tail.addOrReplaceChild(ClientUtil.toString(i), new PartDefinition(segment, scaledPose(calcTailSize(i))));

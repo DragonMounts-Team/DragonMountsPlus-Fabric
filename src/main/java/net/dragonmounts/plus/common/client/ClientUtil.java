@@ -44,7 +44,7 @@ public class ClientUtil {
     }
 
     public static ModelPart[] getChildren(ModelPart parent, @Range(from = 0, to = CAPACITY) int length) {
-        ModelPart[] children = new ModelPart[length];
+        var children = new ModelPart[length];
         for (int i = 0; i < length; ++i) {
             children[i] = parent.getChild(STRING_OF_INT[i]);
         }
@@ -64,7 +64,7 @@ public class ClientUtil {
         part.zRot = takeIfValid(segment.rotZ, part.zRot);
     }
 
-    public static void loadScale(ModelPart part, Segment segment) {
+    public static void loadScale(ModelPart part, Segment.Scalable segment) {
         part.xScale = takeIfValid(segment.scaleX, part.xScale);
         part.yScale = takeIfValid(segment.scaleY, part.yScale);
         part.zScale = takeIfValid(segment.scaleZ, part.zScale);

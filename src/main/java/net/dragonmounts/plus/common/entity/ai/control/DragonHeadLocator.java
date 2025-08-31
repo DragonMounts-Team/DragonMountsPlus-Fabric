@@ -11,6 +11,7 @@ import static net.dragonmounts.plus.common.entity.dragon.DragonModelContracts.NE
 import static net.dragonmounts.plus.common.util.math.Interpolation.clampedSmoothLinear;
 
 public class DragonHeadLocator<T extends TameableDragonEntity> {
+    public static final float ANIMATION_NECK_SIZE = 0.6F * DragonModelContracts.NECK_SIZE - 1.4F;
     public final T dragon;
     protected final Segment head = new Segment();
     // entity parameters
@@ -100,15 +101,11 @@ public class DragonHeadLocator<T extends TameableDragonEntity> {
                     - Mth.lerp(healthFactor, 0.0F, Mth.sin(vertMulti * MathUtil.PI * 0.9F) * 0.63F);
             // use looking yaw
             lastRotY = segment.rotY = rotYFactor * vertMulti;
-            // update size (scale)
-            segment.scaleX = segment.scaleY = Mth.lerp(vertMulti, 1.6F, 1.0F);
-            segment.scaleZ = 0.6F;
             segment = (++i < NECK_SEGMENTS) ? necks[i] : head;
             // move next segment behind the current one
-            float neckSize = 0.6F * DragonModelContracts.NECK_SIZE - 1.4F;
-            float factor = Mth.cos(rotX) * neckSize;
+            float factor = Mth.cos(rotX) * ANIMATION_NECK_SIZE;
             segment.posX = posX - Mth.sin(lastRotY) * factor;
-            segment.posY = posY + Mth.sin(rotX) * neckSize;
+            segment.posY = posY + Mth.sin(rotX) * ANIMATION_NECK_SIZE;
             segment.posZ = posZ - Mth.cos(lastRotY) * factor;
         }
         //final float HEAD_TILT_DURING_BREATH = -0.1F;

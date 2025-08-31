@@ -8,7 +8,9 @@ import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.texture.TextureAtlas;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.equipment.EquipmentAsset;
 import org.jetbrains.annotations.Nullable;
 
 import static net.dragonmounts.plus.common.DragonMountsShared.makeId;
@@ -34,6 +36,8 @@ public interface VariantAppearance {
     RenderType getChest(DragonRenderState state);
 
     RenderType getSaddle(DragonRenderState state);
+
+    @Nullable ResourceLocation getArmorTexture(@Nullable ResourceKey<EquipmentAsset> asset);
 
     ResourceLocation getBodyTexture(DragonRenderState state);
 

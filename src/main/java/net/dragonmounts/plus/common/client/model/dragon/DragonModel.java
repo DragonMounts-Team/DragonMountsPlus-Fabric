@@ -1,7 +1,6 @@
 package net.dragonmounts.plus.common.client.model.dragon;
 
 import net.dragonmounts.plus.common.client.renderer.dragon.DragonRenderState;
-import net.dragonmounts.plus.common.util.Segment;
 import net.dragonmounts.plus.common.util.math.MathUtil;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.HeadedModel;
@@ -88,8 +87,25 @@ public class DragonModel extends EntityModel<DragonRenderState> implements Heade
         loadBasic(head, state.head);
         head.xScale = head.yScale = head.zScale = MAGICAL_HEAD_SCALE;
         this.jaw.xRot = state.jawRotX;
-        loadWithScale(this.necks, state.neckSegments, NECK_SEGMENTS);
-        loadWithScale(this.tails, state.tailSegments, TAIL_SEGMENTS);
+        var parts = this.necks;
+        {
+            var segments = state.neckSegments;
+            for (int i = 0; i < NECK_SEGMENTS; ++i) {
+                var part = parts[i];
+                var segment = segments[i];
+                loadBasic(part, segment);
+            }
+        }
+        parts = this.tails;
+        {
+            var segments = state.tailSegments;
+            for (int i = 0; i < TAIL_SEGMENTS; ++i) {
+                var part = parts[i];
+                var segment = segments[i];
+                loadBasic(part, segment);
+                loadScale(part, segment);
+            }
+        }
         loadMirroredRot(this.leftWing, this.rightWing, state.wingRot);
         loadMirroredRot(this.leftArm, this.rightArm, state.armRot);
         this.leftFrontLeg.loadPose(state.leftFrontLeg);
@@ -106,14 +122,5 @@ public class DragonModel extends EntityModel<DragonRenderState> implements Heade
         left.xRot = right.xRot = rot.x;
         left.yRot = -(right.yRot = rot.y);
         left.zRot = -(right.zRot = rot.z);
-    }
-
-    private static void loadWithScale(ModelPart[] parts, Segment[] segments, int length) {
-        for (int i = 0; i < length; ++i) {
-            var part = parts[i];
-            var segment = segments[i];
-            loadBasic(part, segment);
-            loadScale(part, segment);
-        }
     }
 }

@@ -359,7 +359,7 @@ public class DragonAnimator extends DragonHeadLocator<ClientDragonEntity> {
         float speedFactor = 2.0F - 2.0F * this.speed;
         float rotXFactor = 1.0F - 0.2F * sit;
         float magicSinFactor = Mth.sin(base * 0.2F) * Mth.sin(base * 0.37F) * 0.4F;// sit = 0.8 * stand
-        float sitFactor = 1.0F - sit;
+        float sitFactor = sit - 1.0F;
         float rotYStand = 0;
         float rotXAir = 0;
         for (int i = 0; i < TAIL_SEGMENTS; ) {
@@ -369,7 +369,7 @@ public class DragonAnimator extends DragonHeadLocator<ClientDragonEntity> {
             float amp = 0.1F + i * 0.5F / TAIL_SEGMENTS;
 
             rotYStand = (rotYStand + Mth.sin(i * 0.45F + base * 0.5F)) * amp * 0.4F;
-            rotXAir -= Mth.sin(i * 0.45F + base) * flutterFactor;
+            rotXAir += Mth.sin(i * 0.45F + base) * flutterFactor;
 
             // body movement
             float limit = 80 * vertMulti;
@@ -378,13 +378,13 @@ public class DragonAnimator extends DragonHeadLocator<ClientDragonEntity> {
 
             // interpolate between flying and grounded
             float rotX = segment.rotX = Mth.lerp(ground, rotXAir, (
-                    (i - TAIL_SEGMENTS * 0.6F) * -amp * 0.4F + (magicSinFactor * amp - 0.1F) * sitFactor
-            ) * rotXFactor) + pitchOfs * MathUtil.TO_RAD_FACTOR - speedFactor * vertMulti;
+                    (i - TAIL_SEGMENTS * 0.6F) * amp * 0.4F + (magicSinFactor * amp - 0.1F) * sitFactor
+            ) * rotXFactor) - MathUtil.TO_RAD_FACTOR * pitchOfs + speedFactor * vertMulti;
             float rotY = segment.rotY = Mth.lerp(ground, 0.0F, Mth.lerp(// interpolate between sitting and standing
                     sit,
                     rotYStand,
                     Mth.sin(vertMulti * MathUtil.PI) * MathUtil.PI * 1.2F - 0.5F // curl to the left
-            )) + MathUtil.PI + yawOfs * MathUtil.TO_RAD_FACTOR;
+            )) + yawOfs * MathUtil.TO_RAD_FACTOR;
 
             // update scale
             float scale = segment.scaleX = segment.scaleY = segment.scaleZ = Mth.lerp(vertMulti, 1.5F, 0.3F);
@@ -394,9 +394,9 @@ public class DragonAnimator extends DragonHeadLocator<ClientDragonEntity> {
             float tailSize = TAIL_SIZE * scale - 0.7F;
             float cosFactor = Mth.cos(rotX) * tailSize;
             segment = tailSegments[i];
-            segment.posX = posX - Mth.sin(rotY) * cosFactor;
-            segment.posY = posY + Mth.sin(rotX) * tailSize;
-            segment.posZ = posZ - Mth.cos(rotY) * cosFactor;
+            segment.posX = posX + Mth.sin(rotY) * cosFactor;
+            segment.posY = posY - Mth.sin(rotX) * tailSize;
+            segment.posZ = posZ + Mth.cos(rotY) * cosFactor;
         }
     }
 

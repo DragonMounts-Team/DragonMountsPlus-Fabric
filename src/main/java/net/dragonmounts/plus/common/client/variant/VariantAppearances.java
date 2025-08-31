@@ -4,11 +4,13 @@ import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.dragonmounts.plus.common.client.DMParticleSprites;
 import net.dragonmounts.plus.common.client.breath.impl.*;
 import net.dragonmounts.plus.common.client.model.dragon.BuiltinFactory;
+import net.dragonmounts.plus.common.init.DragonArmorMaterials;
 
 import java.util.NoSuchElementException;
 import java.util.function.Function;
 
 import static net.dragonmounts.plus.common.DragonMountsShared.makeId;
+import static net.dragonmounts.plus.common.client.variant.DefaultAppearance.registerArmorTexture;
 import static net.dragonmounts.plus.common.client.variant.VariantAppearance.TEXTURES_ROOT;
 
 public class VariantAppearances {
@@ -44,6 +46,8 @@ public class VariantAppearances {
     public static final VariantAppearance NETHER_MALE;
     public static final VariantAppearance SOUL;
     public static final VariantAppearance SKELETON;
+    public static final VariantAppearance STRAY;
+    public static final VariantAppearance BOGGED;
     public static final VariantAppearance STORM_FEMALE;
     public static final VariantAppearance STORM_MALE;
     public static final VariantAppearance BRONZED_STORM;
@@ -133,7 +137,10 @@ public class VariantAppearances {
     }
 
     static {
-        SKELETON = builder(BuiltinFactory.SKELETON).build(makeId("skeleton"));
+        var builder = builder(BuiltinFactory.SKELETON).setArmorCategory("skeleton");
+        SKELETON = builder.build(makeId("skeleton/normal"));
+        STRAY = builder.build(makeId("skeleton/stray"));
+        BOGGED = builder.build(makeId("skeleton/bogged"));
     }
 
     static {
@@ -165,7 +172,7 @@ public class VariantAppearances {
     }
 
     static {
-        WITHER = builder(BuiltinFactory.SKELETON)
+        WITHER = builder(BuiltinFactory.WITHER)
                 .withBreath(DMParticleSprites.WITHER_BREATH)
                 .build(makeId("wither"));
     }
@@ -181,6 +188,39 @@ public class VariantAppearances {
         WILD_SCULK = builder.build(makeId("sculk/wild_type"));
         MUTANT_SCULK = builder.build(makeId("sculk/mutant"));
         HOLLOWED = builder.build(makeId("sculk/hollowed"));
+    }
+
+    static {
+        registerArmorTexture(
+                null,
+                DragonArmorMaterials.COPPER.assetId(),
+                makeId("textures/entity/equipment/dragon_body/copper.png")
+        );
+        registerArmorTexture(
+                null,
+                DragonArmorMaterials.IRON.assetId(),
+                makeId("textures/entity/equipment/dragon_body/iron.png")
+        );
+        registerArmorTexture(
+                null,
+                DragonArmorMaterials.GOLD.assetId(),
+                makeId("textures/entity/equipment/dragon_body/gold.png")
+        );
+        registerArmorTexture(
+                null,
+                DragonArmorMaterials.EMERALD.assetId(),
+                makeId("textures/entity/equipment/dragon_body/emerald.png")
+        );
+        registerArmorTexture(
+                null,
+                DragonArmorMaterials.DIAMOND.assetId(),
+                makeId("textures/entity/equipment/dragon_body/diamond.png")
+        );
+        registerArmorTexture(
+                null,
+                DragonArmorMaterials.NETHERITE.assetId(),
+                makeId("textures/entity/equipment/dragon_body/nethierite.png")
+        );
     }
 
     public static Function<String, VariantAppearance> getSupplier() {
@@ -216,6 +256,8 @@ public class VariantAppearances {
         map.put("mutant_sculk", MUTANT_SCULK);
         map.put("hollowed", HOLLOWED);
         map.put("skeleton", SKELETON);
+        map.put("stray", STRAY);
+        map.put("bogged", BOGGED);
         map.put("storm_female", STORM_FEMALE);
         map.put("storm_male", STORM_MALE);
         map.put("bronzed_storm", BRONZED_STORM);

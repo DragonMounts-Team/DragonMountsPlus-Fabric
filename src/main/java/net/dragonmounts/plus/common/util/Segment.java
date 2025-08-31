@@ -11,7 +11,10 @@ public class Segment {
     public float rotX = Float.NaN;
     public float rotY = Float.NaN;
     public float rotZ = Float.NaN;
-    public float scaleX = Float.NaN;
-    public float scaleY = Float.NaN;
-    public float scaleZ = Float.NaN;
+
+    public static class Scalable extends Segment {
+        public float scaleX = Float.NaN;
+        public float scaleY = Float.NaN;
+        public float scaleZ = Float.NaN;
+    }
 }

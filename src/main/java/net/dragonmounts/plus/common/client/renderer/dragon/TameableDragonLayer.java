@@ -2,7 +2,6 @@ package net.dragonmounts.plus.common.client.renderer.dragon;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.dragonmounts.plus.common.client.model.dragon.DragonModel;
-import net.dragonmounts.plus.common.init.DragonArmorMaterials;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.RenderLayerParent;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
@@ -55,7 +54,7 @@ public class TameableDragonLayer extends RenderLayer<DragonRenderState, DragonMo
         //armor
         var equippable = state.armor.get(DataComponents.EQUIPPABLE);
         if (equippable == null) return;
-        var texture = DragonArmorMaterials.getTexture(equippable.assetId());
+        var texture = appearance.getArmorTexture(equippable.assetId().orElse(null));
         if (texture == null) return;
         model.renderToBuffer(matrices, getArmorFoilBuffer(buffers, armorCutoutNoCull(texture), state.armor.hasFoil()), light, OverlayTexture.NO_OVERLAY, -1);
     }

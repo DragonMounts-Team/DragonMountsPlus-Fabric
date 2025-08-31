@@ -54,6 +54,8 @@ public class DragonVariants {
     public static final DragonVariant MUTANT_SCULK;
     public static final DragonVariant HOLLOWED;
     public static final DragonVariant SKELETON;
+    public static final DragonVariant STRAY;
+    public static final DragonVariant BOGGED;
     public static final DragonVariant STORM_FEMALE;
     public static final DragonVariant STORM_MALE;
     public static final DragonVariant BRONZED_STORM;
@@ -111,7 +113,7 @@ public class DragonVariants {
         Function<String, VariantAppearance> supplier = PlatformCompat.isClientSide()
                 ? VariantAppearances.getSupplier()
                 : ignored -> null;
-        var variants = ImmutableList.<DragonVariant>builderWithExpectedSize(37);
+        var variants = ImmutableList.<DragonVariant>builderWithExpectedSize(46);
         variants.add(AETHER_FEMALE = make(supplier, DragonTypes.AETHER, "aether_female"));
         variants.add(AETHER_MALE = make(supplier, DragonTypes.AETHER, "aether_male"));
         variants.add(BREEZE = make(supplier, DragonTypes.AETHER, "breeze"));
@@ -143,6 +145,8 @@ public class DragonVariants {
         variants.add(MUTANT_SCULK = make(supplier, DragonTypes.SCULK, "mutant_sculk"));
         variants.add(HOLLOWED = make(supplier, DragonTypes.SCULK, "hollowed"));
         variants.add(SKELETON = make(supplier, DragonTypes.SKELETON, "skeleton"));
+        variants.add(STRAY = make(supplier, DragonTypes.SKELETON, "stray"));
+        variants.add(BOGGED = make(supplier, DragonTypes.SKELETON, "bogged"));
         variants.add(STORM_FEMALE = make(supplier, DragonTypes.STORM, "storm_female"));
         variants.add(STORM_MALE = make(supplier, DragonTypes.STORM, "storm_male"));
         variants.add(BRONZED_STORM = make(supplier, DragonTypes.STORM, "bronzed_storm"));
