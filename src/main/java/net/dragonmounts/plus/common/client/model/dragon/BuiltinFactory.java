@@ -11,6 +11,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.util.Mth;
 
 import java.util.Collections;
+import java.util.EnumSet;
 import java.util.List;
 import java.util.Set;
 
@@ -197,9 +198,9 @@ public enum BuiltinFactory implements ModelFactory {
         static CubeListBuilder attachTailBone(CubeListBuilder builder, float offset) {
             return builder.mirror()
                     .texOffs(48, 110)
-                    .addBox(-3 - offset, -2, -2, 2, 2, 4)
+                    .addBox(-3 - offset, -2, -2, 2, 2, 4, ATTACHED_TO_WEST)
                     .mirror(false)
-                    .addBox(1 + offset, -2, -2, 2, 2, 4);
+                    .addBox(1 + offset, -2, -2, 2, 2, 4, ATTACHED_TO_WEST);
         }
 
         @Override
@@ -219,9 +220,9 @@ public enum BuiltinFactory implements ModelFactory {
                             .addBox(-11.5F, 1.5F, -13, 23, 18, 40)
                             // spines
                             .texOffs(144, 176)
-                            .addBox(-4, 0, -15.5F, 8, 8, 21)
-                            .addBox(-4, 0, 5.5F, 8, 8, 21)
-                            .addBox(-4, 0, 26.5F, 8, 8, 21)
+                            .addBox(-4, 0, -15.5F, 8, 8, 21, ATTACHED_TO_SOUTH)
+                            .addBox(-4, 0, 5.5F, 8, 8, 21, SPINE_SURFACE)
+                            .addBox(-4, 0, 26.5F, 8, 8, 21, ATTACHED_TO_NORTH)
                             // sternum
                             .texOffs(176, 192)
                             .addBox(-1.5F, 18, -15, 3, 5, 29)
@@ -232,9 +233,9 @@ public enum BuiltinFactory implements ModelFactory {
                             .addBox(-4, 12, -9, 8, 6, 15)
                             // shoulders
                             .texOffs(112, 112)
-                            .addBox(-11, 0, -14, 7, 3, 13)
+                            .addBox(-11, 0, -14, 7, 3, 13, ATTACHED_TO_EAST)
                             .mirror()
-                            .addBox(4, 0, -14, 7, 3, 13)
+                            .addBox(4, 0, -14, 7, 3, 13, ATTACHED_TO_EAST)
                             .texOffs(72, 110)
                             .addBox(7, 1, -15, 5, 12, 10)
                             .mirror(false)
@@ -271,13 +272,13 @@ public enum BuiltinFactory implements ModelFactory {
                     .texOffs(0, 108)
                     .addBox(-3, -5, -5, 6, 7, 6)
                     .texOffs(0, 108)
-                    .addBox(3, -2, -3, 1, 2, 2)
+                    .addBox(3, -2, -3, 1, 2, 2, ATTACHED_TO_WEST)
                     .mirror()
-                    .addBox(-4, -2, -3, 1, 2, 2)
+                    .addBox(-4, -2, -3, 1, 2, 2, ATTACHED_TO_WEST)
                     .getCubes();
             var scaled = builder.mirror(false)
                     .texOffs(0, 10)
-                    .addBox(-1, -7, -3, 2, 2, 3)
+                    .addBox(-1, -7, -3, 2, 2, 3, ATTACHED_TO_BOTTOM)
                     .getCubes();
             for (int i = 0; i < NECK_SEGMENTS; ++i) {
                 float scale = calcNeckSize(i);
@@ -296,7 +297,7 @@ public enum BuiltinFactory implements ModelFactory {
                     .getCubes();
             var bone = CubeListBuilder.create()
                     .texOffs(24, 108)
-                    .addBox(-1, 0, -1, 2, 4, 2)
+                    .addBox(-1, 0, -1, 2, 4, 2, ATTACHED_TO_TOP)
                     .getCubes();
             var pose = rotation(-10.0F * TO_RAD_FACTOR, 0.0F, 0.0F);
             for (int i = 0; i < 5; ++i) {
@@ -369,13 +370,15 @@ public enum BuiltinFactory implements ModelFactory {
     public static final int NORMAL_LEG_WIDTH = 9;
     public static final int SKELETON_LEG_WIDTH = 7;
     public static final Set<Direction> TOP_SURFACE = Collections.singleton(Direction.DOWN);
-    public static final Set<Direction> EAST_STRAP_SURFACE = Set.of(Direction.DOWN, Direction.NORTH, Direction.SOUTH, Direction.EAST);
-    public static final Set<Direction> WEST_STRAP_SURFACE = Set.of(Direction.DOWN, Direction.NORTH, Direction.SOUTH, Direction.WEST);
-    public static final Set<Direction> ATTACHED_TO_BOTTOM = Set.of(Direction.DOWN, Direction.NORTH, Direction.SOUTH, Direction.WEST, Direction.EAST);
-    public static final Set<Direction> ATTACHED_TO_NORTH = Set.of(Direction.DOWN, Direction.UP, Direction.SOUTH, Direction.WEST, Direction.EAST);
-    public static final Set<Direction> ATTACHED_TO_SOUTH = Set.of(Direction.DOWN, Direction.UP, Direction.NORTH, Direction.WEST, Direction.EAST);
-    public static final Set<Direction> ATTACHED_TO_WEST = Set.of(Direction.DOWN, Direction.UP, Direction.NORTH, Direction.SOUTH, Direction.EAST);
-    public static final Set<Direction> ATTACHED_TO_EAST = Set.of(Direction.DOWN, Direction.UP, Direction.NORTH, Direction.SOUTH, Direction.WEST);
+    public static final Set<Direction> EAST_STRAP_SURFACE = EnumSet.of(Direction.DOWN, Direction.NORTH, Direction.SOUTH, Direction.EAST);
+    public static final Set<Direction> WEST_STRAP_SURFACE = EnumSet.of(Direction.DOWN, Direction.NORTH, Direction.SOUTH, Direction.WEST);
+    public static final Set<Direction> SPINE_SURFACE = EnumSet.of(Direction.DOWN, Direction.UP, Direction.WEST, Direction.EAST);
+    public static final Set<Direction> ATTACHED_TO_BOTTOM = EnumSet.of(Direction.DOWN, Direction.NORTH, Direction.SOUTH, Direction.WEST, Direction.EAST);
+    public static final Set<Direction> ATTACHED_TO_TOP = EnumSet.of(Direction.UP, Direction.NORTH, Direction.SOUTH, Direction.WEST, Direction.EAST);
+    public static final Set<Direction> ATTACHED_TO_NORTH = EnumSet.of(Direction.DOWN, Direction.UP, Direction.SOUTH, Direction.WEST, Direction.EAST);
+    public static final Set<Direction> ATTACHED_TO_SOUTH = EnumSet.of(Direction.DOWN, Direction.UP, Direction.NORTH, Direction.WEST, Direction.EAST);
+    public static final Set<Direction> ATTACHED_TO_WEST = EnumSet.of(Direction.DOWN, Direction.UP, Direction.NORTH, Direction.SOUTH, Direction.EAST);
+    public static final Set<Direction> ATTACHED_TO_EAST = EnumSet.of(Direction.DOWN, Direction.UP, Direction.NORTH, Direction.SOUTH, Direction.WEST);
     public static final CubeDeformation LAYER_DEFORMATION = new CubeDeformation(0.1F);
     public final ModelLayerLocation location;
 

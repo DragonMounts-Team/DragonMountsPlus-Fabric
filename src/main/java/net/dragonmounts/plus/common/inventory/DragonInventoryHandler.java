@@ -1,8 +1,12 @@
 package net.dragonmounts.plus.common.inventory;
 
 import net.dragonmounts.plus.common.entity.dragon.TameableDragonEntity;
+import net.dragonmounts.plus.common.init.DMDataComponents;
 import net.dragonmounts.plus.compat.platform.DMScreenHandlers;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.Container;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -62,7 +66,7 @@ public class DragonInventoryHandler extends AbstractContainerMenu {
                 if (!this.moveItemStackTo(stack, 2, 3, false)) return ItemStack.EMPTY;
             } else if (canPlaceAt(this, 1, stack)) {
                 if (!this.moveItemStackTo(stack, 1, 2, false)) return ItemStack.EMPTY;
-            } else if (canPlaceAt(this, 0, stack)) {
+            } else if (canPlaceAt(this, 0, stack) && allowFastBindOrRename(stack, this.dragon)) {
                 if (!this.moveItemStackTo(stack, 0, 1, false)) return ItemStack.EMPTY;
             } else if (!this.dragon.hasChest() || !this.moveItemStackTo(stack, 4, LOGICAL_SIZE, false)) {
                 if (index >= PLAYER_INVENTORY_SIZE) {
@@ -82,9 +86,19 @@ public class DragonInventoryHandler extends AbstractContainerMenu {
         return ItemStack.EMPTY;
     }
 
+    /// @see AbstractContainerMenu#clearContainer(Player, Container)
     @Override
     public void removed(Player player) {
         super.removed(player);
+        if (player.isRemoved() && player.getRemovalReason() != Entity.RemovalReason.CHANGED_DIMENSION) {
+            player.drop(this.flute.takeItem(player), false);
+        } else if (player instanceof ServerPlayer) {
+            if (((ServerPlayer) player).hasDisconnected()) {
+                player.drop(this.flute.takeItem(player), false);
+            } else {
+                player.getInventory().placeItemBackInInventory(this.flute.takeItem(player));
+            }
+        }
         this.inventory.stopOpen(player);
     }
 
@@ -208,5 +222,10 @@ public class DragonInventoryHandler extends AbstractContainerMenu {
     public static boolean canPlaceAt(AbstractContainerMenu menu, int index, ItemStack stack) {
         var slot = menu.getSlot(index);
         return !slot.hasItem() && slot.mayPlace(stack);
+    }
+
+    public static boolean allowFastBindOrRename(ItemStack stack, TameableDragonEntity dragon) {
+        var sound = stack.get(DMDataComponents.FLUTE_SOUND);
+        return sound == null || sound.dragon().equals(dragon.getUUID());
     }
 }

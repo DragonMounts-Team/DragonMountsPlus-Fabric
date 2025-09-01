@@ -111,7 +111,7 @@ public class DragonVariants {
 
     static {
         Function<String, VariantAppearance> supplier = PlatformCompat.isClientSide()
-                ? VariantAppearances.getSupplier()
+                ? VariantAppearances.getBuiltinSupplier()
                 : ignored -> null;
         var variants = ImmutableList.<DragonVariant>builderWithExpectedSize(46);
         variants.add(AETHER_FEMALE = make(supplier, DragonTypes.AETHER, "aether_female"));

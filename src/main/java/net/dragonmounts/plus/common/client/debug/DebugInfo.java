@@ -1,4 +1,4 @@
-package net.dragonmounts.plus.common.client;
+package net.dragonmounts.plus.common.client.debug;
 
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;

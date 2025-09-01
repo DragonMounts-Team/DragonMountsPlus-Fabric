@@ -40,6 +40,13 @@ public class DragonInventory implements Container, StackedContentsCompatible {
         return stack.is(DMItemTags.DRAGON_SADDLES);
     }
 
+    public static ItemStack takeItem(SlotAccess slot) {
+        var stack = slot.get();
+        if (stack.isEmpty()) return ItemStack.EMPTY;
+        slot.set(ItemStack.EMPTY);
+        return stack;
+    }
+
     public static final String DATA_PARAMETER_KEY = "Items";
     public static final int SLOT_ARMOR_INDEX = 0;
     public static final int SLOT_CHEST_INDEX = 1;
@@ -61,8 +68,9 @@ public class DragonInventory implements Container, StackedContentsCompatible {
         Arrays.fill(this.stacks = new ItemStack[INVENTORY_SIZE], ItemStack.EMPTY);
         this.dragon = dragon;
         this.armor = SlotAccess.forEquipmentSlot(dragon, EquipmentSlot.BODY, DragonInventory::isDragonArmor);
-        this.chest = new Slot(chest, DragonInventory::isChest, onChestChanged);
-        this.saddle = new Slot(saddle, DragonInventory::isDragonSaddle, onSaddleChanged);
+        var data = dragon.getEntityData();
+        this.chest = new Slot(data, chest, DragonInventory::isChest, onChestChanged);
+        this.saddle = new Slot(data, saddle, DragonInventory::isDragonSaddle, onSaddleChanged);
     }
 
     public boolean onInteract(ItemStack stack) {
@@ -130,44 +138,28 @@ public class DragonInventory implements Container, StackedContentsCompatible {
     @Override
     public ItemStack removeItem(int index, int count) {
         if (count <= 0) return ItemStack.EMPTY;
-        switch (index) {
-            case SLOT_ARMOR_INDEX:
-                return this.armor.get().split(count);
-            case SLOT_CHEST_INDEX:
-                return this.chest.get().split(count);
-            case SLOT_SADDLE_INDEX:
-                return this.saddle.get().split(count);
-            default:
+        return switch (index) {
+            case SLOT_ARMOR_INDEX -> this.armor.get().split(count);
+            case SLOT_CHEST_INDEX -> this.chest.get().split(count);
+            case SLOT_SADDLE_INDEX -> this.saddle.get().split(count);
+            default -> {
                 var stack = ArrayUtil.removeItem(this.stacks, index, count);
                 if (!stack.isEmpty()) {
                     this.setChanged();
                 }
-                return stack;
-        }
+                yield stack;
+            }
+        };
     }
 
     @Override
     public ItemStack removeItemNoUpdate(int index) {
-        ItemStack stack;
-        switch (index) {
-            case SLOT_ARMOR_INDEX:
-                stack = this.armor.get();
-                if (stack.isEmpty()) return ItemStack.EMPTY;
-                this.armor.set(ItemStack.EMPTY);
-                return stack;
-            case SLOT_CHEST_INDEX:
-                stack = this.chest.get();
-                if (stack.isEmpty()) return ItemStack.EMPTY;
-                this.chest.set(ItemStack.EMPTY);
-                return stack;
-            case SLOT_SADDLE_INDEX:
-                stack = this.saddle.get();
-                if (stack.isEmpty()) return ItemStack.EMPTY;
-                this.saddle.set(ItemStack.EMPTY);
-                return stack;
-            default:
-                return ArrayUtil.takeItem(this.stacks, index);
-        }
+        return switch (index) {
+            case SLOT_ARMOR_INDEX -> takeItem(this.armor);
+            case SLOT_CHEST_INDEX -> takeItem(this.chest);
+            case SLOT_SADDLE_INDEX -> takeItem(this.saddle);
+            default -> ArrayUtil.takeItem(this.stacks, index);
+        };
     }
 
     @Override
@@ -222,11 +214,15 @@ public class DragonInventory implements Container, StackedContentsCompatible {
 
     public void dropContents(boolean keepEquipments, double offsetY) {
         var pos = this.dragon.position();
-        ItemStack[] stacks = this.stacks;
-        stacks[SLOT_ARMOR_INDEX] = this.armor.get();
-        stacks[SLOT_CHEST_INDEX] = this.chest.get();
-        stacks[SLOT_SADDLE_INDEX] = this.saddle.get();
-        ArrayUtil.dropContents(this.dragon.level(), pos.x, pos.y + offsetY, pos.z, stacks, keepEquipments ? 3 : 0);
+        if (keepEquipments) {
+            ArrayUtil.dropContents(this.dragon.level(), pos.x, pos.y + offsetY, pos.z, this.stacks, 3);
+            return;
+        }
+        var stacks = this.stacks;
+        stacks[SLOT_ARMOR_INDEX] = takeItem(this.armor);
+        stacks[SLOT_CHEST_INDEX] = takeItem(this.chest);
+        stacks[SLOT_SADDLE_INDEX] = takeItem(this.saddle);
+        ArrayUtil.dropContents(this.dragon.level(), pos.x, pos.y + offsetY, pos.z, stacks, 0);
     }
 
     public void loadItems(ListTag list, HolderLookup.Provider registry) {
@@ -251,14 +247,15 @@ public class DragonInventory implements Container, StackedContentsCompatible {
         return ArrayUtil.saveItems(registry, new ListTag(), stacks, 1);
     }
 
-    public class Slot implements SlotAccess {
-        public final SynchedEntityData data = DragonInventory.this.dragon.getEntityData();
+    public static class Slot implements SlotAccess {
+        public final SynchedEntityData data;
         public final Predicate<ItemStack> predicate;
         protected final EntityDataAccessor<ItemStack> key;
         protected final BooleanConsumer callback;
         protected ItemStack stack = ItemStack.EMPTY;
 
-        public Slot(EntityDataAccessor<ItemStack> key, Predicate<ItemStack> predicate, BooleanConsumer callback) {
+        public Slot(SynchedEntityData data, EntityDataAccessor<ItemStack> key, Predicate<ItemStack> predicate, BooleanConsumer callback) {
+            this.data = data;
             this.key = key;
             this.predicate = predicate;
             this.callback = callback;

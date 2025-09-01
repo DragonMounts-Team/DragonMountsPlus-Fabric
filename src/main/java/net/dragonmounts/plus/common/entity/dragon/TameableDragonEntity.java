@@ -634,8 +634,12 @@ public abstract class TameableDragonEntity extends TamableAnimal implements
     }
 
     private void setChested(boolean chested) {
-        if (!this.firstTick && chested) {
-            this.playSound(DMSounds.DRAGON_CHEST, 0.5F, 1.0F);
+        if (!this.firstTick) {
+            if (chested) {
+                this.playSound(DMSounds.DRAGON_CHEST, 0.5F, 1.0F);
+            } else if (this.hasChest) {
+                this.inventory.dropContents(true, 1.25);
+            }
         }
         this.hasChest = chested;
     }

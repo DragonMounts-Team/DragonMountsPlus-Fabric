@@ -43,6 +43,13 @@ public class FluteSlot extends Slot {
         this.inventory = handler;
     }
 
+    public ItemStack takeItem(Player player) {
+        var stack = this.holder.getFlute();
+        this.holder.setFlute(ItemStack.EMPTY);
+        this.onTake(player, stack);
+        return stack;
+    }
+
     @Override
     public boolean mayPlace(ItemStack stack) {
         return !stack.isEmpty() && DMItems.FLUTE.is(stack);

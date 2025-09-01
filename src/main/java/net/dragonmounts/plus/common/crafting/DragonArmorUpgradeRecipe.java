@@ -30,6 +30,7 @@ import net.minecraft.world.item.equipment.ArmorType;
 import net.minecraft.world.level.ItemLike;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
@@ -157,7 +158,7 @@ public class DragonArmorUpgradeRecipe implements SmithingRecipe {
 
     @Override
     public List<RecipeDisplay> display() {
-        return List.of(new SmithingRecipeDisplay(
+        return Collections.singletonList(new SmithingRecipeDisplay(
                 Ingredient.optionalIngredientToDisplay(this.template),
                 Ingredient.optionalIngredientToDisplay(this.base),
                 Ingredient.optionalIngredientToDisplay(this.addition),

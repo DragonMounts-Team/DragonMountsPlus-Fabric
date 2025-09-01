@@ -1,7 +1,7 @@
 package net.dragonmounts.plus.mixin;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import net.dragonmounts.plus.common.client.DebugInfoRenderer;
+import net.dragonmounts.plus.common.client.debug.DebugInfoRenderer;
 import net.dragonmounts.plus.config.ClientConfig;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.culling.Frustum;

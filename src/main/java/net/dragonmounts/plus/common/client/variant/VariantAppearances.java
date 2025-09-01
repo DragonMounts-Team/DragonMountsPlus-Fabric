@@ -1,6 +1,5 @@
 package net.dragonmounts.plus.common.client.variant;
 
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.dragonmounts.plus.common.client.DMParticleSprites;
 import net.dragonmounts.plus.common.client.breath.impl.*;
 import net.dragonmounts.plus.common.client.model.dragon.BuiltinFactory;
@@ -14,7 +13,7 @@ import static net.dragonmounts.plus.common.client.variant.DefaultAppearance.regi
 import static net.dragonmounts.plus.common.client.variant.VariantAppearance.TEXTURES_ROOT;
 
 public class VariantAppearances {
-    static DefaultAppearance.Builder builder(BuiltinFactory model) {
+    public static DefaultAppearance.Builder builder(BuiltinFactory model) {
         return new DefaultAppearance.Builder(model.location);
     }
 
@@ -223,58 +222,57 @@ public class VariantAppearances {
         );
     }
 
-    public static Function<String, VariantAppearance> getSupplier() {
-        var map = new Object2ObjectOpenHashMap<String, VariantAppearance>();
-        map.put("aether_female", AETHER_FEMALE);
-        map.put("aether_male", AETHER_MALE);
-        map.put("breeze", BREEZE);
-        map.put("dark_female", DARK_FEMALE);
-        map.put("dark_male", DARK_MALE);
-        map.put("enchanted_female", ENCHANTED_FEMALE);
-        map.put("enchanted_male", ENCHANTED_MALE);
-        map.put("ender_female", ENDER_FEMALE);
-        map.put("ender_male", ENDER_MALE);
-        map.put("ender_rare", ENDER_RARE);
-        map.put("fire_female", FIRE_FEMALE);
-        map.put("fire_male", FIRE_MALE);
-        map.put("blue_fire", BLUE_FIRE);
-        map.put("forest_female", FOREST_FEMALE);
-        map.put("forest_male", FOREST_MALE);
-        map.put("forest_dry_female", FOREST_DRY_FEMALE);
-        map.put("forest_dry_male", FOREST_DRY_MALE);
-        map.put("forest_taiga_female", FOREST_TAIGA_FEMALE);
-        map.put("forest_taiga_male", FOREST_TAIGA_MALE);
-        map.put("ice_female", ICE_FEMALE);
-        map.put("ice_male", ICE_MALE);
-        map.put("moonlight_female", MOONLIGHT_FEMALE);
-        map.put("moonlight_male", MOONLIGHT_MALE);
-        map.put("eclipse", ECLIPSE);
-        map.put("nether_female", NETHER_FEMALE);
-        map.put("nether_male", NETHER_MALE);
-        map.put("soul", SOUL);
-        map.put("wild_sculk", WILD_SCULK);
-        map.put("mutant_sculk", MUTANT_SCULK);
-        map.put("hollowed", HOLLOWED);
-        map.put("skeleton", SKELETON);
-        map.put("stray", STRAY);
-        map.put("bogged", BOGGED);
-        map.put("storm_female", STORM_FEMALE);
-        map.put("storm_male", STORM_MALE);
-        map.put("bronzed_storm", BRONZED_STORM);
-        map.put("sunlight_female", SUNLIGHT_FEMALE);
-        map.put("sunlight_male", SUNLIGHT_MALE);
-        map.put("aurora", AURORA);
-        map.put("terra_female", TERRA_FEMALE);
-        map.put("terra_male", TERRA_MALE);
-        map.put("water_female", WATER_FEMALE);
-        map.put("water_male", WATER_MALE);
-        map.put("brine", BRINE);
-        map.put("wither", WITHER);
-        map.put("zombie", ZOMBIE);
-        return key -> {
-            var value = map.get(key);
-            if (value == null) throw new NoSuchElementException();
-            return value;
+    public static Function<String, VariantAppearance> getBuiltinSupplier() {
+        return key -> switch (key) {
+            case "aether_female" -> AETHER_FEMALE;
+            case "aether_male" -> AETHER_MALE;
+            case "breeze" -> BREEZE;
+            case "dark_female" -> DARK_FEMALE;
+            case "dark_male" -> DARK_MALE;
+            case "enchanted_female" -> ENCHANTED_FEMALE;
+            case "enchanted_male" -> ENCHANTED_MALE;
+            case "ender_female" -> ENDER_FEMALE;
+            case "ender_male" -> ENDER_MALE;
+            case "ender_rare" -> ENDER_RARE;
+            case "fire_female" -> FIRE_FEMALE;
+            case "fire_male" -> FIRE_MALE;
+            case "blue_fire" -> BLUE_FIRE;
+            case "forest_female" -> FOREST_FEMALE;
+            case "forest_male" -> FOREST_MALE;
+            case "forest_dry_female" -> FOREST_DRY_FEMALE;
+            case "forest_dry_male" -> FOREST_DRY_MALE;
+            case "forest_taiga_female" -> FOREST_TAIGA_FEMALE;
+            case "forest_taiga_male" -> FOREST_TAIGA_MALE;
+            case "ice_female" -> ICE_FEMALE;
+            case "ice_male" -> ICE_MALE;
+            case "moonlight_female" -> MOONLIGHT_FEMALE;
+            case "moonlight_male" -> MOONLIGHT_MALE;
+            case "eclipse" -> ECLIPSE;
+            case "nether_female" -> NETHER_FEMALE;
+            case "nether_male" -> NETHER_MALE;
+            case "soul" -> SOUL;
+            case "wild_sculk" -> WILD_SCULK;
+            case "mutant_sculk" -> MUTANT_SCULK;
+            case "hollowed" -> HOLLOWED;
+            case "skeleton" -> SKELETON;
+            case "stray" -> STRAY;
+            case "bogged" -> BOGGED;
+            case "storm_female" -> STORM_FEMALE;
+            case "storm_male" -> STORM_MALE;
+            case "bronzed_storm" -> BRONZED_STORM;
+            case "sunlight_female" -> SUNLIGHT_FEMALE;
+            case "sunlight_male" -> SUNLIGHT_MALE;
+            case "aurora" -> AURORA;
+            case "terra_female" -> TERRA_FEMALE;
+            case "terra_male" -> TERRA_MALE;
+            case "water_female" -> WATER_FEMALE;
+            case "water_male" -> WATER_MALE;
+            case "brine" -> BRINE;
+            case "wither" -> WITHER;
+            case "zombie" -> ZOMBIE;
+            default -> throw new NoSuchElementException(
+                    "There is no built-in variant appearance named \"" + key + "\". Please create a custom supplier."
+            );
         };
     }
 }

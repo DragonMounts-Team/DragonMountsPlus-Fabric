@@ -9,9 +9,9 @@ import java.util.Collections;
 import java.util.List;
 
 public class DMItemGroups {
-    public static final ItemGroup DRAGON_EGGS = new ItemGroup(new ObjectArrayList<>(16));
-    public static final ItemGroup DRAGON_HEADS = new ItemGroup(new ObjectArrayList<>(36));
-    public static final ItemGroup DRAGON_SPAWN_EGGS = new ItemGroup(new ObjectArrayList<>(16));
+    public static final ItemGroup DRAGON_EGGS = new ItemGroup(new ObjectArrayList<>(17));
+    public static final ItemGroup DRAGON_HEADS = new ItemGroup(new ObjectArrayList<>(46));
+    public static final ItemGroup DRAGON_SPAWN_EGGS = new ItemGroup(new ObjectArrayList<>(17));
     public static final ItemCategory BLOCK_TAB = new ItemCategory("blocks", List.of(DRAGON_EGGS, DRAGON_HEADS));
     public static final ItemCategory MISC_TAB = new ItemCategory("misc", Collections.singletonList(DRAGON_SPAWN_EGGS));
     public static final ItemCategory TOOL_TAB = new ItemCategory("tools", Collections.emptyList());
